@@ -46,7 +46,7 @@ public class TaskInfo implements org.apache.thrift.TBase<TaskInfo, TaskInfo._Fie
   private static final org.apache.thrift.protocol.TField START_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("startTime", org.apache.thrift.protocol.TType.I64, (short)6);
   private static final org.apache.thrift.protocol.TField FINISH_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("finishTime", org.apache.thrift.protocol.TType.I64, (short)7);
   private static final org.apache.thrift.protocol.TField CPU_USAGE_FIELD_DESC = new org.apache.thrift.protocol.TField("cpuUsage", org.apache.thrift.protocol.TType.DOUBLE, (short)8);
-  private static final org.apache.thrift.protocol.TField PEAK_MEMORY_USAGE_FIELD_DESC = new org.apache.thrift.protocol.TField("peakMemoryUsage", org.apache.thrift.protocol.TType.I32, (short)9);
+  private static final org.apache.thrift.protocol.TField PEAK_MEMORY_USAGE_FIELD_DESC = new org.apache.thrift.protocol.TField("peakMemoryUsage", org.apache.thrift.protocol.TType.I64, (short)9);
   private static final org.apache.thrift.protocol.TField STATUS_FIELD_DESC = new org.apache.thrift.protocol.TField("status", org.apache.thrift.protocol.TType.STRING, (short)10);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
@@ -63,7 +63,7 @@ public class TaskInfo implements org.apache.thrift.TBase<TaskInfo, TaskInfo._Fie
   public long startTime; // required
   public long finishTime; // required
   public double cpuUsage; // required
-  public int peakMemoryUsage; // required
+  public long peakMemoryUsage; // required
   public String status; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
@@ -181,7 +181,7 @@ public class TaskInfo implements org.apache.thrift.TBase<TaskInfo, TaskInfo._Fie
     tmpMap.put(_Fields.CPU_USAGE, new org.apache.thrift.meta_data.FieldMetaData("cpuUsage", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.DOUBLE)));
     tmpMap.put(_Fields.PEAK_MEMORY_USAGE, new org.apache.thrift.meta_data.FieldMetaData("peakMemoryUsage", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64)));
     tmpMap.put(_Fields.STATUS, new org.apache.thrift.meta_data.FieldMetaData("status", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
@@ -200,7 +200,7 @@ public class TaskInfo implements org.apache.thrift.TBase<TaskInfo, TaskInfo._Fie
     long startTime,
     long finishTime,
     double cpuUsage,
-    int peakMemoryUsage,
+    long peakMemoryUsage,
     String status)
   {
     this();
@@ -456,11 +456,11 @@ public class TaskInfo implements org.apache.thrift.TBase<TaskInfo, TaskInfo._Fie
     __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __CPUUSAGE_ISSET_ID, value);
   }
 
-  public int getPeakMemoryUsage() {
+  public long getPeakMemoryUsage() {
     return this.peakMemoryUsage;
   }
 
-  public TaskInfo setPeakMemoryUsage(int peakMemoryUsage) {
+  public TaskInfo setPeakMemoryUsage(long peakMemoryUsage) {
     this.peakMemoryUsage = peakMemoryUsage;
     setPeakMemoryUsageIsSet(true);
     return this;
@@ -573,7 +573,7 @@ public class TaskInfo implements org.apache.thrift.TBase<TaskInfo, TaskInfo._Fie
       if (value == null) {
         unsetPeakMemoryUsage();
       } else {
-        setPeakMemoryUsage((Integer)value);
+        setPeakMemoryUsage((Long)value);
       }
       break;
 
@@ -615,7 +615,7 @@ public class TaskInfo implements org.apache.thrift.TBase<TaskInfo, TaskInfo._Fie
       return Double.valueOf(getCpuUsage());
 
     case PEAK_MEMORY_USAGE:
-      return Integer.valueOf(getPeakMemoryUsage());
+      return Long.valueOf(getPeakMemoryUsage());
 
     case STATUS:
       return getStatus();
@@ -1103,8 +1103,8 @@ public class TaskInfo implements org.apache.thrift.TBase<TaskInfo, TaskInfo._Fie
             }
             break;
           case 9: // PEAK_MEMORY_USAGE
-            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.peakMemoryUsage = iprot.readI32();
+            if (schemeField.type == org.apache.thrift.protocol.TType.I64) {
+              struct.peakMemoryUsage = iprot.readI64();
               struct.setPeakMemoryUsageIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -1160,7 +1160,7 @@ public class TaskInfo implements org.apache.thrift.TBase<TaskInfo, TaskInfo._Fie
       oprot.writeDouble(struct.cpuUsage);
       oprot.writeFieldEnd();
       oprot.writeFieldBegin(PEAK_MEMORY_USAGE_FIELD_DESC);
-      oprot.writeI32(struct.peakMemoryUsage);
+      oprot.writeI64(struct.peakMemoryUsage);
       oprot.writeFieldEnd();
       if (struct.status != null) {
         oprot.writeFieldBegin(STATUS_FIELD_DESC);
@@ -1241,7 +1241,7 @@ public class TaskInfo implements org.apache.thrift.TBase<TaskInfo, TaskInfo._Fie
         oprot.writeDouble(struct.cpuUsage);
       }
       if (struct.isSetPeakMemoryUsage()) {
-        oprot.writeI32(struct.peakMemoryUsage);
+        oprot.writeI64(struct.peakMemoryUsage);
       }
       if (struct.isSetStatus()) {
         oprot.writeString(struct.status);
@@ -1285,7 +1285,7 @@ public class TaskInfo implements org.apache.thrift.TBase<TaskInfo, TaskInfo._Fie
         struct.setCpuUsageIsSet(true);
       }
       if (incoming.get(8)) {
-        struct.peakMemoryUsage = iprot.readI32();
+        struct.peakMemoryUsage = iprot.readI64();
         struct.setPeakMemoryUsageIsSet(true);
       }
       if (incoming.get(9)) {
