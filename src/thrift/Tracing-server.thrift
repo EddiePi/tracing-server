@@ -9,7 +9,7 @@ struct TaskInfo {
 	6: i64 startTime;
 	7: i64 finishTime;
 	8: double cpuUsage;
-	9: i32 peakMemoryUsage;
+	9: i64 peakMemoryUsage;
 	10: string status;	//SUCCESSFUL, FAILED...
 }
 
