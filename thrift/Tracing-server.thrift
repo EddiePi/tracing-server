@@ -9,8 +9,9 @@ struct TaskInfo {
 	6: i64 startTime;
 	7: i64 finishTime;
 	8: double cpuUsage;
-	9: i64 peakMemoryUsage;
-	10: string status;	//RUNNING, SUCCEEDED, FAILED...
+	9: i64 execMemory;
+	10: i64 storeMemory;
+	11: string status;	//RUNNING, SUCCEEDED, FAILED...
 }
 
 struct StageInfo {
