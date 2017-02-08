@@ -15,7 +15,8 @@ public class TracingMaster {
     public static void main(String argv[]) throws Exception {
         try {
             System.out.println("Tracing server start ....");
-            TProcessor tprocessor = new TracingService.Processor<TracingService.Iface>(new TracingServiceImpl());
+            TProcessor tprocessor = new TracingService.Processor<TracingService.Iface>
+                    (new TracingServiceImpl());
 
             TServerSocket serverTransport = new TServerSocket(8089);
             TThreadPoolServer.Args tArgs = new TThreadPoolServer.Args(serverTransport);
