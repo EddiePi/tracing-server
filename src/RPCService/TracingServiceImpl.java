@@ -2,7 +2,7 @@ package RPCService;
 
 import org.apache.thrift.TException;
 
-/**
+/**pingcd admincd .
  * Created by Eddie on 2017/1/23.
  */
 public class TracingServiceImpl implements TracingService.Iface{

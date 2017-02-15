@@ -12,6 +12,7 @@ struct TaskInfo {
 	9: i64 execMemory;
 	10: i64 storeMemory;
 	11: string status;	//RUNNING, SUCCEEDED, FAILED...
+	12: string containerId;
 }
 
 struct StageInfo {
