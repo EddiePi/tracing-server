@@ -46,4 +46,9 @@ public class TracingServiceImpl implements TracingService.Iface{
         //System.out.print("TaskEndEvent received. taskId: " + event.taskId +
         //" status: " + event.reason + "\n");
     }
+
+    @Override
+    public void notityContainerEvent(ContainerEvent evnet) throws TException {
+
+    }
 }

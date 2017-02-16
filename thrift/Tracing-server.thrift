@@ -3,7 +3,7 @@ namespace java RPCService
 struct TaskInfo {
 	1: i64 taskId;
 	2: i32 stageId;
-	3: i32 stageAttempId;
+	3: i32 stageAttemptId;
 	4: i32 jobId;
 	5: string appId;
 	6: i64 startTime;
@@ -45,7 +45,7 @@ service TracingService {
 	
 	void notifyTaskEndEvent(1: TaskEndEvent event)
 
-	void notityContainerEvent(1: ContainerEvent evnet)
+	void notifyContainerEvent(1: ContainerEvent evnet)
 }
 
 struct SchedulerEvent {
@@ -59,7 +59,7 @@ struct TaskEndEvent {
 	2: i32 stageId;
 	3: i32 jobId;
 	4: string appId;
-	5: i64 timeStemp;
+	5: i64 timeStamp;
 	6: string reason;
 }
 
