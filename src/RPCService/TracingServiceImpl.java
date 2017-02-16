@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class TracingServiceImpl implements TracingService.Iface{
 
-    private Map<String, DockerMonitor> dockerMoniterMap = new HashMap<>();
+    private Map<String, DockerMonitor> dockerMonitorMap = new HashMap<>();
 
     @Override
     public void updateTaskInfo(TaskInfo task) throws TException {
@@ -57,21 +57,20 @@ public class TracingServiceImpl implements TracingService.Iface{
     public void notifyContainerEvent(ContainerEvent event) throws TException {
         String containerId = event.containerId;
         if (event.action.equals("ADD")) {
-            if(!dockerMoniterMap.containsKey(containerId)) {
+            if(!dockerMonitorMap.containsKey(containerId)) {
                 DockerMonitor dockerMonitor = new DockerMonitor(containerId);
                 dockerMonitor.start();
-                dockerMoniterMap.put(containerId, dockerMonitor);
+                dockerMonitorMap.put(containerId, dockerMonitor);
             }
         }
 
         // TODO
         if (event.action.equals("REMOVE")) {
-            if (dockerMoniterMap.containsKey(containerId)) {
-                DockerMonitor dockerMonitor = dockerMoniterMap.remove(containerId);
+            if (dockerMonitorMap.containsKey(containerId)) {
+                DockerMonitor dockerMonitor = dockerMonitorMap.remove(containerId);
                 try {
                     dockerMonitor.stop();
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
             }
         }

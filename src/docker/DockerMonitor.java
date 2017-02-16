@@ -227,6 +227,6 @@ public class DockerMonitor {
         System.out.print("total read: " + totalDiskReadBytes +
         " total write: " + totalDiskWriteBytes +
         " read rate: " + currentDiskReadRate +
-        " write rate: " + currentDiskWriteRate);
+        " write rate: " + currentDiskWriteRate + "\n");
     }
 }
