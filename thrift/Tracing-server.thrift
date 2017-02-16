@@ -44,6 +44,8 @@ service TracingService {
 	void notifyCommonEvent(1: SchedulerEvent event)
 	
 	void notifyTaskEndEvent(1: TaskEndEvent event)
+
+	void notityContainerEvent(1: ContainerEvent evnet)
 }
 
 struct SchedulerEvent {
