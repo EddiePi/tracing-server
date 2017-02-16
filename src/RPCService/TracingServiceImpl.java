@@ -1,11 +1,17 @@
 package RPCService;
 
+import docker.DockerMonitor;
 import org.apache.thrift.TException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**pingcd admincd .
  * Created by Eddie on 2017/1/23.
  */
 public class TracingServiceImpl implements TracingService.Iface{
+
+    private Map<String, DockerMonitor> dockerMoniterMap = new HashMap<>();
 
     @Override
     public void updateTaskInfo(TaskInfo task) throws TException {
@@ -48,7 +54,26 @@ public class TracingServiceImpl implements TracingService.Iface{
     }
 
     @Override
-    public void notityContainerEvent(ContainerEvent evnet) throws TException {
+    public void notifyContainerEvent(ContainerEvent event) throws TException {
+        String containerId = event.containerId;
+        if (event.action.equals("ADD")) {
+            if(!dockerMoniterMap.containsKey(containerId)) {
+                DockerMonitor dockerMonitor = new DockerMonitor(containerId);
+                dockerMonitor.start();
+                dockerMoniterMap.put(containerId, dockerMonitor);
+            }
+        }
 
+        // TODO
+        if (event.action.equals("REMOVE")) {
+            if (dockerMoniterMap.containsKey(containerId)) {
+                DockerMonitor dockerMonitor = dockerMoniterMap.remove(containerId);
+                try {
+                    dockerMonitor.stop();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

@@ -49,7 +49,7 @@ public class TracingService {
 
     public void notifyTaskEndEvent(TaskEndEvent event) throws TException;
 
-    public void notityContainerEvent(ContainerEvent evnet) throws TException;
+    public void notifyContainerEvent(ContainerEvent evnet) throws TException;
 
   }
 
@@ -65,7 +65,7 @@ public class TracingService {
 
     public void notifyTaskEndEvent(TaskEndEvent event, AsyncMethodCallback resultHandler) throws TException;
 
-    public void notityContainerEvent(ContainerEvent evnet, AsyncMethodCallback resultHandler) throws TException;
+    public void notifyContainerEvent(ContainerEvent evnet, AsyncMethodCallback resultHandler) throws TException;
 
   }
 
@@ -189,23 +189,23 @@ public class TracingService {
       return;
     }
 
-    public void notityContainerEvent(ContainerEvent evnet) throws TException
+    public void notifyContainerEvent(ContainerEvent evnet) throws TException
     {
-      send_notityContainerEvent(evnet);
-      recv_notityContainerEvent();
+      send_notifyContainerEvent(evnet);
+      recv_notifyContainerEvent();
     }
 
-    public void send_notityContainerEvent(ContainerEvent evnet) throws TException
+    public void send_notifyContainerEvent(ContainerEvent evnet) throws TException
     {
-      notityContainerEvent_args args = new notityContainerEvent_args();
+      notifyContainerEvent_args args = new notifyContainerEvent_args();
       args.setEvnet(evnet);
-      sendBase("notityContainerEvent", args);
+      sendBase("notifyContainerEvent", args);
     }
 
-    public void recv_notityContainerEvent() throws TException
+    public void recv_notifyContainerEvent() throws TException
     {
-      notityContainerEvent_result result = new notityContainerEvent_result();
-      receiveBase(result, "notityContainerEvent");
+      notifyContainerEvent_result result = new notifyContainerEvent_result();
+      receiveBase(result, "notifyContainerEvent");
       return;
     }
 
@@ -387,23 +387,23 @@ public class TracingService {
       }
     }
 
-    public void notityContainerEvent(ContainerEvent evnet, AsyncMethodCallback resultHandler) throws TException {
+    public void notifyContainerEvent(ContainerEvent evnet, AsyncMethodCallback resultHandler) throws TException {
       checkReady();
-      notityContainerEvent_call method_call = new notityContainerEvent_call(evnet, resultHandler, this, ___protocolFactory, ___transport);
+      notifyContainerEvent_call method_call = new notifyContainerEvent_call(evnet, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class notityContainerEvent_call extends org.apache.thrift.async.TAsyncMethodCall {
+    public static class notifyContainerEvent_call extends org.apache.thrift.async.TAsyncMethodCall {
       private ContainerEvent evnet;
-      public notityContainerEvent_call(ContainerEvent evnet, AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
+      public notifyContainerEvent_call(ContainerEvent evnet, AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.evnet = evnet;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("notityContainerEvent", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        notityContainerEvent_args args = new notityContainerEvent_args();
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("notifyContainerEvent", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        notifyContainerEvent_args args = new notifyContainerEvent_args();
         args.setEvnet(evnet);
         args.write(prot);
         prot.writeMessageEnd();
@@ -415,7 +415,7 @@ public class TracingService {
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        (new Client(prot)).recv_notityContainerEvent();
+        (new Client(prot)).recv_notifyContainerEvent();
       }
     }
 
@@ -437,7 +437,7 @@ public class TracingService {
       processMap.put("updateJobInfo", new updateJobInfo());
       processMap.put("notifyCommonEvent", new notifyCommonEvent());
       processMap.put("notifyTaskEndEvent", new notifyTaskEndEvent());
-      processMap.put("notityContainerEvent", new notityContainerEvent());
+      processMap.put("notifyContainerEvent", new notifyContainerEvent());
       return processMap;
     }
 
@@ -541,22 +541,22 @@ public class TracingService {
       }
     }
 
-    public static class notityContainerEvent<I extends Iface> extends org.apache.thrift.ProcessFunction<I, notityContainerEvent_args> {
-      public notityContainerEvent() {
-        super("notityContainerEvent");
+    public static class notifyContainerEvent<I extends Iface> extends org.apache.thrift.ProcessFunction<I, notifyContainerEvent_args> {
+      public notifyContainerEvent() {
+        super("notifyContainerEvent");
       }
 
-      public notityContainerEvent_args getEmptyArgsInstance() {
-        return new notityContainerEvent_args();
+      public notifyContainerEvent_args getEmptyArgsInstance() {
+        return new notifyContainerEvent_args();
       }
 
       protected boolean isOneway() {
         return false;
       }
 
-      public notityContainerEvent_result getResult(I iface, notityContainerEvent_args args) throws TException {
-        notityContainerEvent_result result = new notityContainerEvent_result();
-        iface.notityContainerEvent(args.evnet);
+      public notifyContainerEvent_result getResult(I iface, notifyContainerEvent_args args) throws TException {
+        notifyContainerEvent_result result = new notifyContainerEvent_result();
+        iface.notifyContainerEvent(args.evnet);
         return result;
       }
     }
@@ -579,7 +579,7 @@ public class TracingService {
       processMap.put("updateJobInfo", new updateJobInfo());
       processMap.put("notifyCommonEvent", new notifyCommonEvent());
       processMap.put("notifyTaskEndEvent", new notifyTaskEndEvent());
-      processMap.put("notityContainerEvent", new notityContainerEvent());
+      processMap.put("notifyContainerEvent", new notifyContainerEvent());
       return processMap;
     }
 
@@ -833,20 +833,20 @@ public class TracingService {
       }
     }
 
-    public static class notityContainerEvent<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, notityContainerEvent_args, Void> {
-      public notityContainerEvent() {
-        super("notityContainerEvent");
+    public static class notifyContainerEvent<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, notifyContainerEvent_args, Void> {
+      public notifyContainerEvent() {
+        super("notifyContainerEvent");
       }
 
-      public notityContainerEvent_args getEmptyArgsInstance() {
-        return new notityContainerEvent_args();
+      public notifyContainerEvent_args getEmptyArgsInstance() {
+        return new notifyContainerEvent_args();
       }
 
       public AsyncMethodCallback<Void> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
         return new AsyncMethodCallback<Void>() { 
           public void onComplete(Void o) {
-            notityContainerEvent_result result = new notityContainerEvent_result();
+            notifyContainerEvent_result result = new notifyContainerEvent_result();
             try {
               fcall.sendResponse(fb,result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
               return;
@@ -858,7 +858,7 @@ public class TracingService {
           public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TBase msg;
-            notityContainerEvent_result result = new notityContainerEvent_result();
+            notifyContainerEvent_result result = new notifyContainerEvent_result();
             {
               msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
               msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
@@ -878,8 +878,8 @@ public class TracingService {
         return false;
       }
 
-      public void start(I iface, notityContainerEvent_args args, AsyncMethodCallback<Void> resultHandler) throws TException {
-        iface.notityContainerEvent(args.evnet,resultHandler);
+      public void start(I iface, notifyContainerEvent_args args, AsyncMethodCallback<Void> resultHandler) throws TException {
+        iface.notifyContainerEvent(args.evnet,resultHandler);
       }
     }
 
@@ -3949,15 +3949,15 @@ public class TracingService {
 
   }
 
-  public static class notityContainerEvent_args implements org.apache.thrift.TBase<notityContainerEvent_args, notityContainerEvent_args._Fields>, java.io.Serializable, Cloneable, Comparable<notityContainerEvent_args>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("notityContainerEvent_args");
+  public static class notifyContainerEvent_args implements org.apache.thrift.TBase<notifyContainerEvent_args, notifyContainerEvent_args._Fields>, java.io.Serializable, Cloneable, Comparable<notifyContainerEvent_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("notifyContainerEvent_args");
 
     private static final org.apache.thrift.protocol.TField EVNET_FIELD_DESC = new org.apache.thrift.protocol.TField("evnet", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new notityContainerEvent_argsStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new notityContainerEvent_argsTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new notifyContainerEvent_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new notifyContainerEvent_argsTupleSchemeFactory());
     }
 
     public ContainerEvent evnet; // required
@@ -4027,13 +4027,13 @@ public class TracingService {
       tmpMap.put(_Fields.EVNET, new org.apache.thrift.meta_data.FieldMetaData("evnet", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT          , "ContainerEvent")));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(notityContainerEvent_args.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(notifyContainerEvent_args.class, metaDataMap);
     }
 
-    public notityContainerEvent_args() {
+    public notifyContainerEvent_args() {
     }
 
-    public notityContainerEvent_args(
+    public notifyContainerEvent_args(
       ContainerEvent evnet)
     {
       this();
@@ -4043,14 +4043,14 @@ public class TracingService {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public notityContainerEvent_args(notityContainerEvent_args other) {
+    public notifyContainerEvent_args(notifyContainerEvent_args other) {
       if (other.isSetEvnet()) {
         this.evnet = other.evnet;
       }
     }
 
-    public notityContainerEvent_args deepCopy() {
-      return new notityContainerEvent_args(this);
+    public notifyContainerEvent_args deepCopy() {
+      return new notifyContainerEvent_args(this);
     }
 
     @Override
@@ -4062,7 +4062,7 @@ public class TracingService {
       return this.evnet;
     }
 
-    public notityContainerEvent_args setEvnet(ContainerEvent evnet) {
+    public notifyContainerEvent_args setEvnet(ContainerEvent evnet) {
       this.evnet = evnet;
       return this;
     }
@@ -4121,12 +4121,12 @@ public class TracingService {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof notityContainerEvent_args)
-        return this.equals((notityContainerEvent_args)that);
+      if (that instanceof notifyContainerEvent_args)
+        return this.equals((notifyContainerEvent_args)that);
       return false;
     }
 
-    public boolean equals(notityContainerEvent_args that) {
+    public boolean equals(notifyContainerEvent_args that) {
       if (that == null)
         return false;
 
@@ -4155,7 +4155,7 @@ public class TracingService {
     }
 
     @Override
-    public int compareTo(notityContainerEvent_args other) {
+    public int compareTo(notifyContainerEvent_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
@@ -4189,7 +4189,7 @@ public class TracingService {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("notityContainerEvent_args(");
+      StringBuilder sb = new StringBuilder("notifyContainerEvent_args(");
       boolean first = true;
 
       sb.append("evnet:");
@@ -4224,15 +4224,15 @@ public class TracingService {
       }
     }
 
-    private static class notityContainerEvent_argsStandardSchemeFactory implements SchemeFactory {
-      public notityContainerEvent_argsStandardScheme getScheme() {
-        return new notityContainerEvent_argsStandardScheme();
+    private static class notifyContainerEvent_argsStandardSchemeFactory implements SchemeFactory {
+      public notifyContainerEvent_argsStandardScheme getScheme() {
+        return new notifyContainerEvent_argsStandardScheme();
       }
     }
 
-    private static class notityContainerEvent_argsStandardScheme extends StandardScheme<notityContainerEvent_args> {
+    private static class notifyContainerEvent_argsStandardScheme extends StandardScheme<notifyContainerEvent_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, notityContainerEvent_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, notifyContainerEvent_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -4262,7 +4262,7 @@ public class TracingService {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, notityContainerEvent_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, notifyContainerEvent_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -4277,16 +4277,16 @@ public class TracingService {
 
     }
 
-    private static class notityContainerEvent_argsTupleSchemeFactory implements SchemeFactory {
-      public notityContainerEvent_argsTupleScheme getScheme() {
-        return new notityContainerEvent_argsTupleScheme();
+    private static class notifyContainerEvent_argsTupleSchemeFactory implements SchemeFactory {
+      public notifyContainerEvent_argsTupleScheme getScheme() {
+        return new notifyContainerEvent_argsTupleScheme();
       }
     }
 
-    private static class notityContainerEvent_argsTupleScheme extends TupleScheme<notityContainerEvent_args> {
+    private static class notifyContainerEvent_argsTupleScheme extends TupleScheme<notifyContainerEvent_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, notityContainerEvent_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, notifyContainerEvent_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetEvnet()) {
@@ -4299,7 +4299,7 @@ public class TracingService {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, notityContainerEvent_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, notifyContainerEvent_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -4312,14 +4312,14 @@ public class TracingService {
 
   }
 
-  public static class notityContainerEvent_result implements org.apache.thrift.TBase<notityContainerEvent_result, notityContainerEvent_result._Fields>, java.io.Serializable, Cloneable, Comparable<notityContainerEvent_result>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("notityContainerEvent_result");
+  public static class notifyContainerEvent_result implements org.apache.thrift.TBase<notifyContainerEvent_result, notifyContainerEvent_result._Fields>, java.io.Serializable, Cloneable, Comparable<notifyContainerEvent_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("notifyContainerEvent_result");
 
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new notityContainerEvent_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new notityContainerEvent_resultTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new notifyContainerEvent_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new notifyContainerEvent_resultTupleSchemeFactory());
     }
 
 
@@ -4382,20 +4382,20 @@ public class TracingService {
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(notityContainerEvent_result.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(notifyContainerEvent_result.class, metaDataMap);
     }
 
-    public notityContainerEvent_result() {
+    public notifyContainerEvent_result() {
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public notityContainerEvent_result(notityContainerEvent_result other) {
+    public notifyContainerEvent_result(notifyContainerEvent_result other) {
     }
 
-    public notityContainerEvent_result deepCopy() {
-      return new notityContainerEvent_result(this);
+    public notifyContainerEvent_result deepCopy() {
+      return new notifyContainerEvent_result(this);
     }
 
     @Override
@@ -4428,12 +4428,12 @@ public class TracingService {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof notityContainerEvent_result)
-        return this.equals((notityContainerEvent_result)that);
+      if (that instanceof notifyContainerEvent_result)
+        return this.equals((notifyContainerEvent_result)that);
       return false;
     }
 
-    public boolean equals(notityContainerEvent_result that) {
+    public boolean equals(notifyContainerEvent_result that) {
       if (that == null)
         return false;
 
@@ -4448,7 +4448,7 @@ public class TracingService {
     }
 
     @Override
-    public int compareTo(notityContainerEvent_result other) {
+    public int compareTo(notifyContainerEvent_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
@@ -4472,7 +4472,7 @@ public class TracingService {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("notityContainerEvent_result(");
+      StringBuilder sb = new StringBuilder("notifyContainerEvent_result(");
       boolean first = true;
 
       sb.append(")");
@@ -4500,15 +4500,15 @@ public class TracingService {
       }
     }
 
-    private static class notityContainerEvent_resultStandardSchemeFactory implements SchemeFactory {
-      public notityContainerEvent_resultStandardScheme getScheme() {
-        return new notityContainerEvent_resultStandardScheme();
+    private static class notifyContainerEvent_resultStandardSchemeFactory implements SchemeFactory {
+      public notifyContainerEvent_resultStandardScheme getScheme() {
+        return new notifyContainerEvent_resultStandardScheme();
       }
     }
 
-    private static class notityContainerEvent_resultStandardScheme extends StandardScheme<notityContainerEvent_result> {
+    private static class notifyContainerEvent_resultStandardScheme extends StandardScheme<notifyContainerEvent_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, notityContainerEvent_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, notifyContainerEvent_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -4529,7 +4529,7 @@ public class TracingService {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, notityContainerEvent_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, notifyContainerEvent_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -4539,21 +4539,21 @@ public class TracingService {
 
     }
 
-    private static class notityContainerEvent_resultTupleSchemeFactory implements SchemeFactory {
-      public notityContainerEvent_resultTupleScheme getScheme() {
-        return new notityContainerEvent_resultTupleScheme();
+    private static class notifyContainerEvent_resultTupleSchemeFactory implements SchemeFactory {
+      public notifyContainerEvent_resultTupleScheme getScheme() {
+        return new notifyContainerEvent_resultTupleScheme();
       }
     }
 
-    private static class notityContainerEvent_resultTupleScheme extends TupleScheme<notityContainerEvent_result> {
+    private static class notifyContainerEvent_resultTupleScheme extends TupleScheme<notifyContainerEvent_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, notityContainerEvent_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, notifyContainerEvent_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, notityContainerEvent_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, notifyContainerEvent_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
       }
     }

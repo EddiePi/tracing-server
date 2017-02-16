@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by Eddie on 2017/2/15.
  */
-public class DockerMoniter {
+public class DockerMonitor {
 
     private String dockerId;
     String containerId;
@@ -33,7 +33,7 @@ public class DockerMoniter {
     // TODO: network metrics
     private Long networkUsage = 0L;
 
-    public DockerMoniter(String containerId) {
+    public DockerMonitor(String containerId) {
         this.containerId = containerId;
         this.dockerId = getDockerIdFromContainerId(containerId);
         this.blkioPath= "/sys/fs/cgroup/blkio/docker/" + dockerId + "/";
@@ -97,9 +97,10 @@ public class DockerMoniter {
             while (isRunning) {
                 // monitor the docker info
                 updateCgroupValues();
+                printStatus();
                 //if we come here it means we need to sleep for 2s
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -219,5 +220,13 @@ public class DockerMoniter {
                 return null;
             }
         }
+    }
+
+    // TEST
+    public void printStatus() {
+        System.out.print("total read: " + totalDiskReadBytes +
+        " total write: " + totalDiskWriteBytes +
+        " read rate: " + currentDiskReadRate +
+        " write rate: " + currentDiskWriteRate);
     }
 }
