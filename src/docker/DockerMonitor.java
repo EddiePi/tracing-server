@@ -18,7 +18,7 @@ public class DockerMonitor {
     String containerId;
     private String blkioPath;
     private String netioPath;
-    private MonitorThread moniterThread;
+    private MonitorThread monitorThread;
 
     private Long previousProfileTime = System.currentTimeMillis() / 1000;
     // docker metrics
@@ -40,17 +40,20 @@ public class DockerMonitor {
         // TODO
         // this.netioPath
 
-        moniterThread = new MonitorThread();
+        monitorThread = new MonitorThread();
     }
 
     public void start() {
-        moniterThread.start();
+        monitorThread.start();
     }
 
-    public void stop() throws InterruptedException {
-        moniterThread.isRunning = false;
-        moniterThread.interrupt();
-        Thread.sleep(1000);
+    public void stop() {
+        try {
+            monitorThread.isRunning = false;
+            monitorThread.interrupt();
+        }
+        catch (Exception e) {
+        }
     }
 
     public String getDockerIdFromContainerId(String containerId) {
@@ -92,6 +95,11 @@ public class DockerMonitor {
         @Override
         public void run(){
             isRunning = true;
+            try {
+                Thread.sleep(1100);
+            } catch (InterruptedException e) {
+                // do nothing
+            }
             //int count = 3;
             //int index = 0;
             while (isRunning) {
@@ -102,7 +110,7 @@ public class DockerMonitor {
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    //do nothing
                 }
             }
             isRunning = false;
