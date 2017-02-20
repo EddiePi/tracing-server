@@ -45,7 +45,7 @@ public class DockerMonitor {
         this.containerId = containerId;
         this.dockerId = runShellCommand("docker inspect --format={{.Id}} " + containerId);
         this.dockerPid = runShellCommand("docker inspect -f '{{ .State.Pid }}' " + containerId).trim();
-        System.out.println("docker pid: " + dockerId);
+        System.out.println("docker pid: " + dockerPid);
         this.blkioPath= "/sys/fs/cgroup/blkio/docker/" + dockerId + "/";
         this.netFilePath = "/proc/" + dockerPid + "/net/dev";
         setIfaceName(null);
