@@ -202,6 +202,7 @@ public class DockerMonitor {
                 return;
             }
             String result = runShellCommand("cat " + netFilePath + " | grep " + ifaceName);
+            System.out.println("result");
             if (result != null) {
                 String receiveStr = result.split("\t")[1];
                 previousNetReceiveByte = totalNetReceiveBytes;
