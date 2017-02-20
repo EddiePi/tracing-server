@@ -6,7 +6,7 @@ import org.apache.thrift.TException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**pingcd admincd .
+/**
  * Created by Eddie on 2017/1/23.
  */
 public class TracingServiceImpl implements TracingService.Iface{

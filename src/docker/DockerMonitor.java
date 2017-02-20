@@ -16,8 +16,10 @@ public class DockerMonitor {
 
     private String dockerId;
     String containerId;
+    // NOTE: this type is String
+    String dockerPid = null;
     private String blkioPath;
-    private String netioPath;
+    private String netFilePath;
     private MonitorThread monitorThread;
 
     private Long previousProfileTime = System.currentTimeMillis() / 1000;
@@ -30,15 +32,22 @@ public class DockerMonitor {
     private Double currentDiskReadRate = 0.0;
     private Double currentDiskWriteRate = 0.0;
 
-    // TODO: network metrics
-    private Long networkUsage = 0L;
+    // network metrics
+    private String ifaceName;
+    private Long totalNetReceiveBytes = 0L;
+    private Long previousNetReceiveByte = 0L;
+    private Long totalNetTransmitBytes = 0L;
+    private Long previousNetTransmitBytes = 0L;
+    private Double currentNetReceiveRate = 0.0;
+    private Double currentNetTransmitRate = 0.0;
 
     public DockerMonitor(String containerId) {
         this.containerId = containerId;
-        this.dockerId = getDockerIdFromContainerId(containerId);
+        this.dockerId = runShellCommand("docker inspect --format={{.Id}} " + containerId);
+        this.dockerPid = runShellCommand("docker inspect -f '{{ .State.Pid }}' " + containerId);
         this.blkioPath= "/sys/fs/cgroup/blkio/docker/" + dockerId + "/";
-        // TODO
-        // this.netioPath
+        this.netFilePath = "/proc/" + dockerPid + "/net/dev";
+        setIfaceName(null);
 
         monitorThread = new MonitorThread();
     }
@@ -56,10 +65,20 @@ public class DockerMonitor {
         }
     }
 
-    public String getDockerIdFromContainerId(String containerId) {
-        String command = "docker inspect --format={{.Id}} " + containerId;
-        String result = runShellCommand(command);
-        return result;
+    public void setIfaceName (String name) {
+        if (name != null) {
+            this.ifaceName = name;
+        } else {
+            this.ifaceName = "eth0";
+        }
+    }
+
+    public String getDockerId() {
+        return dockerId;
+    }
+
+    public String getDockerPid() {
+        return dockerPid;
     }
 
     // Run a given shell command. return a string as the result
@@ -120,9 +139,11 @@ public class DockerMonitor {
         private void updateCgroupValues() {
             // calculate the disk rate
             calculateCurrentDiskRate();
+
+            // calculate the network rate
+            calculateCurrentNetRate();
         }
 
-        // TODO: change to my own cgroup file
         // calculate the disk I/O rate
         private void calculateCurrentDiskRate() {
             // init timestamps
@@ -144,7 +165,7 @@ public class DockerMonitor {
         // and update the metrics in the monitor.
         private void getDiskServicedBytes() {
             if(!isRunning) {
-                return ;
+                return;
             }
             String url = blkioPath + "blkio.throttle.io_service_bytes";
             List<String> readLines = readFileLines(url);
@@ -159,36 +180,37 @@ public class DockerMonitor {
                 totalDiskWriteBytes = Long.parseLong(writeStr);
             }
         }
+        // calculate the network I/O rate
+        private void calculateCurrentNetRate() {
+            Long curTime = System.currentTimeMillis() / 1000;
+            Double deltaTime = (curTime - previousProfileTime) * 1.0;
+            previousProfileTime = curTime;
 
-//        public long getCurrentLimitedMemory(){
-//            if(!isRunning)
-//                return 0;
-//            String path = memoryPath+"memory.limit_in_bytes";
-//            List<String> readlines=readFileLines(path);
-//            if(readlines!=null){
-//                limitedMemory = Long.parseLong(readFileLines(path).get(0))/(1024*1024);
-//                //LOG.info("get limited memory:"+name+"  "+limitedMemory);
-//            }
-//            return limitedMemory;
-//        }
-//
-//        //pulled by nodemanager, in termes of M
-//        private long getCurrentUsedSwap(){
-//            if(!isRunning)
-//                return 0;
-//
-//            String path = memoryPath + "memory.stat";
-//            List<String> readlines=readFileLines(path);
-//            if(readlines!=null){
-//                String SwapString=readlines.get(6);
-//                String SwapString1=SwapString.split("\\s++")[1];
-//                currentUsedSwap=Long.parseLong(SwapString1)/(1024*1024);
-//                //LOG.info("get swap memory:"+name+"  "+currentUsedSwap);
-//            }
-//            return currentUsedSwap;
-//        }
+            getNetServicedBytes();
 
+            Long deltaReceive = totalNetReceiveBytes - previousNetReceiveByte;
+            currentNetReceiveRate = deltaReceive / deltaTime;
+            Long deltaTransmit = totalNetTransmitBytes - previousNetTransmitBytes;
+            currentNetTransmitRate = deltaTransmit / deltaTime;
+        }
 
+        // read the network usage from 'proc' files
+        // and update the metrics in the monitor.
+        private void getNetServicedBytes() {
+            if (!isRunning) {
+                return;
+            }
+            String result = runShellCommand("cat " + netFilePath + " | grep " + ifaceName);
+            if (result != null) {
+                String receiveStr = result.split("\t")[1];
+                previousNetReceiveByte = totalNetReceiveBytes;
+                totalNetReceiveBytes = Long.parseLong(receiveStr);
+
+                String transmitStr = result.split("\t")[9];
+                previousNetTransmitBytes = totalNetTransmitBytes;
+                totalNetReceiveBytes = Long.parseLong(transmitStr);
+            }
+        }
 
         private List<String> readFileLines(String path){
             ArrayList<String> results= new ArrayList<String>();
@@ -235,6 +257,10 @@ public class DockerMonitor {
         System.out.print("total read: " + totalDiskReadBytes +
         " total write: " + totalDiskWriteBytes +
         " read rate: " + currentDiskReadRate +
-        " write rate: " + currentDiskWriteRate + "\n");
+        " write rate: " + currentDiskWriteRate + "\n" +
+        " total receive: " + totalNetReceiveBytes +
+        " total transmit: " + totalNetTransmitBytes +
+        " receive rate: " + currentNetReceiveRate +
+        " transmit rate: " + currentNetTransmitRate + "\n");
     }
 }
