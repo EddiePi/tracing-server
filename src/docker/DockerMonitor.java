@@ -143,6 +143,12 @@ public class DockerMonitor {
 
             // calculate the network rate
             calculateCurrentNetRate();
+
+            updatePreviousTime();
+        }
+
+        private void updatePreviousTime() {
+            previousProfileTime = System.currentTimeMillis() / 1000;
         }
 
         // calculate the disk I/O rate
@@ -150,7 +156,6 @@ public class DockerMonitor {
             // init timestamps
             Long curTime = System.currentTimeMillis() / 1000;
             Double deltaTime = (curTime - previousProfileTime) * 1.0;
-            previousProfileTime = curTime;
 
             // read data from file
             getDiskServicedBytes();
@@ -185,7 +190,6 @@ public class DockerMonitor {
         private void calculateCurrentNetRate() {
             Long curTime = System.currentTimeMillis() / 1000;
             Double deltaTime = (curTime - previousProfileTime) * 1.0;
-            previousProfileTime = curTime;
 
             getNetServicedBytes();
 
@@ -204,7 +208,7 @@ public class DockerMonitor {
             String[] results = runShellCommand("cat " + netFilePath).split("\n");
             String resultLine = null;
             for (String r: results) {
-                if (r.matches(".*eno1.*")) {
+                if (r.matches(".*"+ifaceName+".*")) {
                     resultLine = r;
                     break;
                 }
@@ -212,14 +216,11 @@ public class DockerMonitor {
 
             if (resultLine != null) {
                 resultLine = resultLine.trim();
-                System.out.print("result line: " + resultLine + "\n");
                 String receiveStr = resultLine.split("\\s+")[1];
-                System.out.print("rec: " + receiveStr + "\n");
                 previousNetReceiveByte = totalNetReceiveBytes;
                 totalNetReceiveBytes = Long.parseLong(receiveStr);
 
                 String transmitStr = resultLine.split("\\s+")[9];
-                System.out.print("trans: " + transmitStr + "\n");
                 previousNetTransmitBytes = totalNetTransmitBytes;
                 totalNetTransmitBytes = Long.parseLong(transmitStr);
             }
