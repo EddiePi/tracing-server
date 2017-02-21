@@ -15,16 +15,16 @@ public class TracingServiceImpl implements TracingService.Iface{
 
     @Override
     public void updateTaskInfo(TaskInfo task) throws TException {
-        System.out.print("taskId: " + task.taskId +
-                " containerId: " + task.containerId +
-                " stageId: " + task.stageId +
-                " jobId: " + task.jobId +
-                " appId: " + task.appId +
-                " cpu usage: " + task.cpuUsage +
-                " execution memory: " + task.execMemory +
-                " storage memory: " + task.storeMemory +
-                " start time: " + task.startTime +
-                " end time: " + task.finishTime + "\n");
+//        System.out.print("taskId: " + task.taskId +
+//                " containerId: " + task.containerId +
+//                " stageId: " + task.stageId +
+//                " jobId: " + task.jobId +
+//                " appId: " + task.appId +
+//                " cpu usage: " + task.cpuUsage +
+//                " execution memory: " + task.execMemory +
+//                " storage memory: " + task.storeMemory +
+//                " start time: " + task.startTime +
+//                " end time: " + task.finishTime + "\n");
     }
 
     @Override

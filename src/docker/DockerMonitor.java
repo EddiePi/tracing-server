@@ -70,7 +70,7 @@ public class DockerMonitor {
         if (name != null) {
             this.ifaceName = name;
         } else {
-            this.ifaceName = "eth0";
+            this.ifaceName = "eno1";
         }
     }
 
@@ -201,14 +201,25 @@ public class DockerMonitor {
             if (!isRunning) {
                 return;
             }
-            String result = runShellCommand("cat " + netFilePath + " | grep " + ifaceName);
-            System.out.println(result);
-            if (result != null) {
-                String receiveStr = result.split("\t")[1];
+            String[] results = runShellCommand("cat " + netFilePath).split("\n");
+            String resultLine = null;
+            for (String r: results) {
+                if (r.matches(".*eno1.*")) {
+                    resultLine = r;
+                    break;
+                }
+            }
+
+            if (resultLine != null) {
+                resultLine = resultLine.trim();
+                System.out.print("result line: " + resultLine + "\n");
+                String receiveStr = resultLine.split("\\s+")[1];
+                System.out.print("rec: " + receiveStr + "\n");
                 previousNetReceiveByte = totalNetReceiveBytes;
                 totalNetReceiveBytes = Long.parseLong(receiveStr);
 
-                String transmitStr = result.split("\t")[9];
+                String transmitStr = resultLine.split("\\s+")[9];
+                System.out.print("trans: " + transmitStr + "\n");
                 previousNetTransmitBytes = totalNetTransmitBytes;
                 totalNetReceiveBytes = Long.parseLong(transmitStr);
             }
