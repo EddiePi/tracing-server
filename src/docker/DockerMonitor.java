@@ -221,7 +221,7 @@ public class DockerMonitor {
                 String transmitStr = resultLine.split("\\s+")[9];
                 System.out.print("trans: " + transmitStr + "\n");
                 previousNetTransmitBytes = totalNetTransmitBytes;
-                totalNetReceiveBytes = Long.parseLong(transmitStr);
+                totalNetTransmitBytes = Long.parseLong(transmitStr);
             }
         }
 
