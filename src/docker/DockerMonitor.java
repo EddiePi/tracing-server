@@ -128,7 +128,7 @@ public class DockerMonitor {
             while (isRunning) {
                 // monitor the docker info
                 updateCgroupValues();
-                printStatus();
+                // printStatus();
                 //if we come here it means we need to sleep for 2s
                 try {
                     Thread.sleep(2000);
