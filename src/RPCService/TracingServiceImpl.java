@@ -71,7 +71,6 @@ public class TracingServiceImpl implements TracingService.Iface{
     @Override
     public void notifyTaskEndEvent(TaskEndEvent event) throws TException {
         App app = tracer.applications.get(event.appId);
-        app.removeRunningTask(event.taskId);
         //System.out.print("TaskEndEvent received. taskId: " + event.taskId +
         //" status: " + event.reason + "\n");
     }

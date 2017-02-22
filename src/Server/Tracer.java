@@ -124,7 +124,7 @@ public class Tracer {
                 cpuUsage += task.metrics.cpuUsage;
             }
             app.tasks.clear();
-            System.out.print("app: " + app.appId + " has" + app.runningTasks.size() + "tasks. " +
+            System.out.print("app: " + app.appId + " has" + app.tasks.size() + "tasks. " +
                     "cpu usage: " + cpuUsage + "\n");
         }
     }
