@@ -18,6 +18,23 @@ public class Tracer {
     public SparkMonitor sm;
     public ConcurrentMap<String, DockerMonitor> containerIdToDM = new ConcurrentHashMap<>();
 
+    private class TestTracingRunnable implements Runnable {
+        @Override
+        public void run() {
+            while (true) {
+                printTaskInfo();
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    TestTracingRunnable runnable = new TestTracingRunnable();
+
+    Thread tThread = new Thread(runnable);
+
     public Metrics getTaskMetric(Task t) {
         return t.metrics;
     }
@@ -34,6 +51,7 @@ public class Tracer {
     public void init() {
         sm = new SparkMonitor();
         sm.startServer();
+        tThread.start();
     }
 
     public synchronized void updateTask(Task task) {
