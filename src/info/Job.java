@@ -9,8 +9,8 @@ import java.util.Map;
  * Created by Eddie on 2017/1/23.
  */
 public class Job {
-    Integer jobId;
-    String appId;
+    public Integer jobId;
+    public String appId;
     Map<Integer, Stage> stageIdToStage;
 
     TimeStamps jobStamps;

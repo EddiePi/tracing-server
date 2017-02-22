@@ -9,8 +9,9 @@ import java.util.Map;
  * Created by Eddie on 2017/1/25.
  */
 public class App {
-    String appId;
-    Map<Integer, Job> jobIdToJob;
+    public String appId;
+    public Map<Integer, Job> jobIdToJob;
+    public Map<Long, Task> tasks;
 
     TimeStamps appStamps;
 
@@ -18,7 +19,16 @@ public class App {
         this.appId = appId;
 
         jobIdToJob = new HashMap<>();
+        tasks = new HashMap<>();
         appStamps = new TimeStamps();
+    }
+
+    public void addOrUpdateTask(Task task) {
+            tasks.put(task.taskId, task);
+    }
+
+    public Task getTaskbyId(Long taskId) {
+        return tasks.get(taskId);
     }
 
     public boolean addJob(Job jobInfo) {

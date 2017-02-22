@@ -26,6 +26,10 @@ public class Stage {
         this.stageStamps = new TimeStamps();
     }
 
+    public Stage(int stageId, Integer jobId, String appId) {
+        this(stageId, "not-assigned", jobId, appId);
+    }
+
     public boolean addTask (Task taskInfo) {
         if (!taskIdToTask.containsKey(taskInfo.taskId)) {
             taskIdToTask.put(taskInfo.taskId, taskInfo);
@@ -39,7 +43,7 @@ public class Stage {
     }
 
     // get a task by its taskId. return null if the task is not in the stage.
-    public Task getTaskById (Integer taskId) {
+    public Task getTaskById (Long taskId) {
         Task task = taskIdToTask.get(taskId);
         return task;
     }

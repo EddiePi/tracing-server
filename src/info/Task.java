@@ -30,24 +30,24 @@ public class Task {
         this.metrics.status = "RUNNING";
     }
 
-    // update the task  metrics
-    public void updateTask (long finishTime, double cpuUsage, int peakMemoryUsage, String status) {
-        this.taskStamps.finishTimeMillis = finishTime;
-        this.metrics.cpuUsage = cpuUsage;
-        this.metrics.peakMemoryUsage = peakMemoryUsage;
-        updateTaskStatus(status);
-    }
-
-    // maybe we want to update the status alone
-    public void updateTaskStatus (String status) {
-        this.metrics.status = status;
-    }
-
-    public void updateCpuUsage (double cpuUsage) {
-        this.metrics.cpuUsage = cpuUsage;
-    }
-
-    public void updatePeakMemory (int peakMemoryUsage) {
-        this.metrics.peakMemoryUsage = peakMemoryUsage;
-    }
+//    // update the task  metrics
+//    public void updateTask (long finishTime, double cpuUsage, int peakMemoryUsage, String status) {
+//        this.taskStamps.finishTimeMillis = finishTime;
+//        this.metrics.cpuUsage = cpuUsage;
+//        this.metrics.peakMemoryUsage = peakMemoryUsage;
+//        updateTaskStatus(status);
+//    }
+//
+//    // maybe we want to update the status alone
+//    public void updateTaskStatus (String status) {
+//        this.metrics.status = status;
+//    }
+//
+//    public void updateCpuUsage (double cpuUsage) {
+//        this.metrics.cpuUsage = cpuUsage;
+//    }
+//
+//    public void updatePeakMemory (int peakMemoryUsage) {
+//        this.metrics.peakMemoryUsage = peakMemoryUsage;
+//    }
 }

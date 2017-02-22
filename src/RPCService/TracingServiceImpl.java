@@ -1,20 +1,39 @@
 package RPCService;
 
+import Server.Tracer;
 import docker.DockerMonitor;
+import info.Metrics;
+import info.Task;
 import org.apache.thrift.TException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by Eddie on 2017/1/23.
  */
 public class TracingServiceImpl implements TracingService.Iface{
 
-    private Map<String, DockerMonitor> dockerMonitorMap = new HashMap<>();
+    private Tracer tracer = Tracer.getInstance();
+
+    private ConcurrentMap<String, DockerMonitor> dockerMonitorMap = tracer.containerIdToDM;
 
     @Override
     public void updateTaskInfo(TaskInfo task) throws TException {
+        Task t = tracer.getOrCreateTask(task.appId, task.jobId, task.stageId, task.stageAttemptId, task.taskId);
+        Metrics tMetrics = t.metrics;
+        // cpu
+        tMetrics.cpuUsage = Math.max(task.cpuUsage, 0.0);
+        // memory
+        tMetrics.execMemoryUsage = Math.max(task.execMemory, 0L);
+        tMetrics.storeMemoryUsage = Math.max(task.storeMemory, 0L);
+        tMetrics.startTimeStamp = Math.max(task.startTime, 0L);
+        tMetrics.finishTimeStamp = Math.max(task.finishTime, 0L);
+
+        tracer.updateTask(t);
+
+        // disk and
 //        System.out.print("taskId: " + task.taskId +
 //                " containerId: " + task.containerId +
 //                " stageId: " + task.stageId +
@@ -25,6 +44,7 @@ public class TracingServiceImpl implements TracingService.Iface{
 //                " storage memory: " + task.storeMemory +
 //                " start time: " + task.startTime +
 //                " end time: " + task.finishTime + "\n");
+
     }
 
     @Override
