@@ -37,6 +37,7 @@ public class SparkMonitor {
     MonitorRunnable runnable = new MonitorRunnable();
     Thread monitorThread = new Thread(runnable);
     public void startServer() {
+        System.out.print("starting spark monitor...");
         monitorThread.start();
     }
 }

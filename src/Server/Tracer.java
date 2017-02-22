@@ -17,12 +17,16 @@ public class Tracer {
 
     public SparkMonitor sm;
     public ConcurrentMap<String, DockerMonitor> containerIdToDM = new ConcurrentHashMap<>();
-
+    private int runningAppCount = 0;
     private class TestTracingRunnable implements Runnable {
         @Override
         public void run() {
             while (true) {
-                printTaskInfo();
+                updateRunningApp();
+                if (runningAppCount > 0) {
+                    // TODO update real metrics
+                    printTaskInfo();
+                }
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
@@ -116,7 +120,7 @@ public class Tracer {
     public void printTaskInfo() {
         for(App app: applications.values()) {
             Double cpuUsage = 0D;
-            for(Task task: app.tasks.values()) {
+            for(Task task: app.getAllTasks().values()) {
                 //task.printTaskMetrics();
                 if (task.metrics.cpuUsage < 0) {
                     continue;
@@ -127,5 +131,15 @@ public class Tracer {
             System.out.print("app: " + app.appId + " has" + app.tasks.size() + "tasks. " +
                     "cpu usage: " + cpuUsage + "\n");
         }
+    }
+
+    private void updateRunningApp() {
+        int runningCount = 0;
+        for (App app: applications.values()) {
+            if (app.hasRunningTask) {
+                runningCount++;
+            }
+        }
+        this.runningAppCount = runningCount;
     }
 }

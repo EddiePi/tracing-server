@@ -12,7 +12,7 @@ public class App {
     public String appId;
     public Map<Integer, Job> jobIdToJob;
     public Map<Long, Task> tasks;
-    public Map<Long, Task> runningTasks;
+    public boolean hasRunningTask = false;
 
     TimeStamps appStamps;
 
@@ -26,7 +26,17 @@ public class App {
 
     public void addOrUpdateTask(Task task) {
         tasks.put(task.taskId, task);
+        if (!hasRunningTask) {
+            hasRunningTask = true;
+        }
         //runningTasks.put(task.taskId, task);
+    }
+
+    public Map<Long, Task> getAllTasks() {
+        Map<Long, Task> taskClone = tasks;
+        tasks = new HashMap<>();
+        hasRunningTask = false;
+        return taskClone;
     }
 
 
