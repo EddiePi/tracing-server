@@ -94,4 +94,12 @@ public class Tracer {
         }
         return app;
     }
+
+    public void printTaskInfo() {
+        for(App app: applications.values()) {
+            for(Task task: app.tasks.values()) {
+                task.printTaskMetrics();
+            }
+        }
+    }
 }

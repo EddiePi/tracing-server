@@ -50,4 +50,16 @@ public class Task {
 //    public void updatePeakMemory (int peakMemoryUsage) {
 //        this.metrics.peakMemoryUsage = peakMemoryUsage;
 //    }
+
+    // TEST
+    public void printTaskMetrics() {
+        System.out.print(" start time" + metrics.startTimeStamp +
+        " cpu: " + metrics.cpuUsage +
+        " exec mem: " + metrics.execMemoryUsage +
+        " store mem: " + metrics.storeMemoryUsage +
+        " disk read: " + metrics.diskReadBytes +
+        " disk write: " + metrics.diskWriteBytes +
+        " net rec: " + metrics.netRecBytes +
+        " net trans: " + metrics.netTransBytes);
+    }
 }

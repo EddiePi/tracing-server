@@ -28,18 +28,18 @@ public class DockerMonitor {
     private Long previousProfileTime = System.currentTimeMillis() / 1000;
     // docker metrics
     // disk metrics
-    private Long totalDiskReadBytes = -1L;
+    private Long totalDiskReadBytes = 0L;
     private Long previousDiskReadBytes = -1L;
-    private Long totalDiskWriteBytes = -1L;
+    private Long totalDiskWriteBytes = 0L;
     private Long previousDiskWriteBytes = -1L;
     private Double currentDiskReadRate = 0.0;
     private Double currentDiskWriteRate = 0.0;
 
     // network metrics
     private String ifaceName;
-    private Long totalNetReceiveBytes = -1L;
+    private Long totalNetReceiveBytes = 0L;
     private Long previousNetReceiveByte = -1L;
-    private Long totalNetTransmitBytes = -1L;
+    private Long totalNetTransmitBytes = 0L;
     private Long previousNetTransmitBytes = -1L;
     private Double currentNetReceiveRate = 0.0;
     private Double currentNetTransmitRate = 0.0;
@@ -177,8 +177,9 @@ public class DockerMonitor {
             if(!isRunning) {
                 return false;
             }
+            boolean calRate = true;
             if (previousNetReceiveByte < 0 || previousNetTransmitBytes < 0) {
-                return false;
+                calRate = false;
             }
             String url = blkioPath + "blkio.throttle.io_service_bytes";
             List<String> readLines = readFileLines(url);
@@ -192,7 +193,7 @@ public class DockerMonitor {
                 previousDiskWriteBytes = totalDiskWriteBytes;
                 totalDiskWriteBytes = Long.parseLong(writeStr);
             }
-            return true;
+            return calRate;
         }
         // calculate the network I/O rate
         private void calculateCurrentNetRate() {
@@ -214,8 +215,9 @@ public class DockerMonitor {
             if (!isRunning) {
                 return false;
             }
+            boolean calRate = true;
             if (previousNetTransmitBytes < 0 || previousNetReceiveByte < 0) {
-                return false;
+                calRate = false;
             }
             String[] results = runShellCommand("cat " + netFilePath).split("\n");
             String resultLine = null;
@@ -236,7 +238,7 @@ public class DockerMonitor {
                 previousNetTransmitBytes = totalNetTransmitBytes;
                 totalNetTransmitBytes = Long.parseLong(transmitStr);
             }
-            return true;
+            return calRate;
         }
 
         private List<String> readFileLines(String path){
@@ -285,7 +287,7 @@ public class DockerMonitor {
         " total write: " + totalDiskWriteBytes +
         " read rate: " + currentDiskReadRate +
         " write rate: " + currentDiskWriteRate + "\n" +
-        " total receive: " + totalNetReceiveBytes +
+        "total receive: " + totalNetReceiveBytes +
         " total transmit: " + totalNetTransmitBytes +
         " receive rate: " + currentNetReceiveRate +
         " transmit rate: " + currentNetTransmitRate + "\n");
