@@ -12,6 +12,7 @@ public class App {
     public String appId;
     public Map<Integer, Job> jobIdToJob;
     public Map<Long, Task> tasks;
+    public Map<Long, Task> runningTasks;
 
     TimeStamps appStamps;
 
@@ -24,7 +25,12 @@ public class App {
     }
 
     public void addOrUpdateTask(Task task) {
-            tasks.put(task.taskId, task);
+        tasks.put(task.taskId, task);
+        runningTasks.put(task.taskId, task);
+    }
+
+    public void removeRunningTask(Long taskId) {
+        runningTasks.remove(taskId);
     }
 
     public Task getTaskbyId(Long taskId) {

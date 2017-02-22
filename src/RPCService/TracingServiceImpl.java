@@ -2,6 +2,7 @@ package RPCService;
 
 import Server.Tracer;
 import docker.DockerMonitor;
+import info.App;
 import info.Metrics;
 import info.Task;
 import org.apache.thrift.TException;
@@ -69,6 +70,8 @@ public class TracingServiceImpl implements TracingService.Iface{
 
     @Override
     public void notifyTaskEndEvent(TaskEndEvent event) throws TException {
+        App app = tracer.applications.get(event.appId);
+        app.removeRunningTask(event.taskId);
         //System.out.print("TaskEndEvent received. taskId: " + event.taskId +
         //" status: " + event.reason + "\n");
     }
