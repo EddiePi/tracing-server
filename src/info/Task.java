@@ -53,13 +53,13 @@ public class Task {
 
     // TEST
     public void printTaskMetrics() {
-        System.out.print(" start time" + metrics.startTimeStamp +
+        System.out.print("task: " + taskId + "start time: " + metrics.startTimeStamp +
         " cpu: " + metrics.cpuUsage +
         " exec mem: " + metrics.execMemoryUsage +
-        " store mem: " + metrics.storeMemoryUsage +
+        " store mem: " + metrics.storeMemoryUsage + "\n" +
         " disk read: " + metrics.diskReadBytes +
         " disk write: " + metrics.diskWriteBytes +
         " net rec: " + metrics.netRecBytes +
-        " net trans: " + metrics.netTransBytes);
+        " net trans: " + metrics.netTransBytes + "\n\n");
     }
 }

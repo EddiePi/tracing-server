@@ -115,9 +115,15 @@ public class Tracer {
 
     public void printTaskInfo() {
         for(App app: applications.values()) {
+            Double cpuUsage = 0D;
             for(Task task: app.tasks.values()) {
-                task.printTaskMetrics();
+                //task.printTaskMetrics();
+                if (task.metrics.cpuUsage < 0) {
+                    continue;
+                }
+                cpuUsage += task.metrics.cpuUsage;
             }
+            System.out.print("app: " + app.appId + "cpu usage: " + cpuUsage + "\n");
         }
     }
 }
