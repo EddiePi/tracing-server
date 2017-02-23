@@ -134,6 +134,7 @@ public class DockerMonitor {
 
             // calculate the network rate
             calculateCurrentNetRate(m);
+            metrics.add(m);
             metricsCount++;
         }
 
