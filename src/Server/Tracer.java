@@ -130,7 +130,7 @@ public class Tracer {
                     cpuUsage += m.cpuUsage;
                 }
             }
-            System.out.print("app: " + app.appId + " has" + taskMap.size() + " tasks. " +
+            System.out.print("app: " + app.appId + " has " + taskMap.size() + " tasks. " +
                     "cpu usage: " + cpuUsage + "\n");
         }
     }

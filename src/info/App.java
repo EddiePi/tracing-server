@@ -55,6 +55,7 @@ public class App {
         synchronized (this) {
             Map<Long, Task> taskMapClone = new HashMap<>(tasksToReport);
             tasksToReport.clear();
+            hasReportingTask = false;
             return taskMapClone;
         }
     }
