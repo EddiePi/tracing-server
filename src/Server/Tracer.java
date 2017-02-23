@@ -27,7 +27,6 @@ public class Tracer {
                 if (runningAppCount > 0) {
                     // TODO update real metrics
                     printTaskInfo();
-                    printDockerInfo();
                 }
                 try {
                     Thread.sleep(5000);

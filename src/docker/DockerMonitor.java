@@ -136,6 +136,9 @@ public class DockerMonitor {
             calculateCurrentNetRate(m);
             metrics.add(m);
             metricsCount++;
+
+            // TEST
+            printStatus();
         }
 
 //        private void updatePreviousTime() {
