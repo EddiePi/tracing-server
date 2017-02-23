@@ -3,12 +3,10 @@ package RPCService;
 import Server.Tracer;
 import docker.DockerMonitor;
 import info.App;
-import info.Metrics;
+import info.TaskMetrics;
 import info.Task;
 import org.apache.thrift.TException;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
 /**
@@ -24,15 +22,15 @@ public class TracingServiceImpl implements TracingService.Iface{
     public void updateTaskInfo(TaskInfo task) throws TException {
         Task t = tracer.getOrCreateTask(task.appId, task.jobId,
                 task.stageId, task.stageAttemptId, task.taskId, task.containerId);
-        Metrics tMetrics = new Metrics();
+        TaskMetrics tTaskMetrics = new TaskMetrics();
         // cpu
-        tMetrics.cpuUsage = Math.max(task.cpuUsage, 0.0);
+        tTaskMetrics.cpuUsage = Math.max(task.cpuUsage, 0.0);
         // memory
-        tMetrics.execMemoryUsage = Math.max(task.execMemory, 0L);
-        tMetrics.storeMemoryUsage = Math.max(task.storeMemory, 0L);
-        tMetrics.startTimeStamp = Math.max(task.startTime, 0L);
-        tMetrics.finishTimeStamp = Math.max(task.finishTime, 0L);
-        t.appendMetrics(tMetrics);
+        tTaskMetrics.execMemoryUsage = Math.max(task.execMemory, 0L);
+        tTaskMetrics.storeMemoryUsage = Math.max(task.storeMemory, 0L);
+        tTaskMetrics.startTimeStamp = Math.max(task.startTime, 0L);
+        tTaskMetrics.finishTimeStamp = Math.max(task.finishTime, 0L);
+        t.appendMetrics(tTaskMetrics);
         tracer.updateTask(t);
 
         // disk and

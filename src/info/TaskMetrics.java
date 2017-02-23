@@ -3,9 +3,9 @@ package info;
 /**
  * Created by Eddie on 2017/1/25.
  */
-public class Metrics {
+public class TaskMetrics {
 
-    public Metrics() {
+    public TaskMetrics() {
         this.timestamp = System.currentTimeMillis();
     }
 

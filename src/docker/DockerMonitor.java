@@ -25,24 +25,10 @@ public class DockerMonitor {
     private String netFilePath;
     private MonitorThread monitorThread;
 
-    private Long previousProfileTime = System.currentTimeMillis() / 1000;
-    // docker metrics
-    // disk metrics
-    private Long totalDiskReadBytes = 0L;
-    private Long previousDiskReadBytes = -1L;
-    private Long totalDiskWriteBytes = 0L;
-    private Long previousDiskWriteBytes = -1L;
-    private Double currentDiskReadRate = 0.0;
-    private Double currentDiskWriteRate = 0.0;
-
-    // network metrics
     private String ifaceName;
-    private Long totalNetReceiveBytes = 0L;
-    private Long previousNetReceiveByte = -1L;
-    private Long totalNetTransmitBytes = 0L;
-    private Long previousNetTransmitBytes = -1L;
-    private Double currentNetReceiveRate = 0.0;
-    private Double currentNetTransmitRate = 0.0;
+    // docker metrics
+    private List<DockerMetrics> metrics;
+    int metricsCount = 0;
 
     public DockerMonitor(String containerId) {
         this.containerId = containerId;
@@ -52,6 +38,7 @@ public class DockerMonitor {
         this.blkioPath= "/sys/fs/cgroup/blkio/docker/" + dockerId + "/";
         this.netFilePath = "/proc/" + dockerPid + "/net/dev";
         setIfaceName(null);
+        metrics = new ArrayList<>();
 
         monitorThread = new MonitorThread();
     }
@@ -141,82 +128,81 @@ public class DockerMonitor {
 
 
         private void updateCgroupValues() {
+            DockerMetrics m = new DockerMetrics();
             // calculate the disk rate
-            calculateCurrentDiskRate();
+            calculateCurrentDiskRate(m);
 
             // calculate the network rate
-            calculateCurrentNetRate();
-
-            updatePreviousTime();
+            calculateCurrentNetRate(m);
+            metricsCount++;
         }
 
-        private void updatePreviousTime() {
-            previousProfileTime = System.currentTimeMillis() / 1000;
-        }
+//        private void updatePreviousTime() {
+//            previousProfileTime = System.currentTimeMillis() / 1000;
+//        }
 
         // calculate the disk I/O rate
-        private void calculateCurrentDiskRate() {
-            if (!getDiskServicedBytes()) {
+        private void calculateCurrentDiskRate(DockerMetrics m) {
+            if (!getDiskServicedBytes(m)) {
                 return;
             }
+            DockerMetrics previousMetrics = metrics.get(metricsCount - 1);
             // init timestamps
-            Long curTime = System.currentTimeMillis() / 1000;
-            Double deltaTime = (curTime - previousProfileTime) * 1.0;
+            Double deltaTime = (m.timeStamp - previousMetrics.timeStamp) * 1.0;
 
             // calculate rate
-            Long deltaRead = totalDiskReadBytes - previousDiskReadBytes;
-            currentDiskReadRate = deltaRead / deltaTime;
-            Long deltaWrite = totalDiskWriteBytes - previousDiskWriteBytes;
-            currentDiskWriteRate = deltaWrite / deltaTime;
+            Long deltaRead = m.diskReadBytes - previousMetrics.diskReadBytes;
+            m.diskReadRate = deltaRead / deltaTime;
+            Long deltaWrite = m.diskWriteBytes - previousMetrics.diskWriteBytes;
+            m.diskWriteRate = deltaWrite / deltaTime;
         }
 
         // read the disk usages from cgroup files
         // and update the metrics in the monitor.
         // if it is not running or first read, return false.
-        private boolean getDiskServicedBytes() {
+        private boolean getDiskServicedBytes(DockerMetrics m) {
             if(!isRunning) {
                 return false;
             }
             boolean calRate = true;
-            if (previousNetReceiveByte < 0 || previousNetTransmitBytes < 0) {
+            if (metricsCount == 0) {
                 calRate = false;
             }
+
             String url = blkioPath + "blkio.throttle.io_service_bytes";
             List<String> readLines = readFileLines(url);
             if (readLines != null) {
                 String readStr = readLines.get(0).split(" ")[2];
-                previousDiskReadBytes = totalDiskReadBytes;
-                totalDiskReadBytes = Long.parseLong(readStr);
+                m.diskReadBytes = Long.parseLong(readStr);
 
 
                 String writeStr = readLines.get(1).split(" ")[2];
-                previousDiskWriteBytes = totalDiskWriteBytes;
-                totalDiskWriteBytes = Long.parseLong(writeStr);
+                m.diskWriteBytes = Long.parseLong(writeStr);
             }
             return calRate;
         }
         // calculate the network I/O rate
-        private void calculateCurrentNetRate() {
-            if(!getNetServicedBytes()) {
+        private void calculateCurrentNetRate(DockerMetrics m) {
+            if(!getNetServicedBytes(m)) {
                 return;
             }
-            Long curTime = System.currentTimeMillis() / 1000;
-            Double deltaTime = (curTime - previousProfileTime) * 1.0;
+            DockerMetrics previousMetrics = metrics.get(metricsCount - 1);
+            Double deltaTime = (m.timeStamp - previousMetrics.timeStamp) * 1.0;
 
-            Long deltaReceive = totalNetReceiveBytes - previousNetReceiveByte;
-            currentNetReceiveRate = deltaReceive / deltaTime;
-            Long deltaTransmit = totalNetTransmitBytes - previousNetTransmitBytes;
-            currentNetTransmitRate = deltaTransmit / deltaTime;
+            Long deltaReceive = m.netReceiveBytes - m.netReceiveBytes;
+            m.netReceiveRate = deltaReceive / deltaTime;
+            Long deltaTransmit = m.netTransmitBytes - m.netTransmitBytes;
+            m.netTransmitRate = deltaTransmit / deltaTime;
         }
 
         // read the network usage from 'proc' files
         // and update the metrics in the monitor.
-        private boolean getNetServicedBytes() {
+        private boolean getNetServicedBytes(DockerMetrics m) {
             if (!isRunning) {
                 return false;
             }
             boolean calRate = true;
-            if (previousNetTransmitBytes < 0 || previousNetReceiveByte < 0) {
+            if (metricsCount == 0) {
                 calRate = false;
             }
             String[] results = runShellCommand("cat " + netFilePath).split("\n");
@@ -231,12 +217,10 @@ public class DockerMonitor {
             if (resultLine != null) {
                 resultLine = resultLine.trim();
                 String receiveStr = resultLine.split("\\s+")[1];
-                previousNetReceiveByte = totalNetReceiveBytes;
-                totalNetReceiveBytes = Long.parseLong(receiveStr);
+                m.netReceiveBytes = Long.parseLong(receiveStr);
 
                 String transmitStr = resultLine.split("\\s+")[9];
-                previousNetTransmitBytes = totalNetTransmitBytes;
-                totalNetTransmitBytes = Long.parseLong(transmitStr);
+                m.netTransmitBytes = Long.parseLong(transmitStr);
             }
             return calRate;
         }
@@ -283,14 +267,18 @@ public class DockerMonitor {
 
     // TEST
     public void printStatus() {
+        if (metricsCount == 0) {
+            return;
+        }
+        DockerMetrics last = metrics.get(metricsCount - 1);
         System.out.print("docker pid: " + dockerPid +
-        " total read: " + totalDiskReadBytes +
-        " total write: " + totalDiskWriteBytes +
-        " read rate: " + currentDiskReadRate +
-        " write rate: " + currentDiskWriteRate + "\n" +
-        "total receive: " + totalNetReceiveBytes +
-        " total transmit: " + totalNetTransmitBytes +
-        " receive rate: " + currentNetReceiveRate +
-        " transmit rate: " + currentNetTransmitRate + "\n");
+        " total read: " + last.diskReadBytes +
+        " total write: " + last.diskWriteBytes +
+        " read rate: " + last.diskReadRate +
+        " write rate: " + last.diskWriteRate + "\n" +
+        "total receive: " + last.netReceiveBytes +
+        " total transmit: " + last.netTransmitBytes +
+        " receive rate: " + last.netReceiveRate +
+        " transmit rate: " + last.netTransmitRate + "\n");
     }
 }

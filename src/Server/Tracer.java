@@ -41,7 +41,7 @@ public class Tracer {
 
     Thread tThread = new Thread(runnable);
 
-    public List<Metrics> getTaskMetrics(Task t) {
+    public List<TaskMetrics> getTaskMetrics(Task t) {
         return t.metrics;
     }
 
@@ -85,9 +85,9 @@ public class Tracer {
         Task task = s.getTaskById(taskId);
         if (task == null) {
             task = new Task(taskId, stageId, stageAttemptId, jobId, appId, containerId);
-            Metrics newMetrics = new Metrics();
-            newMetrics.status = "INIT";
-            task.metrics.add(newMetrics);
+            TaskMetrics newTaskMetrics = new TaskMetrics();
+            newTaskMetrics.status = "INIT";
+            task.metrics.add(newTaskMetrics);
             s.updateTask(task);
             a.addOrUpdateTask(task);
         }
@@ -132,7 +132,7 @@ public class Tracer {
             Long storeMem = 0L;
             Map<Long, Task> taskMap = app.getAndClearReportingTasks();
             for(Task task: taskMap.values()) {
-                for (Metrics m : task.metrics) {
+                for (TaskMetrics m : task.metrics) {
                     if (m.cpuUsage < 0) {
                         continue;
                     }

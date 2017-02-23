@@ -15,7 +15,7 @@ public class Task {
     public String appId; // required
     public String containerId;
 
-    public List<Metrics> metrics;
+    public List<TaskMetrics> metrics;
     public TimeStamps taskStamps;
 
     public Task (long taskId, int stageId, int stageAttemptId, int jobId, String appId, String containerId) {
@@ -32,21 +32,21 @@ public class Task {
 
     public void initTask (long startTime) {
         this.taskStamps.startTimeMillis = startTime;
-        Metrics initMetrics = new Metrics();
-        initMetrics.status = "RUNNING";
-        this.metrics.add(initMetrics);
+        TaskMetrics initTaskMetrics = new TaskMetrics();
+        initTaskMetrics.status = "RUNNING";
+        this.metrics.add(initTaskMetrics);
     }
 
     //
     public void appendMetrics(Double cpuUsage, Long execMemoryUsage, Long storeMemoryUsage) {
-        Metrics m = new Metrics();
+        TaskMetrics m = new TaskMetrics();
         m.cpuUsage = cpuUsage;
         m.execMemoryUsage = execMemoryUsage;
         m.storeMemoryUsage = execMemoryUsage;
         metrics.add(m);
     }
 
-    public void appendMetrics(Metrics m) {
+    public void appendMetrics(TaskMetrics m) {
         metrics.add(m);
     }
 
@@ -80,7 +80,7 @@ public class Task {
 
     // TEST
     public void printTaskMetrics() {
-        Metrics last;
+        TaskMetrics last;
         if (metrics.size() > 0) {
             last = metrics.get(metrics.size() - 1);
         } else {
