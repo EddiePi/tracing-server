@@ -159,7 +159,7 @@ public class DockerMonitor {
             m.diskReadRate = deltaRead / deltaTime;
             Long deltaWrite = m.diskWriteBytes - previousMetrics.diskWriteBytes;
             m.diskWriteRate = deltaWrite / deltaTime;
-            System.out.print("deltaTime: " + deltaTime + " deltaRead: " + deltaRead + " deltaWrite: " + deltaWrite + "\n");
+            //System.out.print("deltaTime: " + deltaTime + " deltaRead: " + deltaRead + " deltaWrite: " + deltaWrite + "\n");
         }
 
         // read the disk usages from cgroup files
@@ -183,7 +183,7 @@ public class DockerMonitor {
 
                 String writeStr = readLines.get(1).split(" ")[2];
                 m.diskWriteBytes = Long.parseLong(writeStr);
-                System.out.print("diskRead: " + m.diskReadBytes + " diskWrite: " + m.diskWriteBytes + "\n");
+                //System.out.print("diskRead: " + m.diskReadBytes + " diskWrite: " + m.diskWriteBytes + "\n");
             }
             return calRate;
         }
@@ -195,11 +195,11 @@ public class DockerMonitor {
             DockerMetrics previousMetrics = metrics.get(metricsCount - 1);
             Double deltaTime = (m.timeStamp - previousMetrics.timeStamp) * 1.0;
 
-            Long deltaReceive = m.netReceiveBytes - m.netReceiveBytes;
+            Long deltaReceive = m.netReceiveBytes - previousMetrics.netReceiveBytes;
             m.netReceiveRate = deltaReceive / deltaTime;
-            Long deltaTransmit = m.netTransmitBytes - m.netTransmitBytes;
+            Long deltaTransmit = m.netTransmitBytes - previousMetrics.netTransmitBytes;
             m.netTransmitRate = deltaTransmit / deltaTime;
-            System.out.print("deltaTime: " + deltaTime + " deltaRec: " + deltaReceive + " deltaTrans: " + deltaTransmit + "\n");
+            //System.out.print("deltaTime: " + deltaTime + " deltaRec: " + deltaReceive + " deltaTrans: " + deltaTransmit + "\n");
         }
 
         // read the network usage from 'proc' files
@@ -228,7 +228,7 @@ public class DockerMonitor {
 
                 String transmitStr = resultLine.split("\\s+")[9];
                 m.netTransmitBytes = Long.parseLong(transmitStr);
-                System.out.print("netRec: " + m.netReceiveBytes + " netTrans: " + m.netTransmitBytes + "\n");
+                //System.out.print("netRec: " + m.netReceiveBytes + " netTrans: " + m.netTransmitBytes + "\n");
             }
             return calRate;
         }
