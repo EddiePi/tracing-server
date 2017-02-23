@@ -3,9 +3,9 @@ package Server;
 import RPCService.SparkMonitor;
 import docker.DockerMonitor;
 import info.*;
-
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -117,19 +117,21 @@ public class Tracer {
         return app;
     }
 
+    // TEST
     public void printTaskInfo() {
         for(App app: applications.values()) {
             Double cpuUsage = 0D;
-            Collection<Task> tasks = app.getAllTasks().values();
-            for(Task task: tasks) {
-                Metrics last = task.metrics.get(task.metrics.size() - 1);
+            Map<Long, Task> taskMap = app.getReportingTasks();
+            for(Task task: taskMap.values()) {
+                Metrics last = task.metrics.get(task.metrics.size() - 1)
                 //task.printTaskMetrics();
                 if (last.cpuUsage < 0) {
                     continue;
                 }
                 cpuUsage +=last.cpuUsage;
             }
-            System.out.print("app: " + app.appId + " has " + tasks.size() + " tasks. " +
+
+            System.out.print("app: " + app.appId + " has" + taskMap.size() + " tasks. " +
                     "cpu usage: " + cpuUsage + "\n");
         }
     }

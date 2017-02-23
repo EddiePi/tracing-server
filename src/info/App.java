@@ -14,6 +14,7 @@ public class App {
     public String appId;
     public Map<Integer, Job> jobIdToJob;
     private ConcurrentMap<Long, Task> tasks;
+    private Map<Long, Task> tasksToReport;
     public boolean hasRunningTask = false;
 
     TimeStamps appStamps;
@@ -23,25 +24,41 @@ public class App {
 
         jobIdToJob = new HashMap<>();
         tasks = new ConcurrentHashMap<>();
+        tasksToReport = new HashMap<>();
         appStamps = new TimeStamps();
     }
 
     public synchronized void addOrUpdateTask(Task task) {
         tasks.put(task.taskId, task);
+        Task newReportingTask = tasksToReport.get(task.taskId);
+        if (newReportingTask == null) {
+            newReportingTask = task;
+            newReportingTask.metrics
+        }
+        tasksToReport.put(task.taskId, task);
         if (!hasRunningTask) {
             hasRunningTask = true;
         }
-        //runningTasks.put(task.taskId, task);
+        //tasksToReport.put(task.taskId, task);
     }
 
+    // we don't want other class to change tasks map. so clone it.
     public Map<Long, Task> getAllTasks() {
-        return tasks;
+        Map<Long, Task> taskClone = new HashMap<>(tasks);
+        return taskClone;
+    }
+
+    public Map<Long, Task> getReportingTasks() {
+        Map<Long, Task> taskClone = new HashMap<>(tasksToReport);
+        tasksToReport.clear();
+        return taskClone;
     }
 
     public Task getTaskbyId(Long taskId) {
         return tasks.get(taskId);
     }
 
+    // TODO all work related to the abstract phase (stage, job) will be refined later.
     public boolean addJob(Job jobInfo) {
         if (!jobIdToJob.containsKey(jobInfo.jobId)) {
             jobIdToJob.put(jobInfo.jobId, jobInfo);
