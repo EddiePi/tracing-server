@@ -48,6 +48,12 @@ public class Task {
         metrics.add(m);
     }
 
+    public Task clone() {
+        Task taskClone = new Task(this.taskId, this.stageId, this.stageAttemptId, this.jobId, this.appId);
+        taskClone.metrics.addAll(this.metrics);
+        taskClone.taskStamps = this.taskStamps.clone();
+        return taskClone;
+    }
 //    // update the task  metrics
 //    public void updateTask (long finishTime, double cpuUsage, int peakMemoryUsage, String status) {
 //        this.taskStamps.finishTimeMillis = finishTime;

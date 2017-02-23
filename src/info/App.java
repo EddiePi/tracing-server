@@ -14,8 +14,8 @@ public class App {
     public String appId;
     public Map<Integer, Job> jobIdToJob;
     private ConcurrentMap<Long, Task> tasks;
-    private Map<Long, Task> tasksToReport;
-    public boolean hasRunningTask = false;
+    private ConcurrentMap<Long, Task> tasksToReport;
+    public boolean hasReportingTask = false;
 
     TimeStamps appStamps;
 
@@ -24,20 +24,23 @@ public class App {
 
         jobIdToJob = new HashMap<>();
         tasks = new ConcurrentHashMap<>();
-        tasksToReport = new HashMap<>();
+        tasksToReport = new ConcurrentHashMap<>();
         appStamps = new TimeStamps();
     }
 
-    public synchronized void addOrUpdateTask(Task task) {
-        tasks.put(task.taskId, task);
-        Task newReportingTask = tasksToReport.get(task.taskId);
-        if (newReportingTask == null) {
-            newReportingTask = task;
-            newReportingTask.metrics
-        }
-        tasksToReport.put(task.taskId, task);
-        if (!hasRunningTask) {
-            hasRunningTask = true;
+    public void addOrUpdateTask(Task task) {
+        synchronized (this) {
+            tasks.put(task.taskId, task);
+            Task newReportingTask = tasksToReport.get(task.taskId);
+            if (newReportingTask == null) {
+                newReportingTask = task.clone();
+                newReportingTask.metrics.clear();
+                tasksToReport.put(newReportingTask.taskId, newReportingTask);
+            }
+            newReportingTask.metrics.add(task.metrics.get(task.metrics.size() - 1));
+            if (!hasReportingTask) {
+                hasReportingTask = true;
+            }
         }
         //tasksToReport.put(task.taskId, task);
     }
@@ -48,15 +51,21 @@ public class App {
         return taskClone;
     }
 
-    public Map<Long, Task> getReportingTasks() {
-        Map<Long, Task> taskClone = new HashMap<>(tasksToReport);
-        tasksToReport.clear();
-        return taskClone;
+    public Map<Long, Task> getAndClearReportingTasks() {
+        synchronized (this) {
+            Map<Long, Task> taskMapClone = new HashMap<>(tasksToReport);
+            tasksToReport.clear();
+            return taskMapClone;
+        }
     }
 
     public Task getTaskbyId(Long taskId) {
         return tasks.get(taskId);
     }
+
+
+
+
 
     // TODO all work related to the abstract phase (stage, job) will be refined later.
     public boolean addJob(Job jobInfo) {
