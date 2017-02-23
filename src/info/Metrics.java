@@ -11,11 +11,11 @@ public class Metrics {
 
     public Long timestamp;
     // cpu
-    public Double cpuUsage;
+    public Double cpuUsage = 0.0D;
 
     // memory
-    public Long execMemoryUsage;
-    public Long storeMemoryUsage;
+    public Long execMemoryUsage = 0L;
+    public Long storeMemoryUsage = 0L;
 
     // disk
     public Long diskWriteBytes;
@@ -33,5 +33,5 @@ public class Metrics {
     public Long startTimeStamp;
     public Long finishTimeStamp;
 
-    public String status;
+    public String status;   //INIT, RUNNING, SUCCESS, FAILED
 }

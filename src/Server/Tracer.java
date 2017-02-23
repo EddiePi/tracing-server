@@ -4,6 +4,7 @@ import RPCService.SparkMonitor;
 import docker.DockerMonitor;
 import info.*;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -69,7 +70,8 @@ public class Tracer {
         }
     }
 
-    public Task getOrCreateTask(String appId, int jobId, int stageId, int stageAttemptId, long taskId) {
+    public Task getOrCreateTask(String appId, int jobId, int stageId,
+                                int stageAttemptId, long taskId, String containerId) {
         // get task from map if it exist.
         // otherwise create the task.
         App a = getOrCreateApp(appId);
@@ -81,7 +83,10 @@ public class Tracer {
         Stage s = getOrCreateStage(j, stageId);
         Task task = s.getTaskById(taskId);
         if (task == null) {
-            task = new Task(taskId, stageId, stageAttemptId, jobId, appId);
+            task = new Task(taskId, stageId, stageAttemptId, jobId, appId, containerId);
+            Metrics newMetrics = new Metrics();
+            newMetrics.status = "INIT";
+            task.metrics.add(newMetrics);
             s.updateTask(task);
             a.addOrUpdateTask(task);
         }
@@ -119,8 +124,11 @@ public class Tracer {
 
     // TEST
     public void printTaskInfo() {
+        DecimalFormat df = new DecimalFormat("0.000");
         for(App app: applications.values()) {
             Double cpuUsage = 0D;
+            Long execMem = 0L;
+            Long storeMem = 0L;
             Map<Long, Task> taskMap = app.getAndClearReportingTasks();
             for(Task task: taskMap.values()) {
                 for (Metrics m : task.metrics) {
@@ -128,10 +136,13 @@ public class Tracer {
                         continue;
                     }
                     cpuUsage += m.cpuUsage;
+                    execMem += m.execMemoryUsage;
+                    storeMem += m.storeMemoryUsage;
                 }
             }
             System.out.print("app: " + app.appId + " has " + taskMap.size() + " tasks. " +
-                    "cpu usage: " + cpuUsage + "\n");
+                    "cpu usage: " + df.format(cpuUsage) + " exec mem: " + execMem +
+                    " store mem: " + + storeMem + "\n");
         }
     }
 

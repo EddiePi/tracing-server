@@ -38,9 +38,8 @@ public class App {
                 tasksToReport.put(newReportingTask.taskId, newReportingTask);
             }
             newReportingTask.metrics.add(task.metrics.get(task.metrics.size() - 1));
-            if (!hasReportingTask) {
-                hasReportingTask = true;
-            }
+            hasReportingTask = true;
+
         }
         //tasksToReport.put(task.taskId, task);
     }

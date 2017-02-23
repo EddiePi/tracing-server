@@ -13,16 +13,18 @@ public class Task {
     public Integer stageAttemptId; // required
     public Integer jobId; // required
     public String appId; // required
+    public String containerId;
 
     public List<Metrics> metrics;
     public TimeStamps taskStamps;
 
-    public Task (long taskId, int stageId, int stageAttemptId, int jobId, String appId) {
+    public Task (long taskId, int stageId, int stageAttemptId, int jobId, String appId, String containerId) {
         this.taskId = taskId;
         this.stageId = stageId;
         this.stageAttemptId = stageAttemptId;
         this.jobId = jobId;
         this.appId = appId;
+        this.containerId = containerId;
 
         this.metrics = new ArrayList<>();
         this.taskStamps = new TimeStamps();
@@ -49,7 +51,8 @@ public class Task {
     }
 
     public Task clone() {
-        Task taskClone = new Task(this.taskId, this.stageId, this.stageAttemptId, this.jobId, this.appId);
+        Task taskClone = new Task(this.taskId, this.stageId, this.stageAttemptId,
+                this.jobId, this.appId, this.containerId);
         taskClone.metrics.addAll(this.metrics);
         taskClone.taskStamps = this.taskStamps.clone();
         return taskClone;
