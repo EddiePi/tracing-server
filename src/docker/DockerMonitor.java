@@ -183,6 +183,7 @@ public class DockerMonitor {
 
                 String writeStr = readLines.get(1).split(" ")[2];
                 m.diskWriteBytes = Long.parseLong(writeStr);
+                System.out.print("diskRead: " + m.diskReadBytes + " diskWrite: " + m.diskWriteBytes + "\n");
             }
             return calRate;
         }
@@ -227,6 +228,7 @@ public class DockerMonitor {
 
                 String transmitStr = resultLine.split("\\s+")[9];
                 m.netTransmitBytes = Long.parseLong(transmitStr);
+                System.out.print("netRec: " + m.netReceiveBytes + " netTrans: " + m.netTransmitBytes + "\n");
             }
             return calRate;
         }
