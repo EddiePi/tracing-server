@@ -4,6 +4,12 @@ package info;
  * Created by Eddie on 2017/1/25.
  */
 public class Metrics {
+
+    public Metrics() {
+        this.timestamp = System.currentTimeMillis();
+    }
+
+    public Long timestamp;
     // cpu
     public Double cpuUsage;
 

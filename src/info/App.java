@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by Eddie on 2017/1/25.
@@ -11,7 +13,7 @@ import java.util.Map;
 public class App {
     public String appId;
     public Map<Integer, Job> jobIdToJob;
-    public Map<Long, Task> tasks;
+    private ConcurrentMap<Long, Task> tasks;
     public boolean hasRunningTask = false;
 
     TimeStamps appStamps;
@@ -20,11 +22,11 @@ public class App {
         this.appId = appId;
 
         jobIdToJob = new HashMap<>();
-        tasks = new HashMap<>();
+        tasks = new ConcurrentHashMap<>();
         appStamps = new TimeStamps();
     }
 
-    public void addOrUpdateTask(Task task) {
+    public synchronized void addOrUpdateTask(Task task) {
         tasks.put(task.taskId, task);
         if (!hasRunningTask) {
             hasRunningTask = true;
@@ -33,12 +35,8 @@ public class App {
     }
 
     public Map<Long, Task> getAllTasks() {
-        Map<Long, Task> taskClone = tasks;
-        tasks = new HashMap<>();
-        hasRunningTask = false;
-        return taskClone;
+        return tasks;
     }
-
 
     public Task getTaskbyId(Long taskId) {
         return tasks.get(taskId);

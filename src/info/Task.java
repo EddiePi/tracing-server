@@ -1,5 +1,8 @@
 package info;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Eddie on 2017/1/23.
  */
@@ -11,7 +14,7 @@ public class Task {
     public Integer jobId; // required
     public String appId; // required
 
-    public Metrics metrics;
+    public List<Metrics> metrics;
     public TimeStamps taskStamps;
 
     public Task (long taskId, int stageId, int stageAttemptId, int jobId, String appId) {
@@ -21,13 +24,28 @@ public class Task {
         this.jobId = jobId;
         this.appId = appId;
 
-        this.metrics = new Metrics();
+        this.metrics = new ArrayList<>();
         this.taskStamps = new TimeStamps();
     }
 
     public void initTask (long startTime) {
         this.taskStamps.startTimeMillis = startTime;
-        this.metrics.status = "RUNNING";
+        Metrics initMetrics = new Metrics();
+        initMetrics.status = "RUNNING";
+        this.metrics.add(initMetrics);
+    }
+
+    //
+    public void appendMetrics(Double cpuUsage, Long execMemoryUsage, Long storeMemoryUsage) {
+        Metrics m = new Metrics();
+        m.cpuUsage = cpuUsage;
+        m.execMemoryUsage = execMemoryUsage;
+        m.storeMemoryUsage = execMemoryUsage;
+        metrics.add(m);
+    }
+
+    public void appendMetrics(Metrics m) {
+        metrics.add(m);
     }
 
 //    // update the task  metrics
@@ -53,13 +71,19 @@ public class Task {
 
     // TEST
     public void printTaskMetrics() {
-        System.out.print("task: " + taskId + "start time: " + metrics.startTimeStamp +
-        " cpu: " + metrics.cpuUsage +
-        " exec mem: " + metrics.execMemoryUsage +
-        " store mem: " + metrics.storeMemoryUsage + "\n" +
-        " disk read: " + metrics.diskReadBytes +
-        " disk write: " + metrics.diskWriteBytes +
-        " net rec: " + metrics.netRecBytes +
-        " net trans: " + metrics.netTransBytes + "\n\n");
+        Metrics last;
+        if (metrics.size() > 0) {
+            last = metrics.get(metrics.size() - 1);
+        } else {
+            return;
+        }
+        System.out.print("task: " + taskId + "start time: " + last.startTimeStamp +
+        " cpu: " + last.cpuUsage +
+        " exec mem: " + last.execMemoryUsage +
+        " store mem: " + last.storeMemoryUsage + "\n" +
+        " disk read: " + last.diskReadBytes +
+        " disk write: " + last.diskWriteBytes +
+        " net rec: " + last.netRecBytes +
+        " net trans: " + last.netTransBytes + "\n\n");
     }
 }

@@ -23,7 +23,7 @@ public class TracingServiceImpl implements TracingService.Iface{
     @Override
     public void updateTaskInfo(TaskInfo task) throws TException {
         Task t = tracer.getOrCreateTask(task.appId, task.jobId, task.stageId, task.stageAttemptId, task.taskId);
-        Metrics tMetrics = t.metrics;
+        Metrics tMetrics = new Metrics();
         // cpu
         tMetrics.cpuUsage = Math.max(task.cpuUsage, 0.0);
         // memory
@@ -31,20 +31,20 @@ public class TracingServiceImpl implements TracingService.Iface{
         tMetrics.storeMemoryUsage = Math.max(task.storeMemory, 0L);
         tMetrics.startTimeStamp = Math.max(task.startTime, 0L);
         tMetrics.finishTimeStamp = Math.max(task.finishTime, 0L);
-
+        t.appendMetrics(tMetrics);
         tracer.updateTask(t);
 
         // disk and
-//        System.out.print("taskId: " + task.taskId +
-//                " containerId: " + task.containerId +
-//                " stageId: " + task.stageId +
-//                " jobId: " + task.jobId +
-//                " appId: " + task.appId +
-//                " cpu usage: " + task.cpuUsage +
-//                " execution memory: " + task.execMemory +
-//                " storage memory: " + task.storeMemory +
-//                " start time: " + task.startTime +
-//                " end time: " + task.finishTime + "\n");
+        System.out.print("taskId: " + task.taskId +
+                " containerId: " + task.containerId +
+                " stageId: " + task.stageId +
+                " jobId: " + task.jobId +
+                " appId: " + task.appId +
+                " cpu usage: " + task.cpuUsage +
+                " execution memory: " + task.execMemory +
+                " storage memory: " + task.storeMemory +
+                " start time: " + task.startTime +
+                " end time: " + task.finishTime + "\n");
 
     }
 

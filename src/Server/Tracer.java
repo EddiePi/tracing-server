@@ -4,8 +4,8 @@ import RPCService.SparkMonitor;
 import docker.DockerMonitor;
 import info.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -28,7 +28,7 @@ public class Tracer {
                     printTaskInfo();
                 }
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -39,7 +39,7 @@ public class Tracer {
 
     Thread tThread = new Thread(runnable);
 
-    public Metrics getTaskMetric(Task t) {
+    public List<Metrics> getTaskMetrics(Task t) {
         return t.metrics;
     }
 
@@ -74,8 +74,8 @@ public class Tracer {
         // otherwise create the task.
         App a = getOrCreateApp(appId);
         // quick return if the task exists.
-        if (a.tasks.containsKey(taskId)) {
-            return a.tasks.get(taskId);
+        if (a.getAllTasks().containsKey(taskId)) {
+            return a.getAllTasks().get(taskId);
         }
         Job j = getOrCreateJob(a, jobId);
         Stage s = getOrCreateStage(j, stageId);
@@ -120,15 +120,16 @@ public class Tracer {
     public void printTaskInfo() {
         for(App app: applications.values()) {
             Double cpuUsage = 0D;
-            for(Task task: app.getAllTasks().values()) {
+            Collection<Task> tasks = app.getAllTasks().values();
+            for(Task task: tasks) {
+                Metrics last = task.metrics.get(task.metrics.size() - 1);
                 //task.printTaskMetrics();
-                if (task.metrics.cpuUsage < 0) {
+                if (last.cpuUsage < 0) {
                     continue;
                 }
-                cpuUsage += task.metrics.cpuUsage;
+                cpuUsage +=last.cpuUsage;
             }
-            app.tasks.clear();
-            System.out.print("app: " + app.appId + " has" + app.tasks.size() + "tasks. " +
+            System.out.print("app: " + app.appId + " has " + tasks.size() + " tasks. " +
                     "cpu usage: " + cpuUsage + "\n");
         }
     }

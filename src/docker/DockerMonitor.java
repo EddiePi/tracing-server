@@ -131,7 +131,7 @@ public class DockerMonitor {
                 // printStatus();
                 //if we come here it means we need to sleep for 2s
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     //do nothing
                 }
