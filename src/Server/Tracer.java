@@ -27,6 +27,7 @@ public class Tracer {
                 if (runningAppCount > 0) {
                     // TODO update real metrics
                     printTaskInfo();
+                    printDockerInfo();
                 }
                 try {
                     Thread.sleep(5000);
@@ -143,6 +144,13 @@ public class Tracer {
             System.out.print("app: " + app.appId + " has " + taskMap.size() + " tasks. " +
                     "cpu usage: " + df.format(cpuUsage) + " exec mem: " + execMem +
                     " store mem: " + + storeMem + "\n");
+        }
+    }
+
+    // TEST
+    public void printDockerInfo() {
+        for(DockerMonitor dm: containerIdToDM.values()) {
+            dm.printStatus();
         }
     }
 

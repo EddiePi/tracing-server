@@ -283,7 +283,8 @@ public class DockerMonitor {
 
     // TEST
     public void printStatus() {
-        System.out.print("total read: " + totalDiskReadBytes +
+        System.out.print("docker pid: " + dockerPid +
+        " total read: " + totalDiskReadBytes +
         " total write: " + totalDiskWriteBytes +
         " read rate: " + currentDiskReadRate +
         " write rate: " + currentDiskWriteRate + "\n" +
