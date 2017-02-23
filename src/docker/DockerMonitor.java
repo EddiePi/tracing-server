@@ -159,6 +159,7 @@ public class DockerMonitor {
             m.diskReadRate = deltaRead / deltaTime;
             Long deltaWrite = m.diskWriteBytes - previousMetrics.diskWriteBytes;
             m.diskWriteRate = deltaWrite / deltaTime;
+            System.out.print("deltaTime: " + deltaTime + " deltaRead: " + deltaRead + " deltaWrite: " + deltaWrite + "\n");
         }
 
         // read the disk usages from cgroup files
@@ -197,6 +198,7 @@ public class DockerMonitor {
             m.netReceiveRate = deltaReceive / deltaTime;
             Long deltaTransmit = m.netTransmitBytes - m.netTransmitBytes;
             m.netTransmitRate = deltaTransmit / deltaTime;
+            System.out.print("deltaTime: " + deltaTime + " deltaRec: " + deltaReceive + " deltaTrans: " + deltaTransmit + "\n");
         }
 
         // read the network usage from 'proc' files
