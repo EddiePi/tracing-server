@@ -25,8 +25,8 @@ public class Tracer {
             while (true) {
                 updateRunningApp();
                 if (runningAppCount > 0) {
-                    // TODO update real metrics
                     printTaskInfo();
+                    sendTaskInfoToDatabase();
                 }
                 try {
                     Thread.sleep(5000);
@@ -45,6 +45,8 @@ public class Tracer {
     }
 
     private static final Tracer instance = new Tracer();
+
+    private MetricSender ms = new MetricSender();
 
     private Tracer(){}
 
@@ -123,6 +125,7 @@ public class Tracer {
     }
 
     // TEST
+    // TODO: change this to report to database
     public void printTaskInfo() {
         DecimalFormat df = new DecimalFormat("0.000");
         for(App app: applications.values()) {
@@ -143,6 +146,15 @@ public class Tracer {
             System.out.print("app: " + app.appId + " has " + taskMap.size() + " tasks. " +
                     "cpu usage: " + df.format(cpuUsage) + " exec mem: " + execMem +
                     " store mem: " + + storeMem + "\n");
+        }
+    }
+
+    public void sendTaskInfoToDatabase() {
+        for(App app: applications.values()) {
+            Map<Long, Task> taskMap = app.getAndClearReportingTasks();
+            for(Task task: taskMap.values()) {
+                ms.sendMetrics(task);
+            }
         }
     }
 
