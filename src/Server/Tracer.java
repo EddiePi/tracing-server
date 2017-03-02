@@ -4,6 +4,7 @@ import RPCService.SparkMonitor;
 import docker.DockerMonitor;
 import info.*;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +47,7 @@ public class Tracer {
 
     private static final Tracer instance = new Tracer();
 
-    private MetricSender ms = new MetricSender();
+    private MetricSender ms;
 
     private Tracer(){}
 
@@ -59,6 +60,11 @@ public class Tracer {
         sm = new SparkMonitor();
         sm.startServer();
         tThread.start();
+        try {
+            ms = new MetricSender();
+        } catch(IOException e) {
+            
+        }
     }
 
     public synchronized void updateTask(Task task) {
