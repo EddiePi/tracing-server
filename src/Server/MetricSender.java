@@ -18,29 +18,23 @@ import java.util.List;
 public class MetricSender {
 
     static String SPARK_PREFIX = "spark.";
+    Socket socket = new Socket("192.168.32.120", 2003);
+    Writer writer = new OutputStreamWriter(socket.getOutputStream());
+
+    public MetricSender() throws IOException {
+    }
 
     public void sendMetrics(Task task) {
-        try (
-                Socket socket = new Socket("192.168.32.120", 2003);
-                Writer writer = new OutputStreamWriter(socket.getOutputStream());
-        ) {
+        try {
             List<String> metrics = buildTaskMetric(task);
             for(String sentMessage: metrics) {
                 writer.write(sentMessage);
             }
             writer.flush();
             Thread.sleep(1000);
-        } catch (
-                IOException e
-                )
-
-        {
+        } catch (IOException e) {
             e.printStackTrace();
-        } catch (
-                InterruptedException e
-                )
-
-        {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -59,17 +53,17 @@ public class MetricSender {
 
         // cpu usage string
         pathSeg = taskPrefix + "CPU";
-        valueSeg = metricsToSend.cpuUsage.toString();
+        valueSeg = df.format(metricsToSend.cpuUsage);
         metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
 
         // execution mem string
         pathSeg = taskPrefix + "execution-memory";
-        valueSeg = df.format(metricsToSend.execMemoryUsage);
+        valueSeg = metricsToSend.execMemoryUsage.toString();
         metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
 
         // storage mem string
         pathSeg = taskPrefix + "storage-memory";
-        valueSeg = df.format(metricsToSend.storeMemoryUsage);
+        valueSeg = metricsToSend.storeMemoryUsage.toString();
         metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
 
         return metricsStr;

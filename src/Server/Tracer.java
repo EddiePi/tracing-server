@@ -25,7 +25,7 @@ public class Tracer {
             while (true) {
                 updateRunningApp();
                 if (runningAppCount > 0) {
-                    printTaskInfo();
+                    //printTaskInfo();
                     sendTaskInfoToDatabase();
                 }
                 try {
@@ -125,7 +125,6 @@ public class Tracer {
     }
 
     // TEST
-    // TODO: change this to report to database
     public void printTaskInfo() {
         DecimalFormat df = new DecimalFormat("0.000");
         for(App app: applications.values()) {
