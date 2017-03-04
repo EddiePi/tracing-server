@@ -103,7 +103,7 @@ public class MetricSender {
         pathSeg = stagePrefix + "storage-memory";
         valueSeg = metrics.storeMemoryUsage.toString();
         metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        return metricsStr;
     }
-
-
 }
