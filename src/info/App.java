@@ -62,6 +62,7 @@ public class App {
             List<StageMetrics> stageMetricsList;
             if (!stageMetricsToReport.containsKey(stageId)) {
                 stageMetricsList = new ArrayList<>();
+                stageMetricsToReport.put(stageId, stageMetricsList);
 
             } else {
                 stageMetricsList = stageMetricsToReport.get(stageId);
