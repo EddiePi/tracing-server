@@ -28,7 +28,7 @@ public class Tracer {
                 updateRunningApp();
                 if (runningAppCount > 0) {
                     if (isTest) {
-                        //printTaskInfo();
+                        printTaskInfo();
                         printStageInfo();
                     } else {
                         sendTaskInfoToDatabase();

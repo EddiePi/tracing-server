@@ -39,7 +39,7 @@ public class App {
                 newReportingTask.taskMetrics.clear();
                 tasksToReport.put(newReportingTask.taskId, newReportingTask);
             }
-            newReportingTask.taskMetrics.add(task.taskMetrics.get(task.taskMetrics.size() - 1));
+            newReportingTask.appendMetrics(task.taskMetrics.get(task.taskMetrics.size() - 1));
             hasReportingTask = true;
 
         }
@@ -53,6 +53,7 @@ public class App {
     }
 
     private void buildStageMetricsToReport(Map<Long, Task> tasksToReport) {
+        System.out.print("building stage metrics.\n");
         for(Task task: tasksToReport.values()) {
             // if this task has been reported we go to next task
             if (task.lastMetrics == null) {
