@@ -31,7 +31,7 @@ public class Tracer {
                         //printTaskInfo();
                         printStageInfo();
                     } else {
-                        sendTaskInfoToDatabase();
+                        sendInfoToDatabase();
                     }
                 }
                 try {
@@ -162,23 +162,26 @@ public class Tracer {
     public void printStageInfo() {
         DecimalFormat df = new DecimalFormat("0.000");
         for (App app: applications.values()) {
-            Map<Integer, List<StageMetrics>> stageMetricsMap = app.getAndClearReportingStageMetrics();
-            System.out.print("number of stage to report: " + stageMetricsMap.size() + "\n");
-            for (List<StageMetrics> metricsList: stageMetricsMap.values()) {
-                for (StageMetrics metrics: metricsList) {
-                    System.out.print("app: " + app.appId + " has " + stageMetricsMap.size() + " stages. " +
-                            "cpu usage: " + df.format(metrics.cpuUsage) + " exec mem: " + metrics.execMemoryUsage +
-                            " store mem: " + + metrics.storeMemoryUsage + "\n");
-                }
+            List<StageMetrics> stageMetricsList = app.getAndClearReportingStageMetrics();
+            System.out.print("number of stage to report: " + stageMetricsList.size() + "\n");
+            for (StageMetrics metrics: stageMetricsList) {
+                System.out.print("app: " + app.appId + " has " + stageMetricsList.size() + " stages. " +
+                        "cpu usage: " + df.format(metrics.cpuUsage) + " exec mem: " + metrics.execMemoryUsage +
+                        " store mem: " + +metrics.storeMemoryUsage + "\n");
+
             }
         }
     }
 
-    public void sendTaskInfoToDatabase() {
+    public void sendInfoToDatabase() {
         for(App app: applications.values()) {
             Map<Long, Task> taskMap = app.getAndClearReportingTasks();
             for(Task task: taskMap.values()) {
-                ms.sendMetrics(task);
+                ms.sendTaskMetrics(task);
+            }
+            List<StageMetrics> sml = app.getAndClearReportingStageMetrics();
+            for(StageMetrics sm: sml) {
+                ms.sendStageMetrics(sm);
             }
         }
     }

@@ -1,5 +1,6 @@
 package Server;
 
+import info.StageMetrics;
 import info.Task;
 import info.TaskMetrics;
 
@@ -23,17 +24,26 @@ public class MetricSender {
     public MetricSender() throws IOException {
     }
 
-    public void sendMetrics(Task task) {
+    public void sendTaskMetrics(Task task) {
         try {
             List<String> metrics = buildTaskMetric(task);
             for(String sentMessage: metrics) {
                 writer.write(sentMessage);
             }
             writer.flush();
-            Thread.sleep(1000);
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
+        }
+    }
+
+    public void sendStageMetrics(StageMetrics sm) {
+        try {
+            List<String> metrics = buildStageMetric(sm);
+            for(String sentMessage: metrics) {
+                writer.write(sentMessage);
+            }
+            writer.flush();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -68,8 +78,32 @@ public class MetricSender {
         return metricsStr;
     }
 
-//    private List<String> buildStageMetric(Task task) {
-//    }
+    private List<String> buildStageMetric(StageMetrics metrics) {
+        List<String> metricsStr = new ArrayList<>();
+        String stagePrefix;
+        String pathSeg;
+        String valueSeg;
+        String timeStampSeg;
+        DecimalFormat df = new DecimalFormat("0.000");
+        stagePrefix = SPARK_PREFIX + metrics.appId + "." + "job_" + metrics.jobId + "." +
+                "stage_" + metrics.stageId + ".";
+        timeStampSeg = metrics.timestamp.toString();
+
+        // cpu usage string
+        pathSeg = stagePrefix + "CPU";
+        valueSeg = df.format(metrics.cpuUsage);
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // execution mem string
+        pathSeg = stagePrefix + "execution-memory";
+        valueSeg = metrics.execMemoryUsage.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // storage mem string
+        pathSeg = stagePrefix + "storage-memory";
+        valueSeg = metrics.storeMemoryUsage.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+    }
 
 
 }

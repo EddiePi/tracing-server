@@ -75,11 +75,17 @@ public class App {
         }
     }
 
-    public Map<Integer, List<StageMetrics>> getAndClearReportingStageMetrics() {
+    public List<StageMetrics> getAndClearReportingStageMetrics() {
         synchronized (this) {
+            List<StageMetrics> stageMetricsList = new ArrayList<>();
             Map<Integer, List<StageMetrics>> stageMetricsClone = new HashMap<>(stageMetricsToReport);
             stageMetricsToReport.clear();
-            return stageMetricsClone;
+            for(List<StageMetrics> sml: stageMetricsClone.values()) {
+                for(StageMetrics sm: sml) {
+                    stageMetricsList.add(sm);
+                }
+            }
+            return stageMetricsList;
         }
     }
 
