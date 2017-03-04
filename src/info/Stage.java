@@ -1,9 +1,6 @@
 package info;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Eddie on 2017/1/23.
@@ -14,6 +11,8 @@ public class Stage {
     public Integer jobId; // required
     public String appId; // required
     public Map<Long, Task> taskIdToTask;
+    // this is aggregated from task metrics
+    // public List<StageMetrics> stageMetrics;
 
     public TimeStamps stageStamps;
 
@@ -22,6 +21,7 @@ public class Stage {
         this.type = type;
         this.jobId = jobId;
         this.appId = appId;
+        // stageMetrics = new LinkedList<>();
         this.taskIdToTask = new HashMap<>();
         this.stageStamps = new TimeStamps();
     }

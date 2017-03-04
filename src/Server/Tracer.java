@@ -20,14 +20,19 @@ public class Tracer {
     public SparkMonitor sm;
     public ConcurrentMap<String, DockerMonitor> containerIdToDM = new ConcurrentHashMap<>();
     private int runningAppCount = 0;
+    private boolean isTest = true;
     private class TestTracingRunnable implements Runnable {
         @Override
         public void run() {
             while (true) {
                 updateRunningApp();
                 if (runningAppCount > 0) {
-                    //printTaskInfo();
-                    sendTaskInfoToDatabase();
+                    if (isTest) {
+                        printTaskInfo();
+                        printStageInfo();
+                    } else {
+                        sendTaskInfoToDatabase();
+                    }
                 }
                 try {
                     Thread.sleep(5000);
@@ -42,7 +47,7 @@ public class Tracer {
     Thread tThread = new Thread(runnable);
 
     public List<TaskMetrics> getTaskMetrics(Task t) {
-        return t.metrics;
+        return t.taskMetrics;
     }
 
     private static final Tracer instance = new Tracer();
@@ -63,7 +68,7 @@ public class Tracer {
         try {
             ms = new MetricSender();
         } catch(IOException e) {
-            
+
         }
     }
 
@@ -94,7 +99,7 @@ public class Tracer {
             task = new Task(taskId, stageId, stageAttemptId, jobId, appId, containerId);
             TaskMetrics newTaskMetrics = new TaskMetrics();
             newTaskMetrics.status = "INIT";
-            task.metrics.add(newTaskMetrics);
+            task.taskMetrics.add(newTaskMetrics);
             s.updateTask(task);
             a.addOrUpdateTask(task);
         }
@@ -139,7 +144,7 @@ public class Tracer {
             Long storeMem = 0L;
             Map<Long, Task> taskMap = app.getAndClearReportingTasks();
             for(Task task: taskMap.values()) {
-                for (TaskMetrics m : task.metrics) {
+                for (TaskMetrics m : task.taskMetrics) {
                     if (m.cpuUsage < 0) {
                         continue;
                     }
@@ -151,6 +156,20 @@ public class Tracer {
             System.out.print("app: " + app.appId + " has " + taskMap.size() + " tasks. " +
                     "cpu usage: " + df.format(cpuUsage) + " exec mem: " + execMem +
                     " store mem: " + + storeMem + "\n");
+        }
+    }
+
+    public void printStageInfo() {
+        DecimalFormat df = new DecimalFormat("0.000");
+        for (App app: applications.values()) {
+            Map<Integer, List<StageMetrics>> stageMetricsMap = app.getAndClearReportingStageMetrics();
+            for (List<StageMetrics> metricsList: stageMetricsMap.values()) {
+                for (StageMetrics metrics: metricsList) {
+                    System.out.print("app: " + app.appId + " has " + stageMetricsMap.size() + " stages. " +
+                            "cpu usage: " + df.format(metrics.cpuUsage) + " exec mem: " + metrics.execMemoryUsage +
+                            " store mem: " + + metrics.storeMemoryUsage + "\n");
+                }
+            }
         }
     }
 

@@ -3,20 +3,11 @@ package info;
 /**
  * Created by Eddie on 2017/1/25.
  */
-public class TaskMetrics {
+public class TaskMetrics extends Metrics {
 
     public TaskMetrics() {
-        this.timestamp = System.currentTimeMillis();
+        super();
     }
-
-    public Long timestamp;
-    // cpu
-    public Double cpuUsage = 0.0D;
-
-    // memory
-    public Long execMemoryUsage = 0L;
-    public Long storeMemoryUsage = 0L;
-
     // disk
     public Long diskWriteBytes;
     public Long diskReadBytes;

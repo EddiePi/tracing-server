@@ -26,7 +26,7 @@ public class DockerMonitor {
     private MonitorThread monitorThread;
 
     private String ifaceName;
-    // docker metrics
+    // docker taskMetrics
     private List<DockerMetrics> metrics;
     int metricsCount = 0;
 
@@ -163,7 +163,7 @@ public class DockerMonitor {
         }
 
         // read the disk usages from cgroup files
-        // and update the metrics in the monitor.
+        // and update the taskMetrics in the monitor.
         // if it is not running or first read, return false.
         private boolean getDiskServicedBytes(DockerMetrics m) {
             if(!isRunning) {
@@ -203,7 +203,7 @@ public class DockerMonitor {
         }
 
         // read the network usage from 'proc' files
-        // and update the metrics in the monitor.
+        // and update the taskMetrics in the monitor.
         private boolean getNetServicedBytes(DockerMetrics m) {
             if (!isRunning) {
                 return false;

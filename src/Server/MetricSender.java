@@ -1,6 +1,5 @@
 package Server;
 
-import RPCService.SparkMonitor;
 import info.Task;
 import info.TaskMetrics;
 
@@ -46,7 +45,7 @@ public class MetricSender {
         String valueSeg;
         String timeStampSeg;
         DecimalFormat df = new DecimalFormat("0.000");
-        TaskMetrics metricsToSend = task.metrics.get(task.metrics.size() - 1);
+        TaskMetrics metricsToSend = task.taskMetrics.get(task.taskMetrics.size() - 1);
         taskPrefix = SPARK_PREFIX + task.appId + "." + "job_" + task.jobId + "." +
                 "stage_" + task.stageId + "." + "task_" + task.taskId + ".";
         timeStampSeg = metricsToSend.timestamp.toString();
@@ -68,4 +67,9 @@ public class MetricSender {
 
         return metricsStr;
     }
+
+    private List<String> buildStageMetric(Task task) {
+    }
+
+
 }

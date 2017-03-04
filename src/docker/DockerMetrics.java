@@ -4,16 +4,16 @@ package docker;
  * Created by Eddie on 2017/2/23.
  */
 public class DockerMetrics {
-    // docker metrics
+    // docker taskMetrics
     // unit: second
     public Long timeStamp;
-    // disk metrics
+    // disk taskMetrics
     public Long diskReadBytes = 0L;
     public Long diskWriteBytes = 0L;
     public Double diskReadRate = 0.0;
     public Double diskWriteRate = 0.0;
 
-    // network metrics
+    // network taskMetrics
     public Long netReceiveBytes = 0L;
     public Long netTransmitBytes = 0L;
     public Double netReceiveRate = 0.0;

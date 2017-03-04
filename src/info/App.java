@@ -15,6 +15,7 @@ public class App {
     public Map<Integer, Job> jobIdToJob;
     private ConcurrentMap<Long, Task> tasks;
     private ConcurrentMap<Long, Task> tasksToReport;
+    public ConcurrentMap<Integer, List<StageMetrics>> stageMetricsToReport;
     public boolean hasReportingTask = false;
 
     TimeStamps appStamps;
@@ -25,6 +26,7 @@ public class App {
         jobIdToJob = new HashMap<>();
         tasks = new ConcurrentHashMap<>();
         tasksToReport = new ConcurrentHashMap<>();
+        stageMetricsToReport = new ConcurrentHashMap<>();
         appStamps = new TimeStamps();
     }
 
@@ -34,10 +36,10 @@ public class App {
             Task newReportingTask = tasksToReport.get(task.taskId);
             if (newReportingTask == null) {
                 newReportingTask = task.clone();
-                newReportingTask.metrics.clear();
+                newReportingTask.taskMetrics.clear();
                 tasksToReport.put(newReportingTask.taskId, newReportingTask);
             }
-            newReportingTask.metrics.add(task.metrics.get(task.metrics.size() - 1));
+            newReportingTask.taskMetrics.add(task.taskMetrics.get(task.taskMetrics.size() - 1));
             hasReportingTask = true;
 
         }
@@ -50,9 +52,40 @@ public class App {
         return taskClone;
     }
 
+    private void buildStageMetricsToReport(Map<Long, Task> tasksToReport) {
+        for(Task task: tasksToReport.values()) {
+            // if this task has been reported we go to next task
+            if (task.lastMetrics == null) {
+                continue;
+            }
+            Integer stageId = task.stageId;
+            List<StageMetrics> stageMetricsList;
+            if (!stageMetricsToReport.containsKey(stageId)) {
+                stageMetricsList = new ArrayList<>();
+
+            } else {
+                stageMetricsList = stageMetricsToReport.get(stageId);
+            }
+            StageMetrics stageMetrics = new StageMetrics(task.appId, task.jobId, task.stageId);
+            stageMetrics.cpuUsage += task.lastMetrics.cpuUsage;
+            stageMetrics.execMemoryUsage += task.lastMetrics.execMemoryUsage;
+            stageMetrics.storeMemoryUsage += task.lastMetrics.storeMemoryUsage;
+            stageMetricsList.add(stageMetrics);
+        }
+    }
+
+    public Map<Integer, List<StageMetrics>> getAndClearReportingStageMetrics() {
+        synchronized (this) {
+            Map<Integer, List<StageMetrics>> stageMetricsClone = new HashMap<>(stageMetricsToReport);
+            stageMetricsToReport.clear();
+            return stageMetricsClone;
+        }
+    }
+
     public Map<Long, Task> getAndClearReportingTasks() {
         synchronized (this) {
             Map<Long, Task> taskMapClone = new HashMap<>(tasksToReport);
+            buildStageMetricsToReport(taskMapClone);
             tasksToReport.clear();
             hasReportingTask = false;
             return taskMapClone;

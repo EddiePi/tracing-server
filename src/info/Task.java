@@ -15,7 +15,8 @@ public class Task {
     public String appId; // required
     public String containerId;
 
-    public List<TaskMetrics> metrics;
+    public List<TaskMetrics> taskMetrics;
+    public Metrics lastMetrics = null;
     public TimeStamps taskStamps;
 
     public Task (long taskId, int stageId, int stageAttemptId, int jobId, String appId, String containerId) {
@@ -26,7 +27,7 @@ public class Task {
         this.appId = appId;
         this.containerId = containerId;
 
-        this.metrics = new ArrayList<>();
+        this.taskMetrics = new ArrayList<>();
         this.taskStamps = new TimeStamps();
     }
 
@@ -34,7 +35,7 @@ public class Task {
         this.taskStamps.startTimeMillis = startTime;
         TaskMetrics initTaskMetrics = new TaskMetrics();
         initTaskMetrics.status = "RUNNING";
-        this.metrics.add(initTaskMetrics);
+        this.taskMetrics.add(initTaskMetrics);
     }
 
     //
@@ -43,46 +44,47 @@ public class Task {
         m.cpuUsage = cpuUsage;
         m.execMemoryUsage = execMemoryUsage;
         m.storeMemoryUsage = execMemoryUsage;
-        metrics.add(m);
+        taskMetrics.add(m);
     }
 
     public void appendMetrics(TaskMetrics m) {
-        metrics.add(m);
+        taskMetrics.add(m);
+        lastMetrics = m;
     }
 
     public Task clone() {
         Task taskClone = new Task(this.taskId, this.stageId, this.stageAttemptId,
                 this.jobId, this.appId, this.containerId);
-        taskClone.metrics.addAll(this.metrics);
+        taskClone.taskMetrics.addAll(this.taskMetrics);
         taskClone.taskStamps = this.taskStamps.clone();
         return taskClone;
     }
-//    // update the task  metrics
+//    // update the task  taskMetrics
 //    public void updateTask (long finishTime, double cpuUsage, int peakMemoryUsage, String status) {
 //        this.taskStamps.finishTimeMillis = finishTime;
-//        this.metrics.cpuUsage = cpuUsage;
-//        this.metrics.peakMemoryUsage = peakMemoryUsage;
+//        this.taskMetrics.cpuUsage = cpuUsage;
+//        this.taskMetrics.peakMemoryUsage = peakMemoryUsage;
 //        updateTaskStatus(status);
 //    }
 //
 //    // maybe we want to update the status alone
 //    public void updateTaskStatus (String status) {
-//        this.metrics.status = status;
+//        this.taskMetrics.status = status;
 //    }
 //
 //    public void updateCpuUsage (double cpuUsage) {
-//        this.metrics.cpuUsage = cpuUsage;
+//        this.taskMetrics.cpuUsage = cpuUsage;
 //    }
 //
 //    public void updatePeakMemory (int peakMemoryUsage) {
-//        this.metrics.peakMemoryUsage = peakMemoryUsage;
+//        this.taskMetrics.peakMemoryUsage = peakMemoryUsage;
 //    }
 
     // TEST
     public void printTaskMetrics() {
         TaskMetrics last;
-        if (metrics.size() > 0) {
-            last = metrics.get(metrics.size() - 1);
+        if (taskMetrics.size() > 0) {
+            last = taskMetrics.get(taskMetrics.size() - 1);
         } else {
             return;
         }
