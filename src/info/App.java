@@ -1,9 +1,6 @@
 package info;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -54,25 +51,31 @@ public class App {
 
     private void buildStageMetricsToReport(Map<Long, Task> tasksToReport) {
         System.out.print("building stage metrics.\n");
+        Map<Integer, StageMetrics> currentStageMetricsMap = new HashMap<>();
+        StageMetrics stageMetrics;
         for(Task task: tasksToReport.values()) {
             // if this task has been reported we go to next task
             if (task.lastMetrics == null) {
                 continue;
             }
             Integer stageId = task.stageId;
-            List<StageMetrics> stageMetricsList;
-            if (!stageMetricsToReport.containsKey(stageId)) {
-                stageMetricsList = new ArrayList<>();
-                stageMetricsToReport.put(stageId, stageMetricsList);
-
-            } else {
-                stageMetricsList = stageMetricsToReport.get(stageId);
+            stageMetrics = currentStageMetricsMap.get(stageId);
+            if(stageMetrics == null) {
+                stageMetrics = new StageMetrics(task.appId, task.jobId, task.stageId);
             }
-            StageMetrics stageMetrics = new StageMetrics(task.appId, task.jobId, task.stageId);
             stageMetrics.cpuUsage += task.lastMetrics.cpuUsage;
             stageMetrics.execMemoryUsage += task.lastMetrics.execMemoryUsage;
             stageMetrics.storeMemoryUsage += task.lastMetrics.storeMemoryUsage;
-            stageMetricsList.add(stageMetrics);
+        }
+        for (Map.Entry<Integer, StageMetrics> smentry: currentStageMetricsMap.entrySet()) {
+            Integer key = smentry.getKey();
+            StageMetrics value = smentry.getValue();
+            List<StageMetrics> sml;
+            sml = stageMetricsToReport.get(key);
+            if (sml == null) {
+                sml = new ArrayList<>();
+            }
+            sml.add(value);
         }
     }
 
