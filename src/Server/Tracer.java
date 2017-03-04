@@ -28,7 +28,7 @@ public class Tracer {
                 updateRunningApp();
                 if (runningAppCount > 0) {
                     if (isTest) {
-                        printTaskInfo();
+                        //printTaskInfo();
                         printStageInfo();
                     } else {
                         sendTaskInfoToDatabase();
@@ -163,6 +163,7 @@ public class Tracer {
         DecimalFormat df = new DecimalFormat("0.000");
         for (App app: applications.values()) {
             Map<Integer, List<StageMetrics>> stageMetricsMap = app.getAndClearReportingStageMetrics();
+            System.out.print("number of stage to report: " + stageMetricsMap.size() + "\n");
             for (List<StageMetrics> metricsList: stageMetricsMap.values()) {
                 for (StageMetrics metrics: metricsList) {
                     System.out.print("app: " + app.appId + " has " + stageMetricsMap.size() + " stages. " +
