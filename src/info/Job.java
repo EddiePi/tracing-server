@@ -15,11 +15,15 @@ public class Job {
 
     TimeStamps jobStamps;
 
+    JobMetrics currentJobMetrics;
+    public boolean isReporting = false;
+
     public Job (Integer jobId, String appId) {
         this.jobId = jobId;
         this.appId = appId;
         this.stageIdToStage = new HashMap<>();
         this.jobStamps = new TimeStamps();
+        currentJobMetrics = new JobMetrics(appId, jobId);
     }
 
     public boolean addStage (Stage stageInfo) {
@@ -28,6 +32,13 @@ public class Job {
             return true;
         }
         return false;
+    }
+
+    public void resetCurrentJobMetrics() {
+        for(Stage s: stageIdToStage.values()) {
+            s.resetCurrentStageMetrics();
+        }
+        currentJobMetrics.reset();
     }
 
     public void updateStage (Stage stageInfo) {

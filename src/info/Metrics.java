@@ -14,4 +14,17 @@ public class Metrics {
     // memory
     public Long execMemoryUsage = 0L;
     public Long storeMemoryUsage = 0L;
+
+    public void reset() {
+        timestamp = System.currentTimeMillis() / 1000;
+        cpuUsage = 0.0D;
+        execMemoryUsage = 0L;
+        storeMemoryUsage = 0L;
+    }
+
+    public void add(Metrics otherMetrics) {
+        this.cpuUsage += otherMetrics.cpuUsage;
+        this.execMemoryUsage += otherMetrics.execMemoryUsage;
+        this.storeMemoryUsage += otherMetrics.storeMemoryUsage;
+    }
 }

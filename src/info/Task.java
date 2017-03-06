@@ -17,6 +17,7 @@ public class Task {
 
     public List<TaskMetrics> taskMetrics;
     public Metrics lastMetrics = null;
+    public TaskMetrics currentMetrics;
     public TimeStamps taskStamps;
 
     public Task (long taskId, int stageId, int stageAttemptId, int jobId, String appId, String containerId) {
@@ -29,6 +30,7 @@ public class Task {
 
         this.taskMetrics = new ArrayList<>();
         this.taskStamps = new TimeStamps();
+        currentMetrics = new TaskMetrics();
     }
 
     public void initTask (long startTime) {
@@ -50,6 +52,7 @@ public class Task {
     public void appendMetrics(TaskMetrics m) {
         taskMetrics.add(m);
         lastMetrics = m;
+        currentMetrics = m;
     }
 
     public Task clone() {
@@ -58,6 +61,10 @@ public class Task {
         taskClone.taskMetrics.addAll(this.taskMetrics);
         taskClone.taskStamps = this.taskStamps.clone();
         return taskClone;
+    }
+
+    public void resetCurrentTaskMetrics() {
+        this.currentMetrics.reset();
     }
 //    // update the task  taskMetrics
 //    public void updateTask (long finishTime, double cpuUsage, int peakMemoryUsage, String status) {

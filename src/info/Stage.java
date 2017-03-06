@@ -16,6 +16,9 @@ public class Stage {
 
     public TimeStamps stageStamps;
 
+    public StageMetrics currentStageMetrics;
+    public boolean isReporting = false;
+
     public Stage (int stageId, String type, Integer jobId, String appId) {
         this.stageId = stageId;
         this.type = type;
@@ -24,6 +27,7 @@ public class Stage {
         // stageMetrics = new LinkedList<>();
         this.taskIdToTask = new HashMap<>();
         this.stageStamps = new TimeStamps();
+        currentStageMetrics = new StageMetrics(appId, jobId, stageId);
     }
 
     public Stage(int stageId, Integer jobId, String appId) {
@@ -46,6 +50,13 @@ public class Stage {
     public Task getTaskById (Long taskId) {
         Task task = taskIdToTask.get(taskId);
         return task;
+    }
+
+    public void resetCurrentStageMetrics() {
+        for (Task t: taskIdToTask.values()) {
+            t.resetCurrentTaskMetrics();
+        }
+        currentStageMetrics.reset();
     }
 
     //get all tasks belong to this stage.

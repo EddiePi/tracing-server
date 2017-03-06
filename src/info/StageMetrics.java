@@ -7,6 +7,7 @@ public class StageMetrics extends Metrics {
     public String appId;
     public Integer jobId;
     public Integer stageId;
+
     public StageMetrics(String appId, Integer jobId, Integer stageId) {
         super();
         this.appId = appId;

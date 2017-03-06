@@ -72,6 +72,8 @@ public class Tracer {
         }
     }
 
+
+    // this method always called after the task is created
     public synchronized void updateTask(Task task) {
         for (App a: applications.values()) {
             if (!a.appId.equals(task.appId)) {
@@ -92,37 +94,34 @@ public class Tracer {
         if (a.getAllTasks().containsKey(taskId)) {
             return a.getAllTasks().get(taskId);
         }
-        Job j = getOrCreateJob(a, jobId);
-        Stage s = getOrCreateStage(j, stageId);
-        Task task = s.getTaskById(taskId);
+        Task task = a.getTaskById(jobId, stageId, taskId);
         if (task == null) {
             task = new Task(taskId, stageId, stageAttemptId, jobId, appId, containerId);
             TaskMetrics newTaskMetrics = new TaskMetrics();
             newTaskMetrics.status = "INIT";
             task.taskMetrics.add(newTaskMetrics);
-            s.updateTask(task);
             a.addOrUpdateTask(task);
         }
         return task;
     }
 
-    public Stage getOrCreateStage(Job job, int stageId) {
-        Stage stage = job.getStageById(stageId);
-        if (stage == null) {
-            stage = new Stage(stageId, job.jobId, job.appId);
-            job.updateStage(stage);
-        }
-        return stage;
-    }
-
-    public Job getOrCreateJob(App app, int jobId) {
-        Job job = app.getJobById(jobId);
-        if (job == null) {
-            job = new Job(jobId, app.appId);
-            app.updateJob(job);
-        }
-        return job;
-    }
+//    public Stage getOrCreateStage(Job job, int stageId) {
+//        Stage stage = job.getStageById(stageId);
+//        if (stage == null) {
+//            stage = new Stage(stageId, job.jobId, job.appId);
+//            job.updateStage(stage);
+//        }
+//        return stage;
+//    }
+//
+//    public Job getOrCreateJob(App app, int jobId) {
+//        Job job = app.getJobById(jobId);
+//        if (job == null) {
+//            job = new Job(jobId, app.appId);
+//            app.updateJob(job);
+//        }
+//        return job;
+//    }
 
     public App getOrCreateApp(String appId) {
         App app;
@@ -165,8 +164,16 @@ public class Tracer {
             List<StageMetrics> stageMetricsList = app.getAndClearReportingStageMetrics();
             System.out.print("number of stage to report: " + stageMetricsList.size() + "\n");
             for (StageMetrics metrics: stageMetricsList) {
-                System.out.print("app: " + app.appId + " has " + stageMetricsList.size() + " stages. " +
-                        "cpu usage: " + df.format(metrics.cpuUsage) + " exec mem: " + metrics.execMemoryUsage +
+                System.out.print("stages: " + metrics.stageId +
+                        " cpu usage: " + df.format(metrics.cpuUsage) + " exec mem: " + metrics.execMemoryUsage +
+                        " store mem: " + +metrics.storeMemoryUsage + "\n");
+
+            }
+            List<JobMetrics> jobMetricsList = app.getAndClearReportingJobMetrics();
+            System.out.print("number of job to report: " + jobMetricsList.size() + "\n");
+            for (JobMetrics metrics: jobMetricsList) {
+                System.out.print("job: " + metrics.jobId +
+                        " cpu usage: " + df.format(metrics.cpuUsage) + " exec mem: " + metrics.execMemoryUsage +
                         " store mem: " + +metrics.storeMemoryUsage + "\n");
 
             }

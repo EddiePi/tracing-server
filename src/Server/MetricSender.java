@@ -1,8 +1,6 @@
 package Server;
 
-import info.StageMetrics;
-import info.Task;
-import info.TaskMetrics;
+import info.*;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -106,4 +104,12 @@ public class MetricSender {
 
         return metricsStr;
     }
+
+//    private List<String> buildJobMetrics(JobMetrics metrics) {
+//
+//    }
+//
+//    private List<String> buildAppMetrics(AppMetrics metrics) {
+//
+//    }
 }
