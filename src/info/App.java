@@ -75,6 +75,7 @@ public class App {
             sml = stageMetricsToReport.get(key);
             if (sml == null) {
                 sml = new ArrayList<>();
+                stageMetricsToReport.put(key, sml);
             }
             sml.add(value);
             System.out.print("built stage metrics. stageId: " + key + "metrics number: " + stageMetricsToReport.get(key).size());
