@@ -81,6 +81,7 @@ public class App {
 
     public List<StageMetrics> getAndClearReportingStageMetrics() {
         synchronized (this) {
+            System.out.print("stage metrics to report: " + stageMetricsToReport.size() + "\n");
             List<StageMetrics> stageMetricsList = new ArrayList<>();
             Map<Integer, List<StageMetrics>> stageMetricsClone = new HashMap<>(stageMetricsToReport);
             stageMetricsToReport.clear();
@@ -89,6 +90,7 @@ public class App {
                     stageMetricsList.add(sm);
                 }
             }
+            System.out.print("stage metrics copied: " + stageMetricsList.size() + "\n");
             return stageMetricsList;
         }
     }

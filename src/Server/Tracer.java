@@ -20,7 +20,7 @@ public class Tracer {
     public SparkMonitor sm;
     public ConcurrentMap<String, DockerMonitor> containerIdToDM = new ConcurrentHashMap<>();
     private int runningAppCount = 0;
-    private boolean isTest = false;
+    private boolean isTest = true;
     private class TestTracingRunnable implements Runnable {
         @Override
         public void run() {
