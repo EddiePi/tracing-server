@@ -62,6 +62,7 @@ public class App {
             stageMetrics = currentStageMetricsMap.get(stageId);
             if(stageMetrics == null) {
                 stageMetrics = new StageMetrics(task.appId, task.jobId, task.stageId);
+                currentStageMetricsMap.put(stageId, stageMetrics);
             }
             stageMetrics.cpuUsage += task.lastMetrics.cpuUsage;
             stageMetrics.execMemoryUsage += task.lastMetrics.execMemoryUsage;
