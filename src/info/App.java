@@ -76,6 +76,7 @@ public class App {
                 sml = new ArrayList<>();
             }
             sml.add(value);
+            System.out.print("built stage metrics. stageId: " + key + "metrics number: " + stageMetricsToReport.get(key).size());
         }
     }
 
