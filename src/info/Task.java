@@ -59,13 +59,13 @@ public class Task {
                 this.jobId, this.appId, this.containerId);
         taskClone.taskMetrics = new ArrayList<>(this.taskMetrics);
         taskClone.taskStamps = this.taskStamps.clone();
-        taskClone.currentMetrics = (TaskMetrics)this.currentMetrics.clone();
-        taskClone.lastMetrics = (TaskMetrics)this.lastMetrics.clone();
+        taskClone.currentMetrics = this.currentMetrics;
+        taskClone.lastMetrics = this.lastMetrics;
         return taskClone;
     }
 
     public void resetCurrentTaskMetrics() {
-        this.currentMetrics.reset();
+        this.currentMetrics = new TaskMetrics();
     }
 //    // update the task  taskMetrics
 //    public void updateTask (long finishTime, double cpuUsage, int peakMemoryUsage, String status) {
