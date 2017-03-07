@@ -3,7 +3,7 @@ package info;
 /**
  * Created by Eddie on 2017/3/2.
  */
-public class Metrics {
+public abstract class Metrics {
     public Metrics() {
         timestamp = System.currentTimeMillis() / 1000;
     }
@@ -27,4 +27,6 @@ public class Metrics {
         this.execMemoryUsage += otherMetrics.execMemoryUsage;
         this.storeMemoryUsage += otherMetrics.storeMemoryUsage;
     }
+
+    public abstract Metrics clone();
 }

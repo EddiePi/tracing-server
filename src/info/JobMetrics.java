@@ -12,4 +12,14 @@ public class JobMetrics extends Metrics {
         this.appId = appId;
         this.jobId = jobId;
     }
+
+    @Override
+    public Metrics clone() {
+        JobMetrics jmclone = new JobMetrics(this.appId, this.jobId);
+        jmclone.timestamp = this.timestamp;
+        jmclone.cpuUsage = this.cpuUsage;
+        jmclone.execMemoryUsage = this.execMemoryUsage;
+        jmclone.storeMemoryUsage = this.storeMemoryUsage;
+        return jmclone;
+    }
 }

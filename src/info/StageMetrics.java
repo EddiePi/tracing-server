@@ -15,4 +15,13 @@ public class StageMetrics extends Metrics {
         this.stageId = stageId;
     }
 
+    @Override
+    public Metrics clone() {
+        StageMetrics smclone = new StageMetrics(this.appId, this.jobId, this.stageId);
+        smclone.timestamp = this.timestamp;
+        smclone.cpuUsage = this.cpuUsage;
+        smclone.execMemoryUsage = this.execMemoryUsage;
+        smclone.storeMemoryUsage = this.storeMemoryUsage;
+        return smclone;
+    }
 }

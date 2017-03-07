@@ -103,7 +103,9 @@ public class App {
                     stageMetricsToReport.put(s.stageId, sm);
                 }
                 sm.add(s.currentStageMetrics);
+                s.isReporting = false;
             }
+            j.isReporting = false;
         }
     }
 
