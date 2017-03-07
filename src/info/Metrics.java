@@ -28,5 +28,11 @@ public abstract class Metrics {
         this.storeMemoryUsage += otherMetrics.storeMemoryUsage;
     }
 
+    public void fraction(Double rate) {
+        this.cpuUsage *= rate;
+        this.execMemoryUsage = new Double(this.execMemoryUsage * rate).longValue();
+        this.storeMemoryUsage = new Double(this.storeMemoryUsage * rate).longValue();
+    }
+
     public abstract Metrics clone();
 }

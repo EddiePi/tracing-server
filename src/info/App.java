@@ -83,20 +83,24 @@ public class App {
             currentAppMetrics.plus(t.currentMetrics);
         }
         appMetricsToReport.add(currentAppMetrics);
+        int jobCount = 0;
         for(Job j: jobIdToJob.values()) {
             if (!j.isReporting) {
                 continue;
             }
+            jobCount++;
             List<JobMetrics> jm = jobMetricsToReport.get(j.jobId);
             if (jm == null) {
                 jm = new ArrayList<>();
                 jobMetricsToReport.put(j.jobId, jm);
             }
-            jm.add(j.currentJobMetrics);
+
+            int stageCount = 0;
             for (Stage s: j.stageIdToStage.values()) {
                 if (!s.isReporting) {
                     continue;
                 }
+                stageCount++;
                 List<StageMetrics> sm = stageMetricsToReport.get(s.stageId);
                 if (sm == null) {
                     sm = new ArrayList<>();
@@ -105,6 +109,9 @@ public class App {
                 sm.add(s.currentStageMetrics);
                 s.isReporting = false;
             }
+            j.currentJobMetrics.fraction(1D / stageCount);
+            currentAppMetrics.fraction(1D / jobCount);
+            jm.add(j.currentJobMetrics);
             j.isReporting = false;
         }
     }

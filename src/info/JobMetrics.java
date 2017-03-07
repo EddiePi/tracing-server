@@ -13,6 +13,8 @@ public class JobMetrics extends Metrics {
         this.jobId = jobId;
     }
 
+
+
     @Override
     public Metrics clone() {
         JobMetrics jmclone = new JobMetrics(this.appId, this.jobId);
