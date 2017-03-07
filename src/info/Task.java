@@ -16,8 +16,8 @@ public class Task {
     public String containerId;
 
     public List<TaskMetrics> taskMetrics;
-    public TaskMetrics lastMetrics = null;
-    public TaskMetrics currentMetrics = null;
+    public TaskMetrics lastMetrics;
+    public TaskMetrics currentMetrics;
     public TimeStamps taskStamps;
 
     public Task (long taskId, int stageId, int stageAttemptId, int jobId, String appId, String containerId) {
