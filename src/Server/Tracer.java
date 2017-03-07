@@ -177,6 +177,13 @@ public class Tracer {
                         " store mem: " + +metrics.storeMemoryUsage + "\n");
 
             }
+            List<AppMetrics> appMetricsList = app.getAndClearReportingAppMetrics();
+            System.out.print("number of app to report: " + appMetricsList.size() + "\n");
+            for (AppMetrics metrics: appMetricsList) {
+                System.out.print("job: " + metrics.appId +
+                        " cpu usage: " + df.format(metrics.cpuUsage) + " exec mem: " + metrics.execMemoryUsage +
+                        " store mem: " + +metrics.storeMemoryUsage + "\n");
+            }
         }
     }
 

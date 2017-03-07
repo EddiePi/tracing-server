@@ -14,7 +14,7 @@ public class App {
     private ConcurrentMap<Long, Task> tasksToReport;
     public ConcurrentMap<Integer, List<StageMetrics>> stageMetricsToReport;
     public ConcurrentMap<Integer, List<JobMetrics>> jobMetricsToReport;
-    public ConcurrentMap<Stage, List<AppMetrics>> appMetricsToReport;
+    public List<AppMetrics> appMetricsToReport;
     public boolean hasReportingTask = false;
 
     TimeStamps appStamps;
@@ -27,6 +27,8 @@ public class App {
         tasks = new ConcurrentHashMap<>();
         tasksToReport = new ConcurrentHashMap<>();
         stageMetricsToReport = new ConcurrentHashMap<>();
+        jobMetricsToReport = new ConcurrentHashMap<>();
+        appMetricsToReport = new ArrayList<>();
         appStamps = new TimeStamps();
         currentAppMetrics = new AppMetrics(appId);
     }
@@ -76,10 +78,11 @@ public class App {
             curJob.isReporting = true;
             curStage = curJob.getStageById(t.stageId);
             curStage.isReporting = true;
-            curJob.currentJobMetrics.add(t.currentMetrics);
-            curStage.currentStageMetrics.add(t.currentMetrics);
-            currentAppMetrics.add(t.currentMetrics);
+            curJob.currentJobMetrics.plus(t.currentMetrics);
+            curStage.currentStageMetrics.plus(t.currentMetrics);
+            currentAppMetrics.plus(t.currentMetrics);
         }
+        appMetricsToReport.add(currentAppMetrics);
         for(Job j: jobIdToJob.values()) {
             if (!j.isReporting) {
                 continue;
@@ -133,6 +136,12 @@ public class App {
             }
             sml.add(value);
         }
+    }
+
+    public List<AppMetrics> getAndClearReportingAppMetrics() {
+        List<AppMetrics> aml = new ArrayList<>(appMetricsToReport);
+        appMetricsToReport.clear();
+        return aml;
     }
 
     public List<StageMetrics> getAndClearReportingStageMetrics() {

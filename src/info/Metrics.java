@@ -22,7 +22,7 @@ public class Metrics {
         storeMemoryUsage = 0L;
     }
 
-    public void add(Metrics otherMetrics) {
+    public void plus(Metrics otherMetrics) {
         this.cpuUsage += otherMetrics.cpuUsage;
         this.execMemoryUsage += otherMetrics.execMemoryUsage;
         this.storeMemoryUsage += otherMetrics.storeMemoryUsage;
