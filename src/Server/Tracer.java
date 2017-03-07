@@ -29,7 +29,7 @@ public class Tracer {
                 if (runningAppCount > 0) {
                     if (isTest) {
                         printTaskInfo();
-                        printStageInfo();
+                        printHighLevelInfo();
                     } else {
                         sendInfoToDatabase();
                     }
@@ -158,7 +158,7 @@ public class Tracer {
         }
     }
 
-    public void printStageInfo() {
+    public void printHighLevelInfo() {
         DecimalFormat df = new DecimalFormat("0.000");
         for (App app: applications.values()) {
             List<StageMetrics> stageMetricsList = app.getAndClearReportingStageMetrics();
