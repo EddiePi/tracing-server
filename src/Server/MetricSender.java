@@ -46,6 +46,30 @@ public class MetricSender {
         }
     }
 
+    public void sendJobMetrics(JobMetrics jm) {
+        try {
+            List<String> metrics = buildJobMetrics(jm);
+            for(String sentMessage: metrics) {
+                writer.write(sentMessage);
+            }
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendAppMetrics(AppMetrics am) {
+        try {
+            List<String> metrics = buildAppMetrics(am);
+            for(String sentMessage: metrics) {
+                writer.write(sentMessage);
+            }
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private List<String> buildTaskMetric(Task task) {
         List<String> metricsStr = new ArrayList<>();
         String taskPrefix;
@@ -105,11 +129,59 @@ public class MetricSender {
         return metricsStr;
     }
 
-//    private List<String> buildJobMetrics(JobMetrics metrics) {
-//
-//    }
-//
-//    private List<String> buildAppMetrics(AppMetrics metrics) {
-//
-//    }
+    private List<String> buildJobMetrics(JobMetrics metrics) {
+        List<String> metricsStr = new ArrayList<>();
+        String stagePrefix;
+        String pathSeg;
+        String valueSeg;
+        String timeStampSeg;
+        DecimalFormat df = new DecimalFormat("0.000");
+        stagePrefix = SPARK_PREFIX + metrics.appId + "." + "job_" + metrics.jobId + ".";
+        timeStampSeg = metrics.timestamp.toString();
+
+        // cpu usage string
+        pathSeg = stagePrefix + "CPU";
+        valueSeg = df.format(metrics.cpuUsage);
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // execution mem string
+        pathSeg = stagePrefix + "execution-memory";
+        valueSeg = metrics.execMemoryUsage.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // storage mem string
+        pathSeg = stagePrefix + "storage-memory";
+        valueSeg = metrics.storeMemoryUsage.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        return metricsStr;
+    }
+
+    private List<String> buildAppMetrics(AppMetrics metrics) {
+        List<String> metricsStr = new ArrayList<>();
+        String stagePrefix;
+        String pathSeg;
+        String valueSeg;
+        String timeStampSeg;
+        DecimalFormat df = new DecimalFormat("0.000");
+        stagePrefix = SPARK_PREFIX + metrics.appId + ".";
+        timeStampSeg = metrics.timestamp.toString();
+
+        // cpu usage string
+        pathSeg = stagePrefix + "CPU";
+        valueSeg = df.format(metrics.cpuUsage);
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // execution mem string
+        pathSeg = stagePrefix + "execution-memory";
+        valueSeg = metrics.execMemoryUsage.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // storage mem string
+        pathSeg = stagePrefix + "storage-memory";
+        valueSeg = metrics.storeMemoryUsage.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        return metricsStr;
+    }
 }

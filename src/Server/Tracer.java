@@ -20,7 +20,7 @@ public class Tracer {
     public SparkMonitor sm;
     public ConcurrentMap<String, DockerMonitor> containerIdToDM = new ConcurrentHashMap<>();
     private int runningAppCount = 0;
-    private boolean isTest = true;
+    private boolean isTest = false;
     private class TestTracingRunnable implements Runnable {
         @Override
         public void run() {
@@ -197,6 +197,14 @@ public class Tracer {
             List<StageMetrics> sml = app.getAndClearReportingStageMetrics();
             for(StageMetrics sm: sml) {
                 ms.sendStageMetrics(sm);
+            }
+            List<JobMetrics> jml = app.getAndClearReportingJobMetrics();
+            for(JobMetrics jm: jml) {
+                ms.sendJobMetrics(jm);
+            }
+            List<AppMetrics> aml = app.getAndClearReportingAppMetrics();
+            for(AppMetrics am: aml) {
+                ms.sendAppMetrics(am);
             }
         }
     }
