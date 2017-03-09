@@ -42,7 +42,7 @@ public class TaskEndEvent implements org.apache.thrift.TBase<TaskEndEvent, TaskE
   private static final org.apache.thrift.protocol.TField STAGE_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("stageId", org.apache.thrift.protocol.TType.I32, (short)2);
   private static final org.apache.thrift.protocol.TField JOB_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("jobId", org.apache.thrift.protocol.TType.I32, (short)3);
   private static final org.apache.thrift.protocol.TField APP_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("appId", org.apache.thrift.protocol.TType.STRING, (short)4);
-  private static final org.apache.thrift.protocol.TField TIME_STAMP_FIELD_DESC = new org.apache.thrift.protocol.TField("timeStamp", org.apache.thrift.protocol.TType.I64, (short)5);
+  private static final org.apache.thrift.protocol.TField TIME_STAMP_FIELD_DESC = new org.apache.thrift.protocol.TField("timestamp", org.apache.thrift.protocol.TType.I64, (short)5);
   private static final org.apache.thrift.protocol.TField REASON_FIELD_DESC = new org.apache.thrift.protocol.TField("reason", org.apache.thrift.protocol.TType.STRING, (short)6);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
@@ -64,7 +64,7 @@ public class TaskEndEvent implements org.apache.thrift.TBase<TaskEndEvent, TaskE
     STAGE_ID((short)2, "stageId"),
     JOB_ID((short)3, "jobId"),
     APP_ID((short)4, "appId"),
-    TIME_STAMP((short)5, "timeStamp"),
+    TIME_STAMP((short)5, "timestamp"),
     REASON((short)6, "reason");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
@@ -148,7 +148,7 @@ public class TaskEndEvent implements org.apache.thrift.TBase<TaskEndEvent, TaskE
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.APP_ID, new org.apache.thrift.meta_data.FieldMetaData("appId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.TIME_STAMP, new org.apache.thrift.meta_data.FieldMetaData("timeStamp", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.TIME_STAMP, new org.apache.thrift.meta_data.FieldMetaData("timestamp", org.apache.thrift.TFieldRequirementType.DEFAULT,
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64)));
     tmpMap.put(_Fields.REASON, new org.apache.thrift.meta_data.FieldMetaData("reason", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
@@ -322,7 +322,7 @@ public class TaskEndEvent implements org.apache.thrift.TBase<TaskEndEvent, TaskE
     __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __TIMESTAMP_ISSET_ID);
   }
 
-  /** Returns true if field timeStamp is set (has been assigned a value) and false otherwise */
+  /** Returns true if field timestamp is set (has been assigned a value) and false otherwise */
   public boolean isSetTimeStamp() {
     return EncodingUtils.testBit(__isset_bitfield, __TIMESTAMP_ISSET_ID);
   }
@@ -670,7 +670,7 @@ public class TaskEndEvent implements org.apache.thrift.TBase<TaskEndEvent, TaskE
     }
     first = false;
     if (!first) sb.append(", ");
-    sb.append("timeStamp:");
+    sb.append("timestamp:");
     sb.append(this.timeStamp);
     first = false;
     if (!first) sb.append(", ");

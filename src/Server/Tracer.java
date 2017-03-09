@@ -15,12 +15,14 @@ import java.util.concurrent.ConcurrentMap;
  * Created by Eddie on 2017/2/21.
  */
 public class Tracer {
+    private TracerConf conf = TracerConf.getInstance();
     public ConcurrentMap<String, App> applications = new ConcurrentHashMap<>();
 
     public SparkMonitor sm;
     public ConcurrentMap<String, DockerMonitor> containerIdToDM = new ConcurrentHashMap<>();
     private int runningAppCount = 0;
     private boolean isTest = false;
+    Integer reportInterval = conf.getIntegerOrDefault("tracer.report-interval", 1000);
     private class TestTracingRunnable implements Runnable {
         @Override
         public void run() {
@@ -35,7 +37,7 @@ public class Tracer {
                     }
                 }
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(reportInterval);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

@@ -1,5 +1,7 @@
 package docker;
 
+import Server.MetricSender;
+import Server.TracerConf;
 import Utils.ShellCommandExecutor;
 
 import java.io.BufferedReader;
@@ -14,7 +16,8 @@ import java.util.List;
  * Created by Eddie on 2017/2/15.
  */
 public class DockerMonitor {
-
+    MetricSender ms;
+    TracerConf conf = TracerConf.getInstance();
     private String dockerId;
     String containerId;
     List<Integer> taksInContainer = new LinkedList<>();
@@ -25,7 +28,7 @@ public class DockerMonitor {
     private String netFilePath;
     private MonitorThread monitorThread;
 
-    private String ifaceName;
+    private String ifaceName = conf.getStringOrDefault("tracer.docker.iface-name", "eth0");
     // docker taskMetrics
     private List<DockerMetrics> metrics;
     int metricsCount = 0;
@@ -36,10 +39,12 @@ public class DockerMonitor {
         this.dockerPid = runShellCommand("docker inspect --format={{.State.Pid}} " + containerId).trim();
         this.blkioPath= "/sys/fs/cgroup/blkio/docker/" + dockerId + "/";
         this.netFilePath = "/proc/" + dockerPid + "/net/dev";
-        setIfaceName(null);
         metrics = new ArrayList<>();
 
         monitorThread = new MonitorThread();
+        try {
+            ms = new MetricSender();
+        } catch (IOException e) {}
     }
 
     public void start() {
@@ -52,14 +57,6 @@ public class DockerMonitor {
             monitorThread.interrupt();
         }
         catch (Exception e) {
-        }
-    }
-
-    public void setIfaceName (String name) {
-        if (name != null) {
-            this.ifaceName = name;
-        } else {
-            this.ifaceName = "eno1";
         }
     }
 
@@ -115,9 +112,9 @@ public class DockerMonitor {
                 // monitor the docker info
                 updateCgroupValues();
                 // printStatus();
-                //if we come here it means we need to sleep for 2s
+                //if we come here it means we need to sleep for 1s
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     //do nothing
                 }
@@ -127,7 +124,7 @@ public class DockerMonitor {
 
 
         private void updateCgroupValues() {
-            DockerMetrics m = new DockerMetrics();
+            DockerMetrics m = new DockerMetrics(dockerId, containerId);
             // calculate the disk rate
             calculateCurrentDiskRate(m);
 
@@ -151,7 +148,7 @@ public class DockerMonitor {
             }
             DockerMetrics previousMetrics = metrics.get(metricsCount - 1);
             // init timestamps
-            Double deltaTime = (m.timeStamp - previousMetrics.timeStamp) * 1.0;
+            Double deltaTime = (m.timestamp - previousMetrics.timestamp) * 1.0;
 
             // calculate rate
             Long deltaRead = m.diskReadBytes - previousMetrics.diskReadBytes;
@@ -192,7 +189,7 @@ public class DockerMonitor {
                 return;
             }
             DockerMetrics previousMetrics = metrics.get(metricsCount - 1);
-            Double deltaTime = (m.timeStamp - previousMetrics.timeStamp) * 1.0;
+            Double deltaTime = (m.timestamp - previousMetrics.timestamp) * 1.0;
 
             Long deltaReceive = m.netReceiveBytes - previousMetrics.netReceiveBytes;
             m.netReceiveRate = deltaReceive / deltaTime;
@@ -270,6 +267,14 @@ public class DockerMonitor {
                 return null;
             }
         }
+    }
+
+    private void sendInfoToDatabase() {
+        if (metricsCount == 0) {
+            return;
+        }
+        DockerMetrics last = metrics.get(metricsCount - 1);
+
     }
 
     // TEST

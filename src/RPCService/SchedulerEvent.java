@@ -39,7 +39,7 @@ public class SchedulerEvent implements org.apache.thrift.TBase<SchedulerEvent, S
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("SchedulerEvent");
 
   private static final org.apache.thrift.protocol.TField EVENT_FIELD_DESC = new org.apache.thrift.protocol.TField("event", org.apache.thrift.protocol.TType.STRING, (short)1);
-  private static final org.apache.thrift.protocol.TField TIME_STAMP_FIELD_DESC = new org.apache.thrift.protocol.TField("timeStamp", org.apache.thrift.protocol.TType.I64, (short)2);
+  private static final org.apache.thrift.protocol.TField TIME_STAMP_FIELD_DESC = new org.apache.thrift.protocol.TField("timestamp", org.apache.thrift.protocol.TType.I64, (short)2);
   private static final org.apache.thrift.protocol.TField REASON_FIELD_DESC = new org.apache.thrift.protocol.TField("reason", org.apache.thrift.protocol.TType.STRING, (short)3);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
@@ -55,7 +55,7 @@ public class SchedulerEvent implements org.apache.thrift.TBase<SchedulerEvent, S
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
     EVENT((short)1, "event"),
-    TIME_STAMP((short)2, "timeStamp"),
+    TIME_STAMP((short)2, "timestamp"),
     REASON((short)3, "reason");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
@@ -124,7 +124,7 @@ public class SchedulerEvent implements org.apache.thrift.TBase<SchedulerEvent, S
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
     tmpMap.put(_Fields.EVENT, new org.apache.thrift.meta_data.FieldMetaData("event", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.TIME_STAMP, new org.apache.thrift.meta_data.FieldMetaData("timeStamp", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.TIME_STAMP, new org.apache.thrift.meta_data.FieldMetaData("timestamp", org.apache.thrift.TFieldRequirementType.DEFAULT,
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64)));
     tmpMap.put(_Fields.REASON, new org.apache.thrift.meta_data.FieldMetaData("reason", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
@@ -211,7 +211,7 @@ public class SchedulerEvent implements org.apache.thrift.TBase<SchedulerEvent, S
     __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __TIMESTAMP_ISSET_ID);
   }
 
-  /** Returns true if field timeStamp is set (has been assigned a value) and false otherwise */
+  /** Returns true if field timestamp is set (has been assigned a value) and false otherwise */
   public boolean isSetTimeStamp() {
     return EncodingUtils.testBit(__isset_bitfield, __TIMESTAMP_ISSET_ID);
   }
@@ -436,7 +436,7 @@ public class SchedulerEvent implements org.apache.thrift.TBase<SchedulerEvent, S
     }
     first = false;
     if (!first) sb.append(", ");
-    sb.append("timeStamp:");
+    sb.append("timestamp:");
     sb.append(this.timeStamp);
     first = false;
     if (!first) sb.append(", ");

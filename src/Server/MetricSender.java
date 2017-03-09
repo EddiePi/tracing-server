@@ -1,5 +1,6 @@
 package Server;
 
+import docker.DockerMetrics;
 import info.*;
 
 import java.io.IOException;
@@ -12,11 +13,14 @@ import java.util.List;
 
 /**
  * Created by Eddie on 2017/3/2.
+ * This class is used by 'Tracer' and 'DockerMonitor'.
  */
 public class MetricSender {
-
+    private TracerConf conf = TracerConf.getInstance();
     static String SPARK_PREFIX = "spark.";
-    Socket socket = new Socket("192.168.32.120", 2003);
+    String databaseHost = conf.getStringOrDefault("tracer.database.host", "192.168.32.120");
+    Integer databasePort = conf.getIntegerOrDefault("tracer.database.port", 2003);
+    Socket socket = new Socket(databaseHost, databasePort);
     Writer writer = new OutputStreamWriter(socket.getOutputStream());
 
     public MetricSender() throws IOException {
@@ -61,6 +65,18 @@ public class MetricSender {
     public void sendAppMetrics(AppMetrics am) {
         try {
             List<String> metrics = buildAppMetrics(am);
+            for(String sentMessage: metrics) {
+                writer.write(sentMessage);
+            }
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendDockerMetrics(DockerMetrics dm) {
+        try {
+            List<String> metrics = buildDockerMetrics(dm);
             for(String sentMessage: metrics) {
                 writer.write(sentMessage);
             }
@@ -131,26 +147,26 @@ public class MetricSender {
 
     private List<String> buildJobMetrics(JobMetrics metrics) {
         List<String> metricsStr = new ArrayList<>();
-        String stagePrefix;
+        String jobPrefix;
         String pathSeg;
         String valueSeg;
         String timeStampSeg;
         DecimalFormat df = new DecimalFormat("0.000");
-        stagePrefix = SPARK_PREFIX + metrics.appId + "." + "job_" + metrics.jobId + ".";
+        jobPrefix = SPARK_PREFIX + metrics.appId + "." + "job_" + metrics.jobId + ".";
         timeStampSeg = metrics.timestamp.toString();
 
         // cpu usage string
-        pathSeg = stagePrefix + "CPU";
+        pathSeg = jobPrefix + "CPU";
         valueSeg = df.format(metrics.cpuUsage);
         metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
 
         // execution mem string
-        pathSeg = stagePrefix + "execution-memory";
+        pathSeg = jobPrefix + "execution-memory";
         valueSeg = metrics.execMemoryUsage.toString();
         metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
 
         // storage mem string
-        pathSeg = stagePrefix + "storage-memory";
+        pathSeg = jobPrefix + "storage-memory";
         valueSeg = metrics.storeMemoryUsage.toString();
         metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
 
@@ -159,27 +175,60 @@ public class MetricSender {
 
     private List<String> buildAppMetrics(AppMetrics metrics) {
         List<String> metricsStr = new ArrayList<>();
-        String stagePrefix;
+        String appPrefix;
         String pathSeg;
         String valueSeg;
         String timeStampSeg;
         DecimalFormat df = new DecimalFormat("0.000");
-        stagePrefix = SPARK_PREFIX + metrics.appId + ".";
+        appPrefix = SPARK_PREFIX + metrics.appId + ".";
         timeStampSeg = metrics.timestamp.toString();
 
         // cpu usage string
-        pathSeg = stagePrefix + "CPU";
+        pathSeg = appPrefix + "CPU";
         valueSeg = df.format(metrics.cpuUsage);
         metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
 
         // execution mem string
-        pathSeg = stagePrefix + "execution-memory";
+        pathSeg = appPrefix + "execution-memory";
         valueSeg = metrics.execMemoryUsage.toString();
         metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
 
         // storage mem string
-        pathSeg = stagePrefix + "storage-memory";
+        pathSeg = appPrefix + "storage-memory";
         valueSeg = metrics.storeMemoryUsage.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        return metricsStr;
+    }
+
+    private List<String> buildDockerMetrics(DockerMetrics metrics) {
+        List<String> metricsStr = new ArrayList<>();
+        String dockerPrefix;
+        String pathSeg;
+        String valueSeg;
+        String timeStampSeg;
+        DecimalFormat df = new DecimalFormat("0.000");
+        dockerPrefix = SPARK_PREFIX + metrics.containerId + ".";
+        timeStampSeg = metrics.timestamp.toString();
+
+        // disk read rate
+        pathSeg = dockerPrefix + "disk-read-rate";
+        valueSeg = df.format(metrics.diskReadRate);
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // disk write rate
+        pathSeg = dockerPrefix + "disk-write-rate";
+        valueSeg = df.format(metrics.diskWriteRate);
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // net rec rate
+        pathSeg = dockerPrefix + "network-receive-rate";
+        valueSeg = df.format(metrics.netReceiveRate);
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // net trans rate
+        pathSeg = dockerPrefix + "network-transfer-rate";
+        valueSeg = df.format(metrics.netTransmitRate);
         metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
 
         return metricsStr;
