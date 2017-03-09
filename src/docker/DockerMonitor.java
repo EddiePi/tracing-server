@@ -28,7 +28,7 @@ public class DockerMonitor {
     private String netFilePath;
     private MonitorThread monitorThread;
 
-    private String ifaceName = conf.getStringOrDefault("tracer.docker.iface-name", "eth0");
+    private String ifaceName;
     // docker taskMetrics
     private List<DockerMetrics> metrics;
     int metricsCount = 0;
@@ -40,7 +40,7 @@ public class DockerMonitor {
         this.blkioPath= "/sys/fs/cgroup/blkio/docker/" + dockerId + "/";
         this.netFilePath = "/proc/" + dockerPid + "/net/dev";
         metrics = new ArrayList<>();
-
+        ifaceName  = conf.getStringOrDefault("tracer.docker.iface-name", "eth0");
         monitorThread = new MonitorThread();
         try {
             ms = new MetricSender();

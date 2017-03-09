@@ -26,7 +26,7 @@ public class TracerConf {
     }
 
     private void getConfFromFile() {
-        String path = "~/tracing-server/tracer.conf";
+        String path = "tracer.conf";
         File file = new File(path);
         BufferedReader reader = null;
         try {
