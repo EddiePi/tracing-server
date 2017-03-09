@@ -35,7 +35,7 @@ public class Tracer {
                     }
                 }
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -158,6 +158,7 @@ public class Tracer {
         }
     }
 
+    // TEST
     public void printHighLevelInfo() {
         DecimalFormat df = new DecimalFormat("0.000");
         for (App app: applications.values()) {
