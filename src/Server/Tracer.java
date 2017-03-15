@@ -125,11 +125,19 @@ public class Tracer {
         if (containerIdToTaskNumber.size() == 0) {
             return;
         }
+        System.out.print("going to update cgroup info \n");
         for(DockerMonitor dockerMonitor: containerIdToDM.values()) {
             dockerMonitor.updateCgroupValues();
         }
         for(Task task: taskMap.values()) {
-            task.setMetricsFromDocker(containerIdToDM.get(task.containerId).getLatestDockerMetrics(),
+            if (task.containerId == null) {
+                continue;
+            }
+            DockerMonitor dm = containerIdToDM.get(task.containerId);
+            if (dm == null) {
+                continue;
+            }
+            task.setMetricsFromDocker(dm.getLatestDockerMetrics(),
                     containerIdToTaskNumber.get(task.containerId));
         }
     }

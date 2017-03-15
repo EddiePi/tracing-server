@@ -22,6 +22,9 @@ public class TracingServiceImpl implements TracingService.Iface{
     public void updateTaskInfo(TaskInfo task) throws TException {
         Task t = tracer.getOrCreateTask(task.appId, task.jobId,
                 task.stageId, task.stageAttemptId, task.taskId, task.containerId);
+        if (t.containerId == null && task.containerId != null) {
+            t.containerId = task.containerId;
+        }
         TaskMetrics tTaskMetrics = new TaskMetrics();
         // cpu
         tTaskMetrics.cpuUsage = Math.max(task.cpuUsage, 0.0);
