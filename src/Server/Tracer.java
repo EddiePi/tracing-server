@@ -112,12 +112,18 @@ public class Tracer {
     private void updateTaskDockerInfo(Map<Long, Task> taskMap) {
         Map<String, Integer> containerIdToTaskNumber = new HashMap<>();
         for(Task task: taskMap.values()) {
+            if (task.containerId == null) {
+                continue;
+            }
             Integer taskNum = containerIdToTaskNumber.get(task.containerId);
             if (taskNum == null) {
                 containerIdToTaskNumber.put(task.containerId, 1);
             } else {
                 containerIdToTaskNumber.put(task.containerId, taskNum + 1);
             }
+        }
+        if (containerIdToTaskNumber.size() == 0) {
+            return;
         }
         for(DockerMonitor dockerMonitor: containerIdToDM.values()) {
             dockerMonitor.updateCgroupValues();
