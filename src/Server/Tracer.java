@@ -169,6 +169,7 @@ public class Tracer {
             Double netRecRate = 0D;
             Double netTransRate = 0D;
             Map<Long, Task> taskMap = app.getAndClearReportingTasks();
+            updateTaskDockerInfo(taskMap);
             for(Task task: taskMap.values()) {
                 for (TaskMetrics m : task.taskMetrics) {
                     if (m.cpuUsage < 0) {
@@ -226,6 +227,7 @@ public class Tracer {
     public void sendInfoToDatabase() {
         for(App app: applications.values()) {
             Map<Long, Task> taskMap = app.getAndClearReportingTasks();
+            updateTaskDockerInfo(taskMap);
             for(Task task: taskMap.values()) {
                 ms.sendTaskMetrics(task);
             }
