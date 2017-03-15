@@ -134,7 +134,6 @@ public class DockerMonitor {
     }
 
     public void updateCgroupValues() {
-        System.out.print("updating docker info. Docker id: " + dockerId + "\n");
         DockerMetrics m = new DockerMetrics(dockerId, containerId);
         // calculate the disk rate
         calculateCurrentDiskRate(m);

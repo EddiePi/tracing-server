@@ -70,19 +70,7 @@ public abstract class Metrics {
         this.netTransRate = this.netTransBytes * rate;
     }
 
-    public void setInfoFromDockerMetrics(DockerMetrics dockerMetrics, Integer tasksInDocker) {
-        Double rate = 1D / tasksInDocker;
 
-        this.diskWriteBytes = new Double(dockerMetrics.diskWriteBytes * rate).longValue();
-        this.diskReadBytes = new Double(dockerMetrics.diskReadBytes * rate).longValue();
-        this.diskWriteRate = dockerMetrics.diskWriteRate * rate;
-        this.diskReadRate = dockerMetrics.diskReadRate * rate;
-
-        this.netRecBytes = new Double(dockerMetrics.netRecBytes * rate).longValue();
-        this.netTransBytes = new Double(dockerMetrics.netTransBytes * rate).longValue();
-        this.netRecRate = dockerMetrics.netRecRate * rate;
-        this.netTransRate = dockerMetrics.netTransBytes * rate;
-    }
 
 
     public abstract Metrics clone();

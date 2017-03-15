@@ -184,6 +184,7 @@ public class Tracer {
             updateTaskDockerInfo(app.getReporingTasks());
             Map<Long, Task> taskMap = app.getAndClearReportingTasks();
             for(Task task: taskMap.values()) {
+                System.out.print("task metrics size: " + task.taskMetrics.size());
                 for (TaskMetrics m : task.taskMetrics) {
                     if (m.cpuUsage < 0) {
                         continue;

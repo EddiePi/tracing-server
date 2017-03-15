@@ -1,5 +1,7 @@
 package info;
 
+import docker.DockerMetrics;
+
 /**
  * Created by Eddie on 2017/1/25.
  */
@@ -34,5 +36,18 @@ public class TaskMetrics extends Metrics {
         tmclone.finishTimeStamp = this.finishTimeStamp;
         tmclone.status = this.status;
         return tmclone;
+    }
+
+    public void setInfoFromDockerMetrics(DockerMetrics dockerMetrics, Integer tasksInDocker) {
+        Double rate = 1D / tasksInDocker;
+        this.diskWriteBytes = new Double(dockerMetrics.diskWriteBytes * rate).longValue();
+        this.diskReadBytes = new Double(dockerMetrics.diskReadBytes * rate).longValue();
+        this.diskWriteRate = dockerMetrics.diskWriteRate * rate;
+        this.diskReadRate = dockerMetrics.diskReadRate * rate;
+
+        this.netRecBytes = new Double(dockerMetrics.netRecBytes * rate).longValue();
+        this.netTransBytes = new Double(dockerMetrics.netTransBytes * rate).longValue();
+        this.netRecRate = dockerMetrics.netRecRate * rate;
+        this.netTransRate = dockerMetrics.netTransBytes * rate;
     }
 }
