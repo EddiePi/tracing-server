@@ -23,7 +23,7 @@ public class Tracer {
     public SparkMonitor sm;
     public ConcurrentMap<String, DockerMonitor> containerIdToDM = new ConcurrentHashMap<>();
     private int runningAppCount = 0;
-    private boolean isTest = false;
+    private boolean isTest = true;
     Integer reportInterval = conf.getIntegerOrDefault("tracer.report-interval", 1000);
     private class TestTracingRunnable implements Runnable {
         @Override
@@ -164,6 +164,10 @@ public class Tracer {
             Double cpuUsage = 0D;
             Long execMem = 0L;
             Long storeMem = 0L;
+            Double diskReadRate = 0D;
+            Double diskWriteRate = 0D;
+            Double netRecRate = 0D;
+            Double netTransRate = 0D;
             Map<Long, Task> taskMap = app.getAndClearReportingTasks();
             for(Task task: taskMap.values()) {
                 for (TaskMetrics m : task.taskMetrics) {
@@ -173,11 +177,19 @@ public class Tracer {
                     cpuUsage += m.cpuUsage;
                     execMem += m.execMemoryUsage;
                     storeMem += m.storeMemoryUsage;
+                    diskReadRate += m.diskReadRate;
+                    diskWriteRate += m.diskWriteRate;
+                    netRecRate += m.netRecRate;
+                    netTransRate += m.netTransRate;
+
                 }
             }
             System.out.print("app: " + app.appId + " has " + taskMap.size() + " tasks. " +
                     "cpu usage: " + df.format(cpuUsage) + " exec mem: " + execMem +
                     " store mem: " + + storeMem + "\n");
+            System.out.print("the following info is constructed from docker." +
+            " disk read rate: " + diskReadRate + " disk write rate: " + diskWriteRate +
+            " net rec rate: " + netRecRate + " net trans rate: " + netTransRate + "\n");
         }
     }
 
