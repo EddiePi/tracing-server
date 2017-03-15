@@ -183,6 +183,10 @@ public class App {
         }
     }
 
+    public Map<Long, Task> getReporingTasks() {
+        return tasksToReport;
+    }
+
     public Map<Long, Task> getAndClearReportingTasks() {
         synchronized (this) {
             Map<Long, Task> taskMapClone = new HashMap<>(tasksToReport);

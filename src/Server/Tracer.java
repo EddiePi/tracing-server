@@ -125,7 +125,6 @@ public class Tracer {
         if (containerIdToTaskNumber.size() == 0) {
             return;
         }
-        System.out.print("going to update cgroup info \n");
         for(DockerMonitor dockerMonitor: containerIdToDM.values()) {
             dockerMonitor.updateCgroupValues();
         }
@@ -182,8 +181,8 @@ public class Tracer {
             Double diskWriteRate = 0D;
             Double netRecRate = 0D;
             Double netTransRate = 0D;
+            updateTaskDockerInfo(app.getReporingTasks());
             Map<Long, Task> taskMap = app.getAndClearReportingTasks();
-            updateTaskDockerInfo(taskMap);
             for(Task task: taskMap.values()) {
                 for (TaskMetrics m : task.taskMetrics) {
                     if (m.cpuUsage < 0) {
