@@ -11,23 +11,23 @@ public abstract class Metrics {
     }
     public Long timestamp;
     // cpu
-    public Double cpuUsage = 0.0D;
+    public Double cpuUsage = 0.0;
 
     // memory
     public Long execMemoryUsage = 0L;
     public Long storeMemoryUsage = 0L;
 
     // disk
-    public Long diskWriteBytes;
-    public Long diskReadBytes;
-    public Double diskWriteRate;
-    public Double diskReadRate;
+    public Long diskWriteBytes = 0L;
+    public Long diskReadBytes = 0L;
+    public Double diskWriteRate = 0.0;
+    public Double diskReadRate = 0.0;
 
     // network
-    public Long netRecBytes;
-    public Long netTransBytes;
-    public Double netRecRate;
-    public Double netTransRate;
+    public Long netRecBytes = 0L;
+    public Long netTransBytes = 0L;
+    public Double netRecRate = 0.0;
+    public Double netTransRate = 0.0;
 
     public void reset() {
         timestamp = System.currentTimeMillis() / 1000;
