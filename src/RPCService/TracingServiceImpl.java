@@ -33,7 +33,6 @@ public class TracingServiceImpl implements TracingService.Iface{
         t.appendMetrics(tTaskMetrics);
         tracer.updateTask(t);
 
-        System.out.print("containerId: " + task.containerId);
         // disk and
 //        System.out.print("taskId: " + task.taskId +
 //                " containerId: " + task.containerId +
