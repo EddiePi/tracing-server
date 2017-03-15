@@ -33,6 +33,7 @@ public class TracingServiceImpl implements TracingService.Iface{
         t.appendMetrics(tTaskMetrics);
         tracer.updateTask(t);
 
+        System.out.print("containerId: " + task.containerId);
         // disk and
 //        System.out.print("taskId: " + task.taskId +
 //                " containerId: " + task.containerId +
@@ -79,6 +80,7 @@ public class TracingServiceImpl implements TracingService.Iface{
         String containerId = event.containerId;
         if (event.action.equals("ADD")) {
             if(!dockerMonitorMap.containsKey(containerId)) {
+                System.out.print("adding docker: " + containerId + "\n");
                 DockerMonitor dockerMonitor = new DockerMonitor(containerId);
                 dockerMonitor.start();
                 dockerMonitorMap.put(containerId, dockerMonitor);
