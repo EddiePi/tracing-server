@@ -33,6 +33,8 @@ public class DockerMonitor {
     private List<DockerMetrics> metrics;
     int metricsCount = 0;
 
+    private boolean isRunning;
+
     public DockerMonitor(String containerId) {
         this.containerId = containerId;
         this.dockerId = runShellCommand("docker inspect --format={{.Id}} " + containerId);
@@ -48,13 +50,14 @@ public class DockerMonitor {
     }
 
     public void start() {
-        monitorThread.start();
+        isRunning = true;
+        //monitorThread.start();
     }
 
     public void stop() {
         try {
-            monitorThread.isRunning = false;
-            monitorThread.interrupt();
+            isRunning = false;
+            // monitorThread.interrupt();
         }
         catch (Exception e) {
         }
@@ -66,6 +69,14 @@ public class DockerMonitor {
 
     public String getDockerPid() {
         return dockerPid;
+    }
+
+    public DockerMetrics getLatestDockerMetrics() {
+        int index = metrics.size() - 1;
+        if (index < 0) {
+            return null;
+        }
+        return metrics.get(index);
     }
 
     // Run a given shell command. return a string as the result
@@ -96,7 +107,6 @@ public class DockerMonitor {
     }
 
     private class MonitorThread extends Thread {
-        private boolean isRunning;
 
         @Override
         public void run(){
@@ -121,151 +131,150 @@ public class DockerMonitor {
             }
             isRunning = false;
         }
+    }
 
+    public void updateCgroupValues() {
+        DockerMetrics m = new DockerMetrics(dockerId, containerId);
+        // calculate the disk rate
+        calculateCurrentDiskRate(m);
 
-        private void updateCgroupValues() {
-            DockerMetrics m = new DockerMetrics(dockerId, containerId);
-            // calculate the disk rate
-            calculateCurrentDiskRate(m);
+        // calculate the network rate
+        calculateCurrentNetRate(m);
+        metrics.add(m);
+        metricsCount++;
 
-            // calculate the network rate
-            calculateCurrentNetRate(m);
-            metrics.add(m);
-            metricsCount++;
-
-            // TEST
-            printStatus();
-        }
+        // TEST
+        printStatus();
+    }
 
 //        private void updatePreviousTime() {
 //            previousProfileTime = System.currentTimeMillis() / 1000;
 //        }
 
-        // calculate the disk I/O rate
-        private void calculateCurrentDiskRate(DockerMetrics m) {
-            if (!getDiskServicedBytes(m)) {
-                return;
-            }
-            DockerMetrics previousMetrics = metrics.get(metricsCount - 1);
-            // init timestamps
-            Double deltaTime = (m.timestamp - previousMetrics.timestamp) * 1.0;
+    // calculate the disk I/O rate
+    private void calculateCurrentDiskRate(DockerMetrics m) {
+        if (!getDiskServicedBytes(m)) {
+            return;
+        }
+        DockerMetrics previousMetrics = metrics.get(metricsCount - 1);
+        // init timestamps
+        Double deltaTime = (m.timestamp - previousMetrics.timestamp) * 1.0;
 
-            // calculate rate
-            Long deltaRead = m.diskReadBytes - previousMetrics.diskReadBytes;
-            m.diskReadRate = deltaRead / deltaTime;
-            Long deltaWrite = m.diskWriteBytes - previousMetrics.diskWriteBytes;
-            m.diskWriteRate = deltaWrite / deltaTime;
-            //System.out.print("deltaTime: " + deltaTime + " deltaRead: " + deltaRead + " deltaWrite: " + deltaWrite + "\n");
+        // calculate rate
+        Long deltaRead = m.diskReadBytes - previousMetrics.diskReadBytes;
+        m.diskReadRate = deltaRead / deltaTime;
+        Long deltaWrite = m.diskWriteBytes - previousMetrics.diskWriteBytes;
+        m.diskWriteRate = deltaWrite / deltaTime;
+        //System.out.print("deltaTime: " + deltaTime + " deltaRead: " + deltaRead + " deltaWrite: " + deltaWrite + "\n");
+    }
+
+    // read the disk usages from cgroup files
+    // and update the taskMetrics in the monitor.
+    // if it is not running or first read, return false.
+    private boolean getDiskServicedBytes(DockerMetrics m) {
+        if(!isRunning) {
+            return false;
+        }
+        boolean calRate = true;
+        if (metricsCount == 0) {
+            calRate = false;
         }
 
-        // read the disk usages from cgroup files
-        // and update the taskMetrics in the monitor.
-        // if it is not running or first read, return false.
-        private boolean getDiskServicedBytes(DockerMetrics m) {
-            if(!isRunning) {
-                return false;
-            }
-            boolean calRate = true;
-            if (metricsCount == 0) {
-                calRate = false;
-            }
-
-            String url = blkioPath + "blkio.throttle.io_service_bytes";
-            List<String> readLines = readFileLines(url);
-            if (readLines != null) {
-                String readStr = readLines.get(0).split(" ")[2];
-                m.diskReadBytes = Long.parseLong(readStr);
+        String url = blkioPath + "blkio.throttle.io_service_bytes";
+        List<String> readLines = readFileLines(url);
+        if (readLines != null) {
+            String readStr = readLines.get(0).split(" ")[2];
+            m.diskReadBytes = Long.parseLong(readStr);
 
 
-                String writeStr = readLines.get(1).split(" ")[2];
-                m.diskWriteBytes = Long.parseLong(writeStr);
-                //System.out.print("diskRead: " + m.diskReadBytes + " diskWrite: " + m.diskWriteBytes + "\n");
-            }
-            return calRate;
+            String writeStr = readLines.get(1).split(" ")[2];
+            m.diskWriteBytes = Long.parseLong(writeStr);
+            //System.out.print("diskRead: " + m.diskReadBytes + " diskWrite: " + m.diskWriteBytes + "\n");
         }
-        // calculate the network I/O rate
-        private void calculateCurrentNetRate(DockerMetrics m) {
-            if(!getNetServicedBytes(m)) {
-                return;
-            }
-            DockerMetrics previousMetrics = metrics.get(metricsCount - 1);
-            Double deltaTime = (m.timestamp - previousMetrics.timestamp) * 1.0;
-
-            Long deltaReceive = m.netReceiveBytes - previousMetrics.netReceiveBytes;
-            m.netReceiveRate = deltaReceive / deltaTime;
-            Long deltaTransmit = m.netTransmitBytes - previousMetrics.netTransmitBytes;
-            m.netTransmitRate = deltaTransmit / deltaTime;
-            //System.out.print("deltaTime: " + deltaTime + " deltaRec: " + deltaReceive + " deltaTrans: " + deltaTransmit + "\n");
+        return calRate;
+    }
+    // calculate the network I/O rate
+    private void calculateCurrentNetRate(DockerMetrics m) {
+        if(!getNetServicedBytes(m)) {
+            return;
         }
+        DockerMetrics previousMetrics = metrics.get(metricsCount - 1);
+        Double deltaTime = (m.timestamp - previousMetrics.timestamp) * 1.0;
 
-        // read the network usage from 'proc' files
-        // and update the taskMetrics in the monitor.
-        private boolean getNetServicedBytes(DockerMetrics m) {
-            if (!isRunning) {
-                return false;
-            }
-            boolean calRate = true;
-            if (metricsCount == 0) {
-                calRate = false;
-            }
-            String[] results = runShellCommand("cat " + netFilePath).split("\n");
-            String resultLine = null;
-            for (String r: results) {
-                if (r.matches(".*"+ifaceName+".*")) {
-                    resultLine = r;
-                    break;
-                }
-            }
+        Long deltaReceive = m.netRecBytes - previousMetrics.netRecBytes;
+        m.netRecRate = deltaReceive / deltaTime;
+        Long deltaTransmit = m.netTransBytes - previousMetrics.netTransBytes;
+        m.netTransRate = deltaTransmit / deltaTime;
+        //System.out.print("deltaTime: " + deltaTime + " deltaRec: " + deltaReceive + " deltaTrans: " + deltaTransmit + "\n");
+    }
 
-            if (resultLine != null) {
-                resultLine = resultLine.trim();
-                String receiveStr = resultLine.split("\\s+")[1];
-                m.netReceiveBytes = Long.parseLong(receiveStr);
-
-                String transmitStr = resultLine.split("\\s+")[9];
-                m.netTransmitBytes = Long.parseLong(transmitStr);
-                //System.out.print("netRec: " + m.netReceiveBytes + " netTrans: " + m.netTransmitBytes + "\n");
+    // read the network usage from 'proc' files
+    // and update the taskMetrics in the monitor.
+    private boolean getNetServicedBytes(DockerMetrics m) {
+        if (!isRunning) {
+            return false;
+        }
+        boolean calRate = true;
+        if (metricsCount == 0) {
+            calRate = false;
+        }
+        String[] results = runShellCommand("cat " + netFilePath).split("\n");
+        String resultLine = null;
+        for (String r: results) {
+            if (r.matches(".*"+ifaceName+".*")) {
+                resultLine = r;
+                break;
             }
-            return calRate;
         }
 
-        private List<String> readFileLines(String path){
-            ArrayList<String> results= new ArrayList<String>();
-            File file = new File(path);
-            BufferedReader reader = null;
-            boolean isError=false;
-            try {
-                reader = new BufferedReader(new FileReader(file));
-                String tempString = null;
-                int line = 1;
-                while ((tempString = reader.readLine()) != null) {
-                    results.add(tempString);
-                    line++;
-                }
-                reader.close();
-            } catch (IOException e) {
-                //if we come to here, then means read file causes errors;
-                //if reports this errors mission errors, it means this containers
-                //has terminated, but nodemanager did not delete it yet. we stop monitoring
-                //here
-                if(e.toString().contains("FileNotFoundException")){
-                    isRunning=false;
-                }
-                isError=true;
-            } finally {
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (IOException e1) {
-                    }
-                }
-            }
+        if (resultLine != null) {
+            resultLine = resultLine.trim();
+            String receiveStr = resultLine.split("\\s+")[1];
+            m.netRecBytes = Long.parseLong(receiveStr);
 
-            if(!isError){
-                return results;
-            }else{
-                return null;
+            String transmitStr = resultLine.split("\\s+")[9];
+            m.netTransBytes = Long.parseLong(transmitStr);
+            //System.out.print("netRec: " + m.netRecBytes + " netTrans: " + m.netTransBytes + "\n");
+        }
+        return calRate;
+    }
+
+    private List<String> readFileLines(String path){
+        ArrayList<String> results= new ArrayList<String>();
+        File file = new File(path);
+        BufferedReader reader = null;
+        boolean isError=false;
+        try {
+            reader = new BufferedReader(new FileReader(file));
+            String tempString = null;
+            int line = 1;
+            while ((tempString = reader.readLine()) != null) {
+                results.add(tempString);
+                line++;
             }
+            reader.close();
+        } catch (IOException e) {
+            //if we come to here, then means read file causes errors;
+            //if reports this errors mission errors, it means this containers
+            //has terminated, but nodemanager did not delete it yet. we stop monitoring
+            //here
+            if(e.toString().contains("FileNotFoundException")){
+                isRunning=false;
+            }
+            isError=true;
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e1) {
+                }
+            }
+        }
+
+        if(!isError){
+            return results;
+        }else{
+            return null;
         }
     }
 
@@ -288,9 +297,9 @@ public class DockerMonitor {
         " total write: " + last.diskWriteBytes +
         " read rate: " + last.diskReadRate +
         " write rate: " + last.diskWriteRate + "\n" +
-        "total receive: " + last.netReceiveBytes +
-        " total transmit: " + last.netTransmitBytes +
-        " receive rate: " + last.netReceiveRate +
-        " transmit rate: " + last.netTransmitRate + "\n");
+        "total receive: " + last.netRecBytes +
+        " total transmit: " + last.netTransBytes +
+        " receive rate: " + last.netRecRate +
+        " transmit rate: " + last.netTransRate + "\n");
     }
 }

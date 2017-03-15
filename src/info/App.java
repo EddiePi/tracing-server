@@ -33,6 +33,8 @@ public class App {
         currentAppMetrics = new AppMetrics(appId);
     }
 
+    // this is an method in 'App'
+    // task metrics should be all set before this method is called!
     public void addOrUpdateTask(Task task) {
         synchronized (this) {
             tasks.put(task.taskId, task);

@@ -1,11 +1,13 @@
 package Server;
 
 import RPCService.SparkMonitor;
+import docker.DockerMetrics;
 import docker.DockerMonitor;
 import info.*;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -75,7 +77,7 @@ public class Tracer {
     }
 
 
-    // this method always called after the task is created
+    // this method is always called after the 'getOrCreateTask' is called
     public synchronized void updateTask(Task task) {
         for (App a: applications.values()) {
             if (!a.appId.equals(task.appId)) {
@@ -105,6 +107,25 @@ public class Tracer {
             a.addOrUpdateTask(task);
         }
         return task;
+    }
+
+    private void updateTaskDockerInfo(Map<Long, Task> taskMap) {
+        Map<String, Integer> containerIdToTaskNumber = new HashMap<>();
+        for(Task task: taskMap.values()) {
+            Integer taskNum = containerIdToTaskNumber.get(task.containerId);
+            if (taskNum == null) {
+                containerIdToTaskNumber.put(task.containerId, 1);
+            } else {
+                containerIdToTaskNumber.put(task.containerId, taskNum + 1);
+            }
+        }
+        for(DockerMonitor dockerMonitor: containerIdToDM.values()) {
+            dockerMonitor.updateCgroupValues();
+        }
+        for(Task task: taskMap.values()) {
+            task.setMetricsFromDocker(containerIdToDM.get(task.containerId).getLatestDockerMetrics(),
+                    containerIdToTaskNumber.get(task.containerId));
+        }
     }
 
 //    public Stage getOrCreateStage(Job job, int stageId) {

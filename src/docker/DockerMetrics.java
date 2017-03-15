@@ -16,10 +16,10 @@ public class DockerMetrics {
     public Double diskWriteRate = 0.0;
 
     // network taskMetrics
-    public Long netReceiveBytes = 0L;
-    public Long netTransmitBytes = 0L;
-    public Double netReceiveRate = 0.0;
-    public Double netTransmitRate = 0.0;
+    public Long netRecBytes = 0L;
+    public Long netTransBytes = 0L;
+    public Double netRecRate = 0.0;
+    public Double netTransRate = 0.0;
 
     public DockerMetrics(String dockerId, String containerId) {
         timestamp = System.currentTimeMillis() / 1000;

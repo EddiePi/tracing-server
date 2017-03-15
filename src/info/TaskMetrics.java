@@ -8,17 +8,6 @@ public class TaskMetrics extends Metrics {
     public TaskMetrics() {
         super();
     }
-    // disk
-    public Long diskWriteBytes;
-    public Long diskReadBytes;
-    public Long diskWriteRate;
-    public Long diskReadRate;
-
-    // network
-    public Long netRecBytes;
-    public Long netTransBytes;
-    public Long netRecRate;
-    public Long netTransRate;
 
     // time
     public Long startTimeStamp;

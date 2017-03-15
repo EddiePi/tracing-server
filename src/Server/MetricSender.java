@@ -223,12 +223,12 @@ public class MetricSender {
 
         // net rec rate
         pathSeg = dockerPrefix + "network-receive-rate";
-        valueSeg = df.format(metrics.netReceiveRate);
+        valueSeg = df.format(metrics.netRecRate);
         metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
 
         // net trans rate
         pathSeg = dockerPrefix + "network-transfer-rate";
-        valueSeg = df.format(metrics.netTransmitRate);
+        valueSeg = df.format(metrics.netTransRate);
         metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
 
         return metricsStr;

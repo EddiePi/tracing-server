@@ -1,5 +1,7 @@
 package info;
 
+import docker.DockerMetrics;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +54,10 @@ public class Task {
         taskMetrics.add(m);
         lastMetrics = m;
         currentMetrics = m;
+    }
+
+    public void setMetricsFromDocker(DockerMetrics dockerMetrics, Integer tasksInDocker) {
+        lastMetrics.setInfoFromDockerMetrics(dockerMetrics, tasksInDocker);
     }
 
     public Task clone() {
