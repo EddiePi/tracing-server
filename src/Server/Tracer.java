@@ -25,7 +25,7 @@ public class Tracer {
     public SparkMonitor sm;
     public ConcurrentMap<String, DockerMonitor> containerIdToDM = new ConcurrentHashMap<>();
     private int runningAppCount = 0;
-    private boolean isTest = true;
+    private boolean isTest = false;
     Integer reportInterval = conf.getIntegerOrDefault("tracer.report-interval", 1000);
     private class TestTracingRunnable implements Runnable {
         @Override
