@@ -283,6 +283,11 @@ public class Tracer {
 
     public void fetchLastApp() {
         if(needFetch) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             App appToFetch = applications.get(lastAppId);
             AppJsonFetcher appJsonFetcher = new AppJsonFetcher(conf, appToFetch);
             appJsonFetcher.fetch();
