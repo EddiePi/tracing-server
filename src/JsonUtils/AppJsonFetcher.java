@@ -50,7 +50,7 @@ public class AppJsonFetcher {
 
     private void fetchAllMetrics(String prefix, String destPath) {
         for(String name: MetricNames.names) {
-            String urlAndName = prefix + "." + name;
+            String urlAndName = prefix + "." + name + urlSuffix;
             JsonCopier.copyJsonFromURL(urlAndName, destPath, urlAndName);
 
             //TEST
