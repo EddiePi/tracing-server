@@ -26,7 +26,7 @@ public class AppJsonFetcher {
     public void fetch() {
         String appId = app.appId;
         String appURL = urlPrefix + appId;
-        String appStoragePath = storagePrefix + "/" + appId;
+        String appStoragePath = storagePrefix + appId;
         fetchAllMetrics(appURL, appStoragePath);
         for(Job job: app.getAllJobs()) {
             String jobId = job.jobId.toString();
@@ -51,10 +51,10 @@ public class AppJsonFetcher {
     private void fetchAllMetrics(String prefix, String destPath) {
         for(String name: MetricNames.names) {
             String urlAndName = prefix + "." + name;
-            //JsonCopier.copyJsonFromURL(urlAndName, destPath, urlAndName);
+            JsonCopier.copyJsonFromURL(urlAndName, destPath, urlAndName);
 
             //TEST
-            System.out.print("url, name: " + urlAndName + " destPath: " + destPath + "\n");
+            //System.out.print("url, name: " + urlAndName + " destPath: " + destPath + "\n");
         }
     }
 }
