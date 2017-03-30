@@ -1,7 +1,7 @@
 package Server;
 
+import JsonUtils.AppJsonFetcher;
 import RPCService.SparkMonitor;
-import docker.DockerMetrics;
 import docker.DockerMonitor;
 import info.*;
 
@@ -19,6 +19,8 @@ import java.util.concurrent.ConcurrentMap;
 public class Tracer {
     private TracerConf conf = TracerConf.getInstance();
     public ConcurrentMap<String, App> applications = new ConcurrentHashMap<>();
+    private String lastAppId;
+    private boolean needFetch = false;
 
     public SparkMonitor sm;
     public ConcurrentMap<String, DockerMonitor> containerIdToDM = new ConcurrentHashMap<>();
@@ -166,6 +168,8 @@ public class Tracer {
         } else {
             app = new App(appId);
             applications.put(appId, app);
+            lastAppId = appId;
+            needFetch = true;
         }
         return app;
     }
@@ -275,5 +279,13 @@ public class Tracer {
             }
         }
         this.runningAppCount = runningCount;
+    }
+
+    public void fetchLastApp() {
+        if(needFetch) {
+            App appToFetch = applications.get(lastAppId);
+            AppJsonFetcher appJsonFetcher = new AppJsonFetcher(conf, appToFetch);
+            appJsonFetcher.fetch();
+        }
     }
 }

@@ -1,6 +1,8 @@
 package RPCService;
 
+import JsonUtils.AppJsonFetcher;
 import Server.Tracer;
+import Server.TracerConf;
 import docker.DockerMonitor;
 import info.App;
 import info.TaskMetrics;
@@ -94,6 +96,9 @@ public class TracingServiceImpl implements TracingService.Iface{
             if (dockerMonitorMap.containsKey(containerId)) {
                 DockerMonitor dockerMonitor = dockerMonitorMap.remove(containerId);
                 dockerMonitor.stop();
+            }
+            if(dockerMonitorMap.isEmpty()) {
+                tracer.fetchLastApp();
             }
         }
     }

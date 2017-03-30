@@ -95,7 +95,7 @@ public class MetricSender {
         DecimalFormat df = new DecimalFormat("0.000");
         TaskMetrics metricsToSend = task.taskMetrics.get(task.taskMetrics.size() - 1);
         taskPrefix = SPARK_PREFIX + task.appId + "." + "job_" + task.jobId + "." +
-                "stage_" + task.stageId + "." + "task_" + task.taskId + ".";
+                "stage_" + task.stageId + "." + task.containerId + "." + "task_" + task.taskId + ".";
         timeStampSeg = metricsToSend.timestamp.toString();
 
         // cpu usage string
