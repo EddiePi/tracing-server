@@ -18,7 +18,9 @@ public class AppJsonFetcher {
     public AppJsonFetcher(TracerConf conf, App app) {
         this.app = app;
         this.conf = conf;
-        urlPrefix = conf.getStringOrDefault("tracer.database.host", "localhost") + "/render?target=";
+        urlPrefix = "http://" +
+                conf.getStringOrDefault("tracer.database.host", "localhost") +
+                "/render?target=spark.";
         urlSuffix = "&format=json";
         storagePrefix = conf.getStringOrDefault("tracer.storage.root", "./");
     }
