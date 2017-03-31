@@ -54,10 +54,10 @@ public class AppJsonFetcher {
     private void fetchAllMetrics(String identifier, String destPath) {
         for(String name: MetricNames.names) {
             String url = urlPrefix + identifier + "." + name + urlSuffix;
-            JsonCopier.copyJsonFromURL(url, destPath, identifier + "." + name + storageSuffix);
+            //JsonCopier.copyJsonFromURL(url, destPath, identifier + "." + name + storageSuffix);
 
             //TEST
-            // System.out.print("url, " + url + " destPath: " + destPath + " name: " + identifier + "\n");
+            System.out.print("url, " + url + " destPath: " + destPath + " name: " + identifier + "\n");
         }
     }
 }
