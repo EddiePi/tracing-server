@@ -26,37 +26,34 @@ public class AppJsonFetcher {
     }
 
     public void fetch() {
-        String appId = app.appId;
-        String appURL = urlPrefix + appId;
-        String appStoragePath = storagePrefix + appId;
-        fetchAllMetrics(appURL, appStoragePath);
+        String appId = app.appId;   // app_1
+        // we cannot add suffix here. we need to add it after .CPU/execMemory...
+        String appStoragePath = storagePrefix + appId; // ./app_1
+        fetchAllMetrics(appId, appStoragePath);
         for(Job job: app.getAllJobs()) {
-            String jobId = job.jobId.toString();
-            String jobURL = appURL + ".job_" + jobId;
-            String jobStoragePath = appStoragePath + "/job_" + jobId;
-            fetchAllMetrics(jobURL, jobStoragePath);
+            String completeJobId = appId + ".job_" + job.jobId.toString();  // app_1.job_1
+            String jobStoragePath = appStoragePath + "/job_" + job.jobId.toString();
+            fetchAllMetrics(completeJobId, jobStoragePath);
             for(Stage stage: job.getAllStage()) {
-                String stageId = stage.stageId.toString();
-                String stageURL = jobURL + ".stage_" + stageId;
-                String stageStoragePath = jobStoragePath + "/stage_" + stageId;
-                fetchAllMetrics(stageURL, stageStoragePath);
+                String completeStageId = completeJobId + ".stage_" + stage.stageId.toString();
+                String stageStoragePath = jobStoragePath + "/stage_" + stage.stageId.toString();
+                fetchAllMetrics(completeStageId, stageStoragePath);
                 for(Task task: stage.getAllTasks()) {
-                    String taskId = task.taskId.toString();
-                    String taskURL = stageURL + ".task_" + taskId;
-                    String taskStoragePath = stageStoragePath + "/task_" + taskId;
-                    fetchAllMetrics(taskURL, taskStoragePath);
+                    String completeTaskId = completeStageId + ".task_" + task.taskId.toString();
+                    String taskStoragePath = stageStoragePath + "/task_" + task.taskId.toString();
+                    fetchAllMetrics(completeTaskId, taskStoragePath);
                 }
             }
         }
     }
 
-    private void fetchAllMetrics(String prefix, String destPath) {
+    private void fetchAllMetrics(String identifier, String destPath) {
         for(String name: MetricNames.names) {
-            String urlAndName = prefix + "." + name + urlSuffix;
-            JsonCopier.copyJsonFromURL(urlAndName, destPath, urlAndName);
+            String url = urlPrefix + identifier + "." + name + urlSuffix;
+            //JsonCopier.copyJsonFromURL(urlAndName, destPath, urlAndName);
 
             //TEST
-            //System.out.print("url, name: " + urlAndName + " destPath: " + destPath + "\n");
+            System.out.print("url, " + url + " destPath: " + destPath + " name: " + identifier + "\n");
         }
     }
 }
