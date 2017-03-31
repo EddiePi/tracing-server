@@ -41,8 +41,10 @@ public class AppJsonFetcher {
                 String stageStoragePath = jobStoragePath + "/stage_" + stage.stageId.toString();
                 fetchAllMetrics(completeStageId, stageStoragePath);
                 for(Task task: stage.getAllTasks()) {
-                    String completeTaskId = completeStageId + ".task_" + task.taskId.toString();
-                    String taskStoragePath = stageStoragePath + "/task_" + task.taskId.toString();
+                    String completeTaskId = completeStageId + "." +
+                            task.containerId + ".task_" + task.taskId.toString();
+                    String taskStoragePath = stageStoragePath +
+                            "/" + task.containerId + "/task_" + task.taskId.toString();
                     fetchAllMetrics(completeTaskId, taskStoragePath);
                 }
             }
@@ -52,7 +54,7 @@ public class AppJsonFetcher {
     private void fetchAllMetrics(String identifier, String destPath) {
         for(String name: MetricNames.names) {
             String url = urlPrefix + identifier + "." + name + urlSuffix;
-            JsonCopier.copyJsonFromURL(url, destPath, identifier + storageSuffix);
+            JsonCopier.copyJsonFromURL(url, destPath, identifier + "." + name + storageSuffix);
 
             //TEST
             // System.out.print("url, " + url + " destPath: " + destPath + " name: " + identifier + "\n");
