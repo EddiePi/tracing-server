@@ -16,8 +16,8 @@ public class JsonCopier {
         InputStream source;
         File dest = new File(filePath, fileName);
         try {
-            if(!dest.exists()) {
-                dest.mkdirs();
+            if(!dest.getParentFile().exists()) {
+                dest.getParentFile().mkdirs();
             }
             u = new URL(url);
             source = u.openStream();
