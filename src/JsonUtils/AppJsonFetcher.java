@@ -13,6 +13,7 @@ public class AppJsonFetcher {
     App app;
     TracerConf conf;
     String storagePrefix;
+    String storageSuffix;
     String urlPrefix;
     String urlSuffix;
     public AppJsonFetcher(TracerConf conf, App app) {
@@ -23,6 +24,7 @@ public class AppJsonFetcher {
                 "/render?target=spark.";
         urlSuffix = "&format=json";
         storagePrefix = conf.getStringOrDefault("tracer.storage.root", "./");
+        storageSuffix = ".json";
     }
 
     public void fetch() {
@@ -50,10 +52,10 @@ public class AppJsonFetcher {
     private void fetchAllMetrics(String identifier, String destPath) {
         for(String name: MetricNames.names) {
             String url = urlPrefix + identifier + "." + name + urlSuffix;
-            //JsonCopier.copyJsonFromURL(urlAndName, destPath, urlAndName);
+            JsonCopier.copyJsonFromURL(url, destPath, identifier + storageSuffix);
 
             //TEST
-            System.out.print("url, " + url + " destPath: " + destPath + " name: " + identifier + "\n");
+            // System.out.print("url, " + url + " destPath: " + destPath + " name: " + identifier + "\n");
         }
     }
 }
