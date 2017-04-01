@@ -51,6 +51,12 @@ public class App {
             }
             s.taskIdToTask.put(task.taskId, task);
 
+            TaskMetrics metricsToReport = task.taskMetrics.get(task.taskMetrics.size() - 1);
+            // quick return if the task is in INIT status.
+            if(metricsToReport.status.equals("INIT")) {
+                return;
+            }
+
             // update metrics to report
             Task newReportingTask = tasksToReport.get(task.taskId);
             if (newReportingTask == null) {
@@ -58,7 +64,7 @@ public class App {
                 newReportingTask.taskMetrics.clear();
                 tasksToReport.put(newReportingTask.taskId, newReportingTask);
             }
-            newReportingTask.appendMetrics(task.taskMetrics.get(task.taskMetrics.size() - 1));
+            newReportingTask.appendMetrics(metricsToReport);
             hasReportingTask = true;
 
         }

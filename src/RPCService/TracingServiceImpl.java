@@ -35,6 +35,7 @@ public class TracingServiceImpl implements TracingService.Iface{
         tTaskMetrics.storeMemoryUsage = Math.max(task.storeMemory, 0L);
         tTaskMetrics.startTimeStamp = Math.max(task.startTime, 0L);
         tTaskMetrics.finishTimeStamp = Math.max(task.finishTime, 0L);
+        tTaskMetrics.status = task.status;
         t.appendMetrics(tTaskMetrics);
         tracer.updateTask(t);
 
