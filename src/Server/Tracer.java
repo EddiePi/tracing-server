@@ -103,9 +103,10 @@ public class Tracer {
         Task task = a.getTaskById(jobId, stageId, taskId);
         if (task == null) {
             task = new Task(taskId, stageId, stageAttemptId, jobId, appId, containerId);
-            TaskMetrics newTaskMetrics = new TaskMetrics();
-            newTaskMetrics.status = "INIT";
-            task.taskMetrics.add(newTaskMetrics);
+            // we don't want to create the first metrics here?
+//            TaskMetrics newTaskMetrics = new TaskMetrics();
+//            newTaskMetrics.status = "INIT";
+//            task.taskMetrics.add(newTaskMetrics);
             a.addOrUpdateTask(task);
         }
         return task;
