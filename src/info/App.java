@@ -51,6 +51,9 @@ public class App {
             }
             s.taskIdToTask.put(task.taskId, task);
 
+            if (task.taskMetrics.isEmpty()) {
+                return;
+            }
             TaskMetrics metricsToReport = task.taskMetrics.get(task.taskMetrics.size() - 1);
             // quick return if the task is in INIT status.
             if(metricsToReport.status.equals("INIT")) {
