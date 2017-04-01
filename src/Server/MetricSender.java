@@ -30,9 +30,16 @@ public class MetricSender {
         try {
             List<String> metrics = buildTaskMetric(task);
             for(String sentMessage: metrics) {
+                System.out.print("message: " + sentMessage);
                 writer.write(sentMessage);
+                writer.flush();
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-            writer.flush();
+            //writer.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
