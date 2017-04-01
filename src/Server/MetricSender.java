@@ -120,6 +120,26 @@ public class MetricSender {
         valueSeg = metricsToSend.storeMemoryUsage.toString();
         metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
 
+        // disk read rate string
+        pathSeg = taskPrefix + "disk-read-rate";
+        valueSeg = metricsToSend.diskReadRate.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // disk write rate string
+        pathSeg = taskPrefix + "disk-write-rate";
+        valueSeg = metricsToSend.diskWriteRate.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // net rec rate string
+        pathSeg = taskPrefix + "net-receive-rate";
+        valueSeg = metricsToSend.netRecRate.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // net trans rate string
+        pathSeg = taskPrefix + "net-transfer-rate";
+        valueSeg = metricsToSend.netTransRate.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
         return metricsStr;
     }
 
@@ -149,6 +169,25 @@ public class MetricSender {
         valueSeg = metrics.storeMemoryUsage.toString();
         metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
 
+        // disk read rate string
+        pathSeg = stagePrefix + "disk-read-rate";
+        valueSeg = metrics.diskReadRate.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // disk write rate string
+        pathSeg = stagePrefix + "disk-write-rate";
+        valueSeg = metrics.diskWriteRate.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // net rec rate string
+        pathSeg = stagePrefix + "net-receive-rate";
+        valueSeg = metrics.netRecRate.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // net trans rate string
+        pathSeg = stagePrefix + "net-transfer-rate";
+        valueSeg = metrics.netTransRate.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
         return metricsStr;
     }
 
@@ -177,6 +216,26 @@ public class MetricSender {
         valueSeg = metrics.storeMemoryUsage.toString();
         metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
 
+        // disk read rate string
+        pathSeg = jobPrefix + "disk-read-rate";
+        valueSeg = metrics.diskReadRate.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // disk write rate string
+        pathSeg = jobPrefix + "disk-write-rate";
+        valueSeg = metrics.diskWriteRate.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // net rec rate string
+        pathSeg = jobPrefix + "net-receive-rate";
+        valueSeg = metrics.netRecRate.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // net trans rate string
+        pathSeg = jobPrefix + "net-transfer-rate";
+        valueSeg = metrics.netTransRate.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
         return metricsStr;
     }
 
@@ -203,6 +262,26 @@ public class MetricSender {
         // storage mem string
         pathSeg = appPrefix + "storage-memory";
         valueSeg = metrics.storeMemoryUsage.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // disk read rate string
+        pathSeg = appPrefix + "disk-read-rate";
+        valueSeg = metrics.diskReadRate.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // disk write rate string
+        pathSeg = appPrefix + "disk-write-rate";
+        valueSeg = metrics.diskWriteRate.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // net rec rate string
+        pathSeg = appPrefix + "net-receive-rate";
+        valueSeg = metrics.netRecRate.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // net trans rate string
+        pathSeg = appPrefix + "net-transfer-rate";
+        valueSeg = metrics.netTransRate.toString();
         metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
 
         return metricsStr;
