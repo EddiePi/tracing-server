@@ -16,7 +16,6 @@ import java.util.List;
  * Created by Eddie on 2017/2/15.
  */
 public class DockerMonitor {
-    MetricSender ms;
     TracerConf conf = TracerConf.getInstance();
     private String dockerId;
     String containerId;
@@ -44,9 +43,6 @@ public class DockerMonitor {
         metrics = new ArrayList<>();
         ifaceName  = conf.getStringOrDefault("tracer.docker.iface-name", "eth0");
         monitorThread = new MonitorThread();
-        try {
-            ms = new MetricSender();
-        } catch (IOException e) {}
     }
 
     public void start() {

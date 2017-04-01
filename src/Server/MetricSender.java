@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * Created by Eddie on 2017/3/2.
- * This class is used by 'Tracer' and 'DockerMonitor'.
+ * This class is used by 'Tracer'.
  */
 public class MetricSender {
     private TracerConf conf = TracerConf.getInstance();

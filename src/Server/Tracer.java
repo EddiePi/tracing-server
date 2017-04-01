@@ -60,7 +60,13 @@ public class Tracer {
 
     private MetricSender ms;
 
-    private Tracer(){}
+    private Tracer() {
+        try {
+            ms = new MetricSender();
+        } catch (IOException e) {
+
+        }
+    }
 
     public static Tracer getInstance() {
         return instance;
@@ -71,11 +77,7 @@ public class Tracer {
         sm = new SparkMonitor();
         sm.startServer();
         tThread.start();
-        try {
-            ms = new MetricSender();
-        } catch(IOException e) {
 
-        }
     }
 
 
