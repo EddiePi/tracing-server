@@ -249,9 +249,12 @@ public class Tracer {
         for(App app: applications.values()) {
             Map<Long, Task> taskMap = app.getAndClearReportingTasks();
             updateTaskDockerInfo(taskMap);
-            for(Task task: taskMap.values()) {
+            /*for(Task task: taskMap.values()) {
+                if (ms == null) {
+                    System.out.print("ms is null");
+                }
                 ms.sendTaskMetrics(task);
-            }
+            }*/
             List<StageMetrics> sml = app.getAndClearReportingStageMetrics();
             for(StageMetrics sm: sml) {
                 ms.sendStageMetrics(sm);
