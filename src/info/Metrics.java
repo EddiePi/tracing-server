@@ -70,8 +70,5 @@ public abstract class Metrics {
         this.netTransRate = this.netTransBytes * rate;
     }
 
-
-
-
     public abstract Metrics clone();
 }

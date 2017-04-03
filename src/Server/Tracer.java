@@ -24,6 +24,7 @@ public class Tracer {
 
     public SparkMonitor sm;
     public ConcurrentMap<String, DockerMonitor> containerIdToDM = new ConcurrentHashMap<>();
+    public ConcurrentMap<String, ContainerMetrics> containerIdToMetrics = new ConcurrentHashMap<>();
     private int runningAppCount = 0;
     private boolean isTest = false;
     Integer reportInterval = conf.getIntegerOrDefault("tracer.report-interval", 1000);
@@ -249,23 +250,39 @@ public class Tracer {
         for(App app: applications.values()) {
             Map<Long, Task> taskMap = app.getAndClearReportingTasks();
             updateTaskDockerInfo(taskMap);
-            /*for(Task task: taskMap.values()) {
-                if (ms == null) {
-                    System.out.print("ms is null");
-                }
-                ms.sendTaskMetrics(task);
-            }*/
-            List<StageMetrics> sml = app.getAndClearReportingStageMetrics();
-            for(StageMetrics sm: sml) {
-                ms.sendStageMetrics(sm);
+            buildContainerMetrics(taskMap);
+//            for(Task task: taskMap.values()) {
+//                if (ms == null) {
+//                    System.out.print("ms is null");
+//                }
+//                ms.sendTaskMetrics(task);
+//            }
+            for(ContainerMetrics cm: containerIdToMetrics.values()) {
+                ms.sendContainerMetrics(cm);
             }
-            List<JobMetrics> jml = app.getAndClearReportingJobMetrics();
-            for(JobMetrics jm: jml) {
-                ms.sendJobMetrics(jm);
-            }
-            List<AppMetrics> aml = app.getAndClearReportingAppMetrics();
-            for(AppMetrics am: aml) {
-                ms.sendAppMetrics(am);
+//            List<StageMetrics> sml = app.getAndClearReportingStageMetrics();
+//            for(StageMetrics sm: sml) {
+//                ms.sendStageMetrics(sm);
+//            }
+//            List<JobMetrics> jml = app.getAndClearReportingJobMetrics();
+//            for(JobMetrics jm: jml) {
+//                ms.sendJobMetrics(jm);
+//            }
+//            List<AppMetrics> aml = app.getAndClearReportingAppMetrics();
+//            for(AppMetrics am: aml) {
+//                ms.sendAppMetrics(am);
+//            }
+        }
+    }
+
+    private void buildContainerMetrics(Map<Long, Task> taskMap) {
+        for(Task task: taskMap.values()) {
+            ContainerMetrics cMetrics = containerIdToMetrics.get(task.containerId);
+            if (task.taskMetrics.size() > 0) {
+                cMetrics.appId = task.appId;
+                cMetrics.jobId = task.jobId;
+                cMetrics.stageId = task.stageId;
+                cMetrics.plus(task.taskMetrics.get(task.taskMetrics.size() - 1));
             }
         }
     }

@@ -40,6 +40,18 @@ public class MetricSender {
         }
     }
 
+    public void sendContainerMetrics(ContainerMetrics cm) {
+        try {
+            List<String> metrics = buildContainerMetric(cm);
+            for(String sentMessage: metrics) {
+                writer.write(sentMessage);
+            }
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void sendStageMetrics(StageMetrics sm) {
         try {
             List<String> metrics = buildStageMetric(sm);
@@ -135,6 +147,54 @@ public class MetricSender {
         valueSeg = metricsToSend.netTransRate.toString();
         metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
 
+        return metricsStr;
+    }
+
+    private List<String> buildContainerMetric(ContainerMetrics metrics) {
+        List<String> metricsStr = new ArrayList<>();
+        String containerPrefix;
+        String pathSeg;
+        String valueSeg;
+        String timeStampSeg;
+        DecimalFormat df = new DecimalFormat("0.000");
+        containerPrefix = SPARK_PREFIX + metrics.appId + "." + "job_" + metrics.jobId + "." +
+                "stage_" + metrics.stageId + "." + metrics.containerId + ".";
+        timeStampSeg = metrics.timestamp.toString();
+
+        // cpu usage string
+        pathSeg = containerPrefix + "CPU";
+        valueSeg = df.format(metrics.cpuUsage);
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // execution mem string
+        pathSeg = containerPrefix + "execution-memory";
+        valueSeg = metrics.execMemoryUsage.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // storage mem string
+        pathSeg = containerPrefix + "storage-memory";
+        valueSeg = metrics.storeMemoryUsage.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // disk read rate string
+        pathSeg = containerPrefix + "disk-read-rate";
+        valueSeg = metrics.diskReadRate.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // disk write rate string
+        pathSeg = containerPrefix + "disk-write-rate";
+        valueSeg = metrics.diskWriteRate.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // net rec rate string
+        pathSeg = containerPrefix + "net-receive-rate";
+        valueSeg = metrics.netRecRate.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
+
+        // net trans rate string
+        pathSeg = containerPrefix + "net-transfer-rate";
+        valueSeg = metrics.netTransRate.toString();
+        metricsStr.add(pathSeg + " " + valueSeg + " " + timeStampSeg + "\n");
         return metricsStr;
     }
 

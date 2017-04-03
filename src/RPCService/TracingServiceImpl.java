@@ -5,10 +5,12 @@ import Server.Tracer;
 import Server.TracerConf;
 import docker.DockerMonitor;
 import info.App;
+import info.ContainerMetrics;
 import info.TaskMetrics;
 import info.Task;
 import org.apache.thrift.TException;
 
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentMap;
 
 /**
@@ -89,6 +91,7 @@ public class TracingServiceImpl implements TracingService.Iface{
                 DockerMonitor dockerMonitor = new DockerMonitor(containerId);
                 dockerMonitor.start();
                 dockerMonitorMap.put(containerId, dockerMonitor);
+                tracer.containerIdToMetrics.put(containerId, new ContainerMetrics(containerId));
             }
         }
 

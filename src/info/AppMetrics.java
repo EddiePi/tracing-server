@@ -17,6 +17,14 @@ public class AppMetrics extends Metrics {
         amclone.cpuUsage = this.cpuUsage;
         amclone.execMemoryUsage = this.execMemoryUsage;
         amclone.storeMemoryUsage = this.storeMemoryUsage;
-        return null;
+        amclone.diskReadBytes = this.diskReadBytes;
+        amclone.diskReadRate = this.diskReadRate;
+        amclone.diskWriteBytes = this.diskWriteBytes;
+        amclone.diskWriteRate = this.diskWriteRate;
+        amclone.netRecBytes = this.netRecBytes;
+        amclone.netRecRate = this.netRecRate;
+        amclone.netTransBytes = this.netTransBytes;
+        amclone.netTransRate = this.netTransRate;
+        return amclone;
     }
 }
