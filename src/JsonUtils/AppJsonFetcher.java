@@ -57,7 +57,7 @@ public class AppJsonFetcher {
             //JsonCopier.copyJsonFromURL(url, destPath, identifier + "." + name + storageSuffix);
 
             //TEST
-            System.out.print("url, " + url + " destPath: " + destPath + " name: " + identifier + "\n");
+            // System.out.print("url, " + url + " destPath: " + destPath + " name: " + identifier + "\n");
         }
     }
 }
