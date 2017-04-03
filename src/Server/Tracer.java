@@ -280,6 +280,7 @@ public class Tracer {
                 cMetrics.appId = task.appId;
                 cMetrics.jobId = task.jobId;
                 cMetrics.stageId = task.stageId;
+                cMetrics.timestamp = task.taskMetrics.get(task.taskMetrics.size() - 1).timestamp;
                 cMetrics.plus(task.taskMetrics.get(task.taskMetrics.size() - 1));
             }
         }
