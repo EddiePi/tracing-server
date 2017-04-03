@@ -91,7 +91,7 @@ public class TracingServiceImpl implements TracingService.Iface{
                 DockerMonitor dockerMonitor = new DockerMonitor(containerId);
                 dockerMonitor.start();
                 dockerMonitorMap.put(containerId, dockerMonitor);
-                tracer.containerIdToMetrics.put(containerId, new ContainerMetrics(containerId));
+                tracer.containerIdToMetrics.put(containerId, new ArrayList<>());
             }
         }
 

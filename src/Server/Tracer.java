@@ -26,7 +26,7 @@ public class Tracer {
 
     public SparkMonitor sm;
     public ConcurrentMap<String, DockerMonitor> containerIdToDM = new ConcurrentHashMap<>();
-    public ConcurrentMap<String, ContainerMetrics> containerIdToMetrics = new ConcurrentHashMap<>();
+    public ConcurrentMap<String, List<ContainerMetrics>> containerIdToMetrics = new ConcurrentHashMap<>();
     private int runningAppCount = 0;
     private boolean isTest = false;
     Integer reportInterval = conf.getIntegerOrDefault("tracer.report-interval", 1000);
@@ -255,8 +255,11 @@ public class Tracer {
 //                }
 //                ms.sendTaskMetrics(task);
 //            }
-            for(ContainerMetrics cm: containerIdToMetrics.values()) {
-                ms.sendContainerMetrics(cm);
+            for(List<ContainerMetrics> cmList: containerIdToMetrics.values()) {
+                if (cmList.size() > 0) {
+                    ContainerMetrics last = cmList.get(cmList.size() - 1);
+                    ms.sendContainerMetrics(last);
+                }
             }
 //            List<StageMetrics> sml = app.getAndClearReportingStageMetrics();
 //            for(StageMetrics sm: sml) {
@@ -274,8 +277,13 @@ public class Tracer {
     }
 
     private void buildContainerMetrics(Map<Long, Task> taskMap) {
+        Map<String, ContainerMetrics> currentCmMap = new HashMap<>();
         for(Task task: taskMap.values()) {
-            ContainerMetrics cMetrics = containerIdToMetrics.get(task.containerId);
+            ContainerMetrics cMetrics = currentCmMap.get(task.containerId);
+            if (cMetrics == null) {
+                cMetrics = new ContainerMetrics(task.containerId);
+                currentCmMap.put(task.containerId, cMetrics);
+            }
             if (task.taskMetrics.size() > 0) {
                 cMetrics.appId = task.appId;
                 cMetrics.jobId = task.jobId;
@@ -283,6 +291,10 @@ public class Tracer {
                 cMetrics.timestamp = task.taskMetrics.get(task.taskMetrics.size() - 1).timestamp;
                 cMetrics.plus(task.taskMetrics.get(task.taskMetrics.size() - 1));
             }
+        }
+        for (Map.Entry<String, ContainerMetrics> entry: currentCmMap.entrySet()) {
+            String containerId = entry.getKey();
+            containerIdToMetrics.get(containerId).add(entry.getValue());
         }
     }
 
