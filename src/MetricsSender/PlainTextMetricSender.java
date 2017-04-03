@@ -1,5 +1,6 @@
-package Server;
+package MetricsSender;
 
+import Server.TracerConf;
 import docker.DockerMetrics;
 import info.*;
 
@@ -15,15 +16,14 @@ import java.util.List;
  * Created by Eddie on 2017/3/2.
  * This class is used by 'Tracer'.
  */
-public class MetricSender {
-    private TracerConf conf = TracerConf.getInstance();
-    static String SPARK_PREFIX = "spark.";
+public class PlainTextMetricSender extends MetricsSender {
+
     String databaseHost = conf.getStringOrDefault("tracer.database.host", "192.168.32.120");
     Integer databasePort = conf.getIntegerOrDefault("tracer.database.port", 2003);
     Socket socket = new Socket(databaseHost, databasePort);
     Writer writer = new OutputStreamWriter(socket.getOutputStream());
 
-    public MetricSender() throws IOException {
+    public PlainTextMetricSender() throws IOException {
     }
 
     public void sendTaskMetrics(Task task) {
@@ -40,6 +40,7 @@ public class MetricSender {
         }
     }
 
+    @Override
     public void sendContainerMetrics(ContainerMetrics cm) {
         if (cm.appId == null || cm.jobId == null || cm.stageId == null) {
             return;
@@ -56,6 +57,7 @@ public class MetricSender {
         }
     }
 
+    @Override
     public void sendStageMetrics(StageMetrics sm) {
         try {
             List<String> metrics = buildStageMetric(sm);
@@ -68,6 +70,7 @@ public class MetricSender {
         }
     }
 
+    @Override
     public void sendJobMetrics(JobMetrics jm) {
         try {
             List<String> metrics = buildJobMetrics(jm);
@@ -80,6 +83,7 @@ public class MetricSender {
         }
     }
 
+    @Override
     public void sendAppMetrics(AppMetrics am) {
         try {
             List<String> metrics = buildAppMetrics(am);

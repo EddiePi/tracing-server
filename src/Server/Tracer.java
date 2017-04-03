@@ -1,6 +1,8 @@
 package Server;
 
 import JsonUtils.AppJsonFetcher;
+import MetricsSender.PickleMetricsSender;
+import MetricsSender.PlainTextMetricSender;
 import RPCService.SparkMonitor;
 import docker.DockerMonitor;
 import info.*;
@@ -59,14 +61,10 @@ public class Tracer {
 
     private static final Tracer instance = new Tracer();
 
-    private MetricSender ms;
+    private PickleMetricsSender ms;
 
     private Tracer() {
-        try {
-            ms = new MetricSender();
-        } catch (IOException e) {
-
-        }
+        ms = new PickleMetricsSender();
     }
 
     public static Tracer getInstance() {

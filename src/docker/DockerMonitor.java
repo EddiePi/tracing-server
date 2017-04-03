@@ -1,6 +1,5 @@
 package docker;
 
-import Server.MetricSender;
 import Server.TracerConf;
 import Utils.ShellCommandExecutor;
 
