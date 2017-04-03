@@ -26,6 +26,7 @@ public class PickleMetricsSender extends MetricsSender {
     @Override
     public void sendContainerMetrics(ContainerMetrics metrics) {
         if (metrics.appId == null || metrics.jobId == null || metrics.stageId == null) {
+            System.out.print("container metrics with no appId");
             return;
         }
         String timeStr = metrics.timestamp.toString();
