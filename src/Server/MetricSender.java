@@ -41,6 +41,9 @@ public class MetricSender {
     }
 
     public void sendContainerMetrics(ContainerMetrics cm) {
+        if (cm.appId == null || cm.jobId == null || cm.stageId == null) {
+            return;
+        }
         try {
             List<String> metrics = buildContainerMetric(cm);
             for(String sentMessage: metrics) {
@@ -151,6 +154,7 @@ public class MetricSender {
     }
 
     private List<String> buildContainerMetric(ContainerMetrics metrics) {
+
         List<String> metricsStr = new ArrayList<>();
         String containerPrefix;
         String pathSeg;
