@@ -279,6 +279,7 @@ public class Tracer {
         for(Task task: taskMap.values()) {
             ContainerMetrics cMetrics = containerIdToMetrics.get(task.containerId);
             if (task.taskMetrics.size() > 0) {
+                System.out.print("appId: " + task.appId + " jobId: " + task.jobId + " stageId: " + task.stageId + "\n");
                 cMetrics.appId = task.appId;
                 cMetrics.jobId = task.jobId;
                 cMetrics.stageId = task.stageId;
