@@ -47,6 +47,7 @@ public class MetricSender {
         try {
             List<String> metrics = buildContainerMetric(cm);
             for(String sentMessage: metrics) {
+                System.out.print("message: " + sentMessage);
                 writer.write(sentMessage);
             }
             writer.flush();
