@@ -47,8 +47,6 @@ public class PickleMetricsSender extends MetricsSender {
                 pathPrefix + "net-receive-rate", metrics.netRecRate.toString(), timeStr));
         interpreter.exec("tuple = tuple +" + buildMessageTuple(
                 pathPrefix + "net-transfer-rate", metrics.netTransRate.toString(), timeStr));
-        // TEST
-        System.out.print("using pickle to send metrics.\n");
 
         interpreter.exec("payload = pickle.dumps(tuple, protocol=2)");
         interpreter.exec("header = struct.pack(\"!L\", len(payload))");
