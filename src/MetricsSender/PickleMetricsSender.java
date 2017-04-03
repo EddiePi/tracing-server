@@ -25,6 +25,9 @@ public class PickleMetricsSender extends MetricsSender {
 
     @Override
     public void sendContainerMetrics(ContainerMetrics metrics) {
+        if (metrics.appId == null || metrics.jobId == null || metrics.stageId == null) {
+            return;
+        }
         String timeStr = metrics.timestamp.toString();
         String pathPrefix = SPARK_PREFIX + metrics.appId + "." + "job_" + metrics.jobId + "." +
                 "stage_" + metrics.stageId + "." + metrics.containerId + ".";
@@ -43,6 +46,9 @@ public class PickleMetricsSender extends MetricsSender {
                 pathPrefix + "net-receive-rate", metrics.netRecRate.toString(), timeStr));
         interpreter.exec("tuple = tuple +" + buildMessageTuple(
                 pathPrefix + "net-transfer-rate", metrics.netTransRate.toString(), timeStr));
+        // TEST
+        interpreter.exec("print tuple");
+
         interpreter.exec("payload = pickle.dumps(tuple, protocol=2)");
         interpreter.exec("header = struct.pack(\"!L\", len(payload))");
         interpreter.exec("message = header + payload");
@@ -66,7 +72,7 @@ public class PickleMetricsSender extends MetricsSender {
 
     private static String buildMessageTuple(String path, String value, String timeStr) {
         String m = "[('" + path + "', (" + timeStr + ", " + value + "))]";
-        System.out.print(m + "\n");
+        //System.out.print(m + "\n");
         return m;
     }
 }

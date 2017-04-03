@@ -139,7 +139,7 @@ public class DockerMonitor {
         metricsCount++;
 
         // TEST
-        printStatus();
+        // printStatus();
     }
 
 //        private void updatePreviousTime() {
