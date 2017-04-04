@@ -1,6 +1,7 @@
 package Server;
 
 import JsonUtils.AppJsonFetcher;
+import JsonUtils.ContainerJsonFetcher;
 import MetricsSender.PickleMetricsSender;
 import MetricsSender.PlainTextMetricSender;
 import RPCService.SparkMonitor;
@@ -9,6 +10,7 @@ import info.*;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -322,9 +324,12 @@ public class Tracer {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            App appToFetch = applications.get(lastAppId);
-            AppJsonFetcher appJsonFetcher = new AppJsonFetcher(conf, appToFetch);
-            appJsonFetcher.fetch();
+            ContainerJsonFetcher containerJsonFetcher;
+            List<String> containerIdList = new ArrayList<>(containerIdToMetrics.keySet());
+            for (App app: applications.values()) {
+                containerJsonFetcher = new ContainerJsonFetcher(conf, app, containerIdList);
+                containerJsonFetcher.fetch();
+            }
         }
     }
 }
