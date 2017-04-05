@@ -324,7 +324,7 @@ public class Tracer {
             }
             ContainerJsonFetcher containerJsonFetcher;
             for (App app: applications.values()) {
-                if (app.fetched = false) {
+                if (!app.fetched) {
                     containerJsonFetcher = new ContainerJsonFetcher(conf, app, containerToReport);
                     containerJsonFetcher.fetch();
                     app.fetched = true;
