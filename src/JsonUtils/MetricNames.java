@@ -11,5 +11,9 @@ public class MetricNames {
     public final static List<String> names = new ArrayList<>(Arrays.asList(
             "CPU",
             "execution-memory",
-            "storage-memory"));
+            "storage-memory",
+            "disk-read-rate",
+            "disk-write-rate",
+            "net-receive-rate",
+            "net-transfer-rate"));
 }
