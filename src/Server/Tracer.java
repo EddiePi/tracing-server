@@ -10,10 +10,7 @@ import info.*;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -29,6 +26,7 @@ public class Tracer {
     public SparkMonitor sm;
     public ConcurrentMap<String, DockerMonitor> containerIdToDM = new ConcurrentHashMap<>();
     public ConcurrentMap<String, List<ContainerMetrics>> containerIdToMetrics = new ConcurrentHashMap<>();
+    public List<String> containerToReport = new ArrayList<>();
     private int runningAppCount = 0;
     private boolean isTest = false;
     Integer reportInterval = conf.getIntegerOrDefault("tracer.report-interval", 1000);
@@ -325,11 +323,12 @@ public class Tracer {
                 e.printStackTrace();
             }
             ContainerJsonFetcher containerJsonFetcher;
-            List<String> containerIdList = new ArrayList<>(containerIdToMetrics.keySet());
             for (App app: applications.values()) {
-                containerJsonFetcher = new ContainerJsonFetcher(conf, app, containerIdList);
+                containerJsonFetcher = new ContainerJsonFetcher(conf, app, containerToReport);
                 containerJsonFetcher.fetch();
             }
         }
+        containerToReport.clear();
+        needFetch = false;
     }
 }

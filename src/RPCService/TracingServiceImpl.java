@@ -98,7 +98,8 @@ public class TracingServiceImpl implements TracingService.Iface{
         // TODO
         if (event.action.equals("REMOVE")) {
             if (dockerMonitorMap.containsKey(containerId)) {
-                DockerMonitor dockerMonitor = dockerMonitorMap.get(containerId);
+                DockerMonitor dockerMonitor = dockerMonitorMap.remove(containerId);
+                tracer.containerToReport.add(containerId);
                 dockerMonitor.stop();
             }
             if(dockerMonitorMap.isEmpty()) {
