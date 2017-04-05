@@ -54,10 +54,10 @@ public class ContainerJsonFetcher {
     private void fetchAllMetrics(String identifier, String destPath) {
         for(String name: MetricNames.names) {
             String url = urlPrefix + identifier + "." + name + urlSuffix;
-            //JsonCopier.copyJsonFromURL(url, destPath, identifier + "." + name + storageSuffix);
+            JsonCopier.copyJsonFromURL(url, destPath, identifier + "." + name + storageSuffix);
 
             //TEST
-            System.out.print("url, " + url + " destPath: " + destPath + " name: " + identifier + "." + name + storageSuffix + "\n");
+            //System.out.print("url, " + url + " destPath: " + destPath + " name: " + identifier + "." + name + storageSuffix + "\n");
         }
     }
 }
