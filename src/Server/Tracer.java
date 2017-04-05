@@ -324,8 +324,11 @@ public class Tracer {
             }
             ContainerJsonFetcher containerJsonFetcher;
             for (App app: applications.values()) {
-                containerJsonFetcher = new ContainerJsonFetcher(conf, app, containerToReport);
-                containerJsonFetcher.fetch();
+                if (app.fetched = false) {
+                    containerJsonFetcher = new ContainerJsonFetcher(conf, app, containerToReport);
+                    containerJsonFetcher.fetch();
+                    app.fetched = true;
+                }
             }
         }
         containerToReport.clear();

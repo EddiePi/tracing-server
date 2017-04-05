@@ -25,7 +25,7 @@ public class ContainerJsonFetcher {
                 conf.getStringOrDefault("tracer.database.host", "localhost") +
                 "/render?target=spark.";
         urlSuffix = "&format=json";
-        storagePrefix = conf.getStringOrDefault("tracer.storage.root", "./");
+        storagePrefix = conf.getStringOrDefault("tracer.storage.root", "./").trim() + "/";
         storageSuffix = ".json";
     }
 

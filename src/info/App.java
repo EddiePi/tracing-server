@@ -16,6 +16,7 @@ public class App {
     public ConcurrentMap<Integer, List<JobMetrics>> jobMetricsToReport;
     public List<AppMetrics> appMetricsToReport;
     public boolean hasReportingTask = false;
+    public boolean fetched = false;
 
     TimeStamps appStamps;
     AppMetrics currentAppMetrics;
