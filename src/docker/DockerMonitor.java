@@ -227,7 +227,7 @@ public class DockerMonitor {
             String receiveStr = resultLine.split("\\s+")[1];
             m.netRecBytes = Long.parseLong(receiveStr);
 
-            String transmitStr = resultLine.split("\\s+")[9];
+            String transmitStr = resultLine.split("\\s+")[8];
             m.netTransBytes = Long.parseLong(transmitStr);
             //System.out.print("netRec: " + m.netRecBytes + " netTrans: " + m.netTransBytes + "\n");
         }
