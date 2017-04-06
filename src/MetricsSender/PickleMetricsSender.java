@@ -6,10 +6,6 @@ import info.JobMetrics;
 import info.StageMetrics;
 import org.python.util.PythonInterpreter;
 
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.net.Socket;
-
 /**
  * Created by cwei on 4/3/17.
  */
@@ -32,6 +28,8 @@ public class PickleMetricsSender extends MetricsSender {
         String timeStr = metrics.timestamp.toString();
         String pathPrefix = SPARK_PREFIX + metrics.appId + "." + "job_" + metrics.jobId + "." +
                 "stage_" + metrics.stageId + "." + metrics.containerId + ".";
+        if (Double.isNaN(metrics.cpuUsage) || Double.isNaN(metrics.diskReadRate) || Double.isNaN(metrics.diskWriteRate)
+                || Double.isNaN(metrics.netRecRate) || Double.isNaN(metrics.netTransRate))
         System.out.print("cpu: " + metrics.cpuUsage.toString() +
         " em: " + metrics.execMemoryUsage.toString() +
         " sm: " + metrics.storeMemoryUsage.toString() + "\n" +
