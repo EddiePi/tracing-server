@@ -32,6 +32,13 @@ public class PickleMetricsSender extends MetricsSender {
         String timeStr = metrics.timestamp.toString();
         String pathPrefix = SPARK_PREFIX + metrics.appId + "." + "job_" + metrics.jobId + "." +
                 "stage_" + metrics.stageId + "." + metrics.containerId + ".";
+        System.out.print("cpu: " + metrics.cpuUsage.toString() +
+        " em: " + metrics.execMemoryUsage.toString() +
+        " sm: " + metrics.storeMemoryUsage.toString() + "\n" +
+        " drr: " + metrics.diskReadRate.toString() +
+        " dwr: " + metrics.diskWriteRate.toString() +
+        " nrr: " + metrics.netRecRate.toString() +
+        " ntr: " + metrics.netTransRate.toString());
         interpreter.exec("tuple=[]");
         interpreter.exec("tuple = tuple +" + buildMessageTuple(
                 pathPrefix + "CPU", metrics.cpuUsage.toString(), timeStr));
