@@ -55,6 +55,10 @@ public abstract class Metrics {
 
     public void fraction(Double rate) {
         this.cpuUsage *= rate;
+        if (Double.isNaN(cpuUsage)) {
+
+            System.out.print("CPU NaN in fraction. rate is " + rate +"\n");
+        }
 
         this.execMemoryUsage = new Double(this.execMemoryUsage * rate).longValue();
         this.storeMemoryUsage = new Double(this.storeMemoryUsage * rate).longValue();

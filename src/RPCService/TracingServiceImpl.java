@@ -32,6 +32,9 @@ public class TracingServiceImpl implements TracingService.Iface{
         TaskMetrics tTaskMetrics = new TaskMetrics();
         // cpu
         tTaskMetrics.cpuUsage = Math.max(task.cpuUsage, 0.0);
+        if (Double.isNaN(tTaskMetrics.cpuUsage)) {
+            System.out.print("CPU NaN in ServiceImpl\n");
+        }
         // memory
         tTaskMetrics.execMemoryUsage = Math.max(task.execMemory, 0L);
         tTaskMetrics.storeMemoryUsage = Math.max(task.storeMemory, 0L);
