@@ -11,10 +11,14 @@ import org.python.util.PythonInterpreter;
  */
 public class PickleMetricsSender extends MetricsSender {
     PythonInterpreter interpreter = new PythonInterpreter();
+    String host;
+    Integer port;
 
     public PickleMetricsSender() {
+        host = conf.getStringOrDefault("tracer.database.host", "localhost");
+        port = conf.getIntegerOrDefault("tracer.database.port", 2004);
         interpreter.exec("import socket\nimport struct\nimport pickle\n" +
-                "ip_port=('192.168.32.120',2004)\n" +
+                "ip_port=('" + host + "'," + port.toString() + ")\n" +
                 "sk=socket.socket()\n" +
                 "sk.connect(ip_port)\n");
     }
