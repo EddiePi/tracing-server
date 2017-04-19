@@ -3,3 +3,4 @@ tracer.conf
 application*/
 *.iml
 data/
+out/
