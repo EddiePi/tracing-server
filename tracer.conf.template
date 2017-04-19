@@ -1,0 +1,8 @@
+tracer.report-interval  1000
+tracer.database.host    192.168.32.120
+tracer.database.port    2003
+tracer.docker.iface-name        enp0s25
+tracer.storage.root     /home/cwei/tracing-server/data
+
+#the following parameters are not currently in use
+tracer.ML.parameter.path	./
