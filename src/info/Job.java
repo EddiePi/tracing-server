@@ -11,7 +11,7 @@ import java.util.Map;
 public class Job {
     public Integer jobId;
     public String appId;
-    Map<Integer, Stage> stageIdToStage;
+    public Map<Integer, Stage> stageIdToStage;
 
     TimeStamps jobStamps;
 

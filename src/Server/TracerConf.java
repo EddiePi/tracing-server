@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,25 +28,14 @@ public class TracerConf {
 
     private void getConfFromFile() {
         String path = "tracer.conf";
-        File file = new File(path);
-        BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new FileReader(file));
-            String tempString;
-            while ((tempString = reader.readLine()) != null) {
-                String[] result = tempString.split("\\s+");
+            List<String> strings = Utils.FileReader.read(path);
+            for(String str: strings) {
+                String[] result = str.split("\\s+");
                 setting.put(result[0], result[1]);
             }
-            reader.close();
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e1) {
-                }
-            }
         }
     }
 

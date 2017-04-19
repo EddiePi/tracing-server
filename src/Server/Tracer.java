@@ -292,9 +292,22 @@ public class Tracer {
                 cMetrics.plus(task.taskMetrics.get(task.taskMetrics.size() - 1));
             }
         }
+
+        // update container metrics in stage at runtime
+        //TODO test the following part
         for (Map.Entry<String, ContainerMetrics> entry: currentCmMap.entrySet()) {
+            ContainerMetrics containerMetrics = entry.getValue();
             String containerId = entry.getKey();
-            containerIdToMetrics.get(containerId).add(entry.getValue());
+            containerIdToMetrics.get(containerId).add(containerMetrics);
+            Stage stageToUpdate = getStageByIdentifier(
+                    containerMetrics.appId, containerMetrics.jobId, containerMetrics.stageId);
+            List<ContainerMetrics> stageCM =
+                    stageToUpdate.containerMetricsMap.get(containerId);
+            if (stageCM == null) {
+                stageCM = new ArrayList<>();
+            }
+            stageCM.add(containerMetrics);
+            stageToUpdate.containerMetricsMap.put(containerId, stageCM);
         }
     }
 
@@ -334,5 +347,21 @@ public class Tracer {
         containerToReport.clear();
         containerIdToMetrics.clear();
         needFetch = false;
+    }
+
+    public Stage getStageByIdentifier(String appId, Integer jobId, Integer stageId) {
+        App app = applications.get(appId);
+        if(app == null) {
+            return null;
+        }
+        Job job = app.getJobById(jobId);
+        if(job == null) {
+            return null;
+        }
+        Stage stage = job.getStageById(stageId);
+        if(stage == null) {
+            return null;
+        }
+        return stage;
     }
 }

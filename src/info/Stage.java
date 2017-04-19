@@ -1,6 +1,8 @@
 package info;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by Eddie on 2017/1/23.
@@ -19,6 +21,9 @@ public class Stage {
     public StageMetrics currentStageMetrics;
     public boolean isReporting = false;
 
+    // for now this is only used for app construction.
+    public ConcurrentMap<String, List<ContainerMetrics>> containerMetricsMap;
+
     public Stage (int stageId, String type, Integer jobId, String appId) {
         this.stageId = stageId;
         this.type = type;
@@ -28,6 +33,7 @@ public class Stage {
         this.taskIdToTask = new HashMap<>();
         this.stageStamps = new TimeStamps();
         currentStageMetrics = new StageMetrics(appId, jobId, stageId);
+        containerMetricsMap = new ConcurrentHashMap<String, List<ContainerMetrics>>();
     }
 
     public Stage(int stageId, Integer jobId, String appId) {
