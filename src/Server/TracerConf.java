@@ -31,7 +31,10 @@ public class TracerConf {
         try {
             List<String> strings = Utils.FileReader.read(path);
             for(String str: strings) {
-                if (str.trim().charAt(0) == '#' || str.trim().isEmpty()) {
+                if(str.isEmpty()) {
+                    continue;
+                }
+                if (str.trim().charAt(0) == '#') {
                     continue;
                 }
                 String[] result = str.split("\\s+");
@@ -39,6 +42,7 @@ public class TracerConf {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            System.exit(-1);
         }
     }
 
