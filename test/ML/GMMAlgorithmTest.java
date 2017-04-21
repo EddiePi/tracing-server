@@ -41,11 +41,11 @@ public class GMMAlgorithmTest {
 
     @Test
     public void TestGMMAlgorithm() {
-        List<Integer> result;
+        List<Boolean> result;
         result = gmmAlgorithm.cluster();
         int index = 0;
-        for(Integer cate: result) {
-            System.out.print(String.format("line: %d category: %d\n", index, cate));
+        for(Boolean cate: result) {
+            System.out.print(String.format("line: %d is anomaly: %b\n", index, cate));
             index++;
         }
     }

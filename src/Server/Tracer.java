@@ -1,14 +1,11 @@
 package Server;
 
-import JsonUtils.AppJsonFetcher;
 import JsonUtils.ContainerJsonFetcher;
 import MetricsSender.PickleMetricsSender;
-import MetricsSender.PlainTextMetricSender;
 import RPCService.SparkMonitor;
 import docker.DockerMonitor;
 import info.*;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,6 +27,10 @@ public class Tracer {
     private int runningAppCount = 0;
     private boolean isTest = false;
     Integer reportInterval = conf.getIntegerOrDefault("tracer.report-interval", 1000);
+    private boolean analyzerEnabled = conf.getBooleanOrDefault("tracer.ML.analyzer.enabled", false);
+
+
+    private Analyzer analyzer;
     private class TestTracingRunnable implements Runnable {
         @Override
         public void run() {
@@ -40,7 +41,7 @@ public class Tracer {
                         printTaskInfo();
                         printHighLevelInfo();
                     } else {
-                        sendInfoToDatabase();
+                        sendInfo();
                     }
                 }
                 try {
@@ -65,6 +66,9 @@ public class Tracer {
 
     private Tracer() {
         ms = new PickleMetricsSender();
+        if (analyzerEnabled) {
+            analyzer = new Analyzer(true);
+        }
     }
 
     public static Tracer getInstance() {
@@ -244,7 +248,8 @@ public class Tracer {
         }
     }
 
-    public void sendInfoToDatabase() {
+    // this method send data to both database and analyzer (if enabled).
+    public void sendInfo() {
         for(App app: applications.values()) {
             Map<Long, Task> taskMap = app.getAndClearReportingTasks();
             updateTaskDockerInfo(taskMap);
@@ -259,6 +264,9 @@ public class Tracer {
                 if (cmList.size() > 0) {
                     ContainerMetrics last = cmList.get(cmList.size() - 1);
                     ms.sendContainerMetrics(last);
+                    if(conf.getBooleanOrDefault("tracer.ML.analyzer.enabled", false)) {
+                        analyzer.addDataToAnalyze(last);
+                    }
                 }
             }
 //            List<StageMetrics> sml = app.getAndClearReportingStageMetrics();
@@ -288,6 +296,7 @@ public class Tracer {
                 cMetrics.appId = task.appId;
                 cMetrics.jobId = task.jobId;
                 cMetrics.stageId = task.stageId;
+                cMetrics.buildFullId();
                 cMetrics.timestamp = task.taskMetrics.get(task.taskMetrics.size() - 1).timestamp;
                 cMetrics.plus(task.taskMetrics.get(task.taskMetrics.size() - 1));
             }

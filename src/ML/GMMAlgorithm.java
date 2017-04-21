@@ -13,6 +13,7 @@ public class GMMAlgorithm {
     int dataDimen;
     GMMParameter parameter;
     ArrayList<ArrayList<Double>> dataSet;
+    private double anomalyThreshold = 0.5;
 
     public GMMAlgorithm(ArrayList<ArrayList<Double>> dataSet, double[][] initMiu) {
         this(dataSet, false);
@@ -38,7 +39,11 @@ public class GMMAlgorithm {
         }
     }
 
-    public List<Integer> cluster() {
+    public void setAnomalyThreshold(double threshold) {
+        this.anomalyThreshold = threshold;
+    }
+
+    public List<Boolean> cluster() {
         double Lpre = -Double.MAX_VALUE;
         double threshold = 0.0001;
         while(true) {
@@ -114,17 +119,19 @@ public class GMMAlgorithm {
             Lpre = L;
         }
         double[][] px = computeProbability();
-        List<Integer> result = new ArrayList<>();
+        List<Boolean> result = new ArrayList<>();
         for(int i = 0; i < px.length; i++) {
             Double maxProp = -1D;
-            Integer category = 0;
+            Boolean isAnomaly = false;
             for(int j = 0; j < px[i].length; j++) {
                 if(px[i][j] > maxProp) {
                     maxProp = px[i][j];
-                    category = j;
                 }
             }
-            result.add(category);
+            if (maxProp < anomalyThreshold) {
+                isAnomaly = true;
+            }
+            result.add(isAnomaly);
         }
 
         return result;

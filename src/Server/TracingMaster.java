@@ -24,7 +24,5 @@ public class TracingMaster {
         BasicConfigurator.configure();
         Tracer tracer = Tracer.getInstance();
         tracer.init();
-
-
     }
 }

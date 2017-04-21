@@ -5,6 +5,7 @@ import ML.GMMAlgorithm;
 import ML.GMMParameter;
 import Utils.ObjPersistant;
 import info.*;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,24 +13,23 @@ import java.util.List;
 /**
  * Created by Eddie on 2017/4/14.
  */
-//TODO this class now is only in test package. we need to move it so that it can be reached from main.
+//TODO this class now is only in test package.
+//TODO we need to move it so that it can be reached from main.
+//TODO use a thread to periodically classify the data.
 public class Analyzer {
-    Tracer tracer;
     TracerConf conf;
     ArrayList<ArrayList<Double>> trainingSet;
     String parameterPath;
+    List<ContainerMetrics> metricsToAnalyzeBuffer = new ArrayList<>();
+    List<ContainerMetrics> metricsInAnalysis = new ArrayList<>();
+    boolean readParameter = false;
 
 
-    public Analyzer() {
+    public Analyzer(boolean readParameter) {
         trainingSet = new ArrayList<>();
         this.conf = TracerConf.getInstance();
         parameterPath = conf.getStringOrDefault("tracer.ML.parameter.path", "./parameter");
-    }
-
-    public Analyzer(Tracer tracer) {
-        this();
-        this.tracer = tracer;
-
+        this.readParameter = readParameter;
     }
 
     public void doTraining() {
@@ -46,11 +46,27 @@ public class Analyzer {
     }
 
     public void classify() {
-        GMMParameter parameter = (GMMParameter)ObjPersistant.readObject(parameterPath);
-        GMMAlgorithm classifier = new GMMAlgorithm(trainingSet, parameter);
-        classifier.cluster();
+        GMMParameter parameter;
+        GMMAlgorithm classifier;
+        if (readParameter) {
+            parameter = (GMMParameter)ObjPersistant.readObject(parameterPath);
+            classifier = new GMMAlgorithm(buildDataInAnalysis(), parameter);
+        } else {
+            classifier = new GMMAlgorithm(buildDataInAnalysis(), true);
+        }
+        List<Boolean> anomalyList;
+        anomalyList = classifier.cluster();
         parameter = classifier.getParameter();
+        List<Integer> anomalyIndex = new ArrayList<>();
+        for(int i = 0; i < anomalyList.size(); i++) {
+            if (anomalyList.get(i)) {
+                anomalyIndex.add(i);
+            }
+        }
         printParameter(parameter);
+        printAnomalyInfo(anomalyIndex);
+
+        metricsInAnalysis.clear();
     }
 
 
@@ -59,10 +75,25 @@ public class Analyzer {
         trainingSet.addAll(formatApp(app));
     }
 
-    public void addAllMemoryAppToTraining() {
-        for(App app: tracer.applications.values()) {
-            trainingSet.addAll(formatApp(app));
+
+
+    // this method is called by Tracer periodically
+    public void addDataToAnalyze(ContainerMetrics containerMetrics) {
+        synchronized (metricsToAnalyzeBuffer) {
+            metricsToAnalyzeBuffer.add(containerMetrics);
         }
+    }
+
+    private ArrayList<ArrayList<Double>> buildDataInAnalysis() {
+        synchronized (metricsToAnalyzeBuffer) {
+            metricsInAnalysis.addAll(metricsToAnalyzeBuffer);
+            metricsToAnalyzeBuffer.clear();
+        }
+        ArrayList<ArrayList<Double>> dataSet = new ArrayList<>();
+        for(ContainerMetrics metrics: metricsInAnalysis) {
+            dataSet.add(formatMetrics(metrics));
+        }
+        return dataSet;
     }
 
     private ArrayList<ArrayList<Double>> formatApp(App app) {
@@ -105,5 +136,25 @@ public class Analyzer {
             }
             System.out.print("\n");
         }
+    }
+
+    private void printAnomalyInfo(List<Integer> index) {
+        for(int i = 0; i < index.size(); i++) {
+            ContainerMetrics anomaly = metricsInAnalysis.get(index.get(i));
+            System.out.print("anomalyId: " + anomaly.getFullId() + "\n");
+        }
+    }
+
+    // this method is only used for TEST
+    public void addFileAppToClassify(String path) {
+        App app = AppConstructor.getApp(path);
+        for(Job job: app.getAllJobs()) {
+            for(Stage stage: job.getAllStage()) {
+                for(List<ContainerMetrics> metricList: stage.containerMetricsMap.values()) {
+                    metricsInAnalysis.addAll(metricList);
+                }
+            }
+        }
+
     }
 }

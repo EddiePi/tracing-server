@@ -171,6 +171,7 @@ public class AppConstructor {
             containerMetrics.appId = appId;
             containerMetrics.jobId = jobId;
             containerMetrics.stageId = stageId;
+            containerMetrics.buildFullId();
             containerMetricsList.add(containerMetrics);
         }
         for (int i = 0; i < length; i++) {

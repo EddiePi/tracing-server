@@ -4,5 +4,8 @@ tracer.database.port    2003
 tracer.docker.iface-name        enp0s25
 tracer.storage.root     /home/cwei/tracing-server/data
 
+tracer.ML.analyzer.enabled	false
+
 #the following parameters are not currently in use
 tracer.ML.parameter.path	./
+

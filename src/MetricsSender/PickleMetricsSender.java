@@ -30,8 +30,7 @@ public class PickleMetricsSender extends MetricsSender {
             return;
         }
         String timeStr = metrics.timestamp.toString();
-        String pathPrefix = SPARK_PREFIX + metrics.appId + "." + "job_" + metrics.jobId + "." +
-                "stage_" + metrics.stageId + "." + metrics.containerId + ".";
+        String pathPrefix = SPARK_PREFIX + metrics.getFullId() + ".";
         if (Double.isNaN(metrics.cpuUsage) || Double.isNaN(metrics.diskReadRate) || Double.isNaN(metrics.diskWriteRate)
                 || Double.isNaN(metrics.netRecRate) || Double.isNaN(metrics.netTransRate))
         System.out.print("cpu: " + metrics.cpuUsage.toString() +

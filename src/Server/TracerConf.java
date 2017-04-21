@@ -78,4 +78,14 @@ public class TracerConf {
         }
         return value;
     }
+
+    public Boolean getBooleanOrDefault(String key, Boolean defaultValue) {
+        String valueStr = setting.get(key);
+        if (valueStr == null) {
+            return defaultValue;
+        }
+        Boolean value;
+        value = Boolean.valueOf(valueStr);
+        return value;
+    }
 }

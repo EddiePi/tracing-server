@@ -12,9 +12,9 @@ public class AnalyzerTest {
     Analyzer analyzer;
     @Before
     public void setUp() throws Exception {
-        analyzer = new Analyzer();
-        analyzer.addFileAppToTraining("./data/pagerank-huge");
-        analyzer.addFileAppToTraining("./data/kmeans-huge");
+        analyzer = new Analyzer(true);
+        analyzer.addFileAppToClassify("./data/pagerank-huge");
+        analyzer.addFileAppToClassify("./data/kmeans-huge");
     }
 
 //    @Test

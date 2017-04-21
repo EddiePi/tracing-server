@@ -8,9 +8,18 @@ public class ContainerMetrics extends Metrics {
     public String appId;
     public Integer jobId;
     public Integer stageId;
+    private String containerFullId;
 
     public ContainerMetrics(String containerId) {
         this.containerId = containerId;
+    }
+
+    public void buildFullId() {
+        containerFullId = appId + "." + "job_" + jobId.toString() + "." + "stage_" + stageId + "." + containerId;
+    }
+
+    public String getFullId() {
+        return containerFullId;
     }
 
     @Override

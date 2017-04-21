@@ -166,8 +166,7 @@ public class PlainTextMetricSender extends MetricsSender {
         String valueSeg;
         String timeStampSeg;
         DecimalFormat df = new DecimalFormat("0.000");
-        containerPrefix = SPARK_PREFIX + metrics.appId + "." + "job_" + metrics.jobId + "." +
-                "stage_" + metrics.stageId + "." + metrics.containerId + ".";
+        containerPrefix = SPARK_PREFIX + metrics.getFullId() + ".";
         timeStampSeg = metrics.timestamp.toString();
 
         // cpu usage string
