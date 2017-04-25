@@ -60,6 +60,9 @@ public class GMMAlgorithm {
             for(int i = 0; i < dataNum; i++) {
                 for(int j = 0; j < k; j++) {
                     pGama[i][j] = pGama[i][j] / sumpGama[i];
+                    if(Double.isNaN(pGama[i][j])) {
+                        pGama[i][j] = 1E-20;
+                    }
                 }
             }
 
