@@ -1,5 +1,5 @@
 #!/bin/bash
-
+/home/eddie/tracing-server/run.sh
 for i in disco-00{12..19}
 do
 	ssh $i "/home/eddie/tracing-server/run.sh > /dev/null 2>&1 &"
