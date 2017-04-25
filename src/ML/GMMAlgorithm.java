@@ -78,6 +78,9 @@ public class GMMAlgorithm {
             // calculate pPi (vector)
             double[] pPi = new double[k];
             for(int i = 0; i < NK.length; i++) {
+                if(NK[i] == 0) {
+                    NK[i] += 1E-20;
+                }
                 pPi[i] = NK[i] / dataNum;
             }
             parameter.setpPi(pPi);

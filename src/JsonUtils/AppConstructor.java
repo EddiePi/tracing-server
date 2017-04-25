@@ -163,7 +163,7 @@ public class AppConstructor {
             }
         }
         List<ContainerMetrics> containerMetricsList;
-        Integer length = (int) (endTime - startTime);
+        Integer length = (int) (endTime - startTime + 1);
         containerMetricsList = new ArrayList<ContainerMetrics>(length);
         for (int i = 0; i < length; i++) {
             ContainerMetrics containerMetrics = new ContainerMetrics(containerId);
@@ -229,7 +229,7 @@ public class AppConstructor {
             if( netTrans != null) {
                 if (netTrans.length() > i) {
                     Double netTransValue = getDoubleOrDefault(netTrans.getJSONArray(i).getString(0), 0D);
-                    Integer offset = (int) (cpuUsage.getJSONArray(i).getLong(1) - startTime);
+                    Integer offset = (int) (netTrans.getJSONArray(i).getLong(1) - startTime);
                     containerMetricsList.get(offset).netTransRate = netTransValue;
                 }
             }
