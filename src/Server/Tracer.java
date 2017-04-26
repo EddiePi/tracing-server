@@ -36,19 +36,21 @@ public class Tracer {
         @Override
         public void run() {
             while (true) {
-                updateRunningApp();
-                if (runningAppCount > 0) {
-                    if (isTest) {
-                        printTaskInfo();
-                        printHighLevelInfo();
-                    } else {
-                        sendInfo();
-                    }
-                }
                 try {
+                    updateRunningApp();
+                    if (runningAppCount > 0) {
+                        if (isTest) {
+                            printTaskInfo();
+                            printHighLevelInfo();
+                        } else {
+                            sendInfo();
+                        }
+                    }
                     Thread.sleep(reportInterval);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                } catch (NullPointerException e) {
+                    // do nothing
                 }
             }
         }
@@ -266,7 +268,9 @@ public class Tracer {
             for(List<ContainerMetrics> cmList: containerIdToMetrics.values()) {
                 if (cmList.size() > 0) {
                     ContainerMetrics last = cmList.get(cmList.size() - 1);
-                    ms.sendContainerMetrics(last);
+                    if (fetchEnabled) {
+                        ms.sendContainerMetrics(last);
+                    }
                     if(conf.getBooleanOrDefault("tracer.ML.analyzer.enabled", false)) {
                         analyzer.addDataToAnalyze(last);
                     }
@@ -343,7 +347,7 @@ public class Tracer {
     public void fetchLastApp() {
         if(needFetch && fetchEnabled) {
             try {
-                Thread.sleep(2000);
+                Thread.sleep(6000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
