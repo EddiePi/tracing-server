@@ -28,12 +28,6 @@ public class AnalyzerTest {
 //    }
 
     @Test
-    public void doTrainingTest() throws Exception {
-        System.out.print("training test\n");
-        analyzer.doTraining();
-    }
-
-    @Test
     public void classifyTest() throws Exception {
         System.out.print("classify test\n");
         analyzer.classify();

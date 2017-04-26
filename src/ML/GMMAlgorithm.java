@@ -1,6 +1,7 @@
 package ML;
 
 import Jama.Matrix;
+import Server.TracerConf;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,8 @@ public class GMMAlgorithm {
     int dataDimen;
     GMMParameter parameter;
     ArrayList<ArrayList<Double>> dataSet;
-    private double anomalyThreshold = 0.5;
+    TracerConf conf = TracerConf.getInstance();
+    private double anomalyThreshold = conf.getDoubleOrDefault("tracer.ML.anomaly.possibility-threshold", 0.5);
 
     public GMMAlgorithm(ArrayList<ArrayList<Double>> dataSet, double[][] initMiu) {
         this(dataSet, false);

@@ -32,19 +32,6 @@ public class Analyzer {
         this.readParameter = readParameter;
     }
 
-    public void doTraining() {
-        double[][] initMiu = new double[4][4];
-        initMiu[0] = new double[]{1.0, 0.0, 0.0, 0.0};
-        initMiu[1] = new double[]{0, 1, 0, 0};
-        initMiu[2] = new double[]{0, 0, 1, 0};
-        initMiu[3] = new double[]{0, 0, 0, 1};
-        GMMAlgorithm trainee = new GMMAlgorithm(trainingSet, initMiu);
-        trainee.cluster();
-        GMMParameter parameter = trainee.getParameter();
-        ObjPersistant.saveObject(parameter, parameterPath);
-        printParameter(parameter);
-    }
-
     public void classify() {
         GMMParameter parameter;
         GMMAlgorithm classifier;
