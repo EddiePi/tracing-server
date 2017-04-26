@@ -19,6 +19,7 @@ public class Tracer {
     public ConcurrentMap<String, App> applications = new ConcurrentHashMap<>();
     private String lastAppId;
     private boolean needFetch = false;
+    private boolean fetchEnabled = false;
 
     public SparkMonitor sm;
     public ConcurrentMap<String, DockerMonitor> containerIdToDM = new ConcurrentHashMap<>();
@@ -65,6 +66,7 @@ public class Tracer {
     private PickleMetricsSender ms;
 
     private Tracer() {
+        fetchEnabled = conf.getBooleanOrDefault("tracer.fetch.enabled", false);
         ms = new PickleMetricsSender();
         if (analyzerEnabled) {
             analyzer = new Analyzer(true);
@@ -339,7 +341,7 @@ public class Tracer {
     }
 
     public void fetchLastApp() {
-        if(needFetch) {
+        if(needFetch && fetchEnabled) {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
