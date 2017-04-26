@@ -18,51 +18,73 @@ import java.util.List;
 //TODO use a thread to periodically classify the data.
 public class Analyzer {
     TracerConf conf;
-    ArrayList<ArrayList<Double>> trainingSet;
     String parameterPath;
     List<ContainerMetrics> metricsToAnalyzeBuffer = new ArrayList<>();
     List<ContainerMetrics> metricsInAnalysis = new ArrayList<>();
     boolean readParameter = false;
+    GMMAlgorithm classifier;
+    Long classifyInterval;
+    Thread classifyThread;
+    boolean isRunning;
+
+    private class classifierRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            while(isRunning) {
+                classify();
+                try {
+                    Thread.sleep(classifyInterval);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
 
     public Analyzer(boolean readParameter) {
-        trainingSet = new ArrayList<>();
         this.conf = TracerConf.getInstance();
         parameterPath = conf.getStringOrDefault("tracer.ML.parameter.path", "./parameter");
         this.readParameter = readParameter;
+        classifyInterval = (long)conf.getIntegerOrDefault("tracer.ML.classify-interval", 5000);
+        classifyThread = new Thread(new classifierRunnable());
     }
 
+    public void start() {
+        isRunning = true;
+        classifyThread.run();
+    }
+
+    public void stop() {
+        isRunning = false;
+    }
+
+    // public for test
     public void classify() {
         GMMParameter parameter;
-        GMMAlgorithm classifier;
+        ArrayList<ArrayList<Double>> currentDataSet = buildDataInAnalysis();
+        if (currentDataSet == null) {
+            return;
+        }
         if (readParameter) {
             parameter = (GMMParameter)ObjPersistant.readObject(parameterPath);
-            classifier = new GMMAlgorithm(buildDataInAnalysis(), parameter);
+            classifier = new GMMAlgorithm(currentDataSet, parameter);
         } else {
-            classifier = new GMMAlgorithm(buildDataInAnalysis(), true);
+            classifier = new GMMAlgorithm(currentDataSet, true);
         }
         List<Boolean> anomalyList;
         anomalyList = classifier.cluster();
-        parameter = classifier.getParameter();
         List<Integer> anomalyIndex = new ArrayList<>();
         for(int i = 0; i < anomalyList.size(); i++) {
             if (anomalyList.get(i)) {
                 anomalyIndex.add(i);
             }
         }
-        printParameter(parameter);
         printAnomalyInfo(anomalyIndex);
 
         metricsInAnalysis.clear();
     }
-
-
-    public void addFileAppToTraining(String path) {
-        App app = AppConstructor.getApp(path);
-        trainingSet.addAll(formatApp(app));
-    }
-
-
 
     // this method is called by Tracer periodically
     public void addDataToAnalyze(ContainerMetrics containerMetrics) {
@@ -75,6 +97,9 @@ public class Analyzer {
         synchronized (metricsToAnalyzeBuffer) {
             metricsInAnalysis.addAll(metricsToAnalyzeBuffer);
             metricsToAnalyzeBuffer.clear();
+        }
+        if (metricsInAnalysis.size() == 0) {
+            return null;
         }
         ArrayList<ArrayList<Double>> dataSet = new ArrayList<>();
         for(ContainerMetrics metrics: metricsInAnalysis) {

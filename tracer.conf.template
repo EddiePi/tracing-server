@@ -1,11 +1,11 @@
 tracer.report-interval  1000
 tracer.database.host    192.168.32.120
-tracer.database.port    2003
+tracer.database.port    2004
 tracer.docker.iface-name        enp0s25
-tracer.storage.root     /home/cwei/tracing-server/data
+tracer.storage.root     /home/eddie/tracedata/data
 
-tracer.ML.analyzer.enabled	false
+tracer.ML.analyzer.enabled	true
 
-#the following parameters are not currently in use
-tracer.ML.parameter.path	./
-
+tracer.ML.parameter.path	/home/eddie/tracedata/parameter
+tracer.ML.anomaly.possibility-threshold     0.5
+tracer.ML.classify-interval     10000

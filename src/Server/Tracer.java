@@ -31,7 +31,7 @@ public class Tracer {
 
 
     private Analyzer analyzer;
-    private class TestTracingRunnable implements Runnable {
+    private class TracingRunnable implements Runnable {
         @Override
         public void run() {
             while (true) {
@@ -52,7 +52,7 @@ public class Tracer {
             }
         }
     }
-    TestTracingRunnable runnable = new TestTracingRunnable();
+    TracingRunnable runnable = new TracingRunnable();
 
     Thread tThread = new Thread(runnable);
 
@@ -75,11 +75,12 @@ public class Tracer {
         return instance;
     }
 
-    // start rpc server
+    // start rpc server and analyzer
     public void init() {
         sm = new SparkMonitor();
         sm.startServer();
         tThread.start();
+        analyzer.start();
 
     }
 
