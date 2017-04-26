@@ -354,8 +354,10 @@ public class Tracer {
                 }
             }
         }
+        containerIdToDM.clear();
         containerToReport.clear();
         containerIdToMetrics.clear();
+        applications.clear();
         needFetch = false;
     }
 
