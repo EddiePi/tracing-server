@@ -74,7 +74,7 @@ public class Analyzer {
             classifier = new GMMAlgorithm(currentDataSet, true);
         }
         List<Boolean> anomalyList;
-        anomalyList = classifier.cluster();
+        anomalyList = classifier.getAnomalies();
         List<Integer> anomalyIndex = new ArrayList<>();
         for(int i = 0; i < anomalyList.size(); i++) {
             if (anomalyList.get(i)) {

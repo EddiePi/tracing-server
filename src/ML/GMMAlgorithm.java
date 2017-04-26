@@ -45,6 +45,25 @@ public class GMMAlgorithm {
         this.anomalyThreshold = threshold;
     }
 
+    public List<Boolean> getAnomalies() {
+        double[][] px = computeProbability();
+        List<Boolean> result = new ArrayList<>();
+        for(int i = 0; i < px.length; i++) {
+            Double maxProp = -1D;
+            Boolean isAnomaly = false;
+            for(int j = 0; j < px[i].length; j++) {
+                if(px[i][j] > maxProp) {
+                    maxProp = px[i][j];
+                }
+            }
+            if (maxProp < anomalyThreshold) {
+                isAnomaly = true;
+            }
+            result.add(isAnomaly);
+        }
+        return result;
+    }
+
     public List<Boolean> cluster() {
         double Lpre = -Double.MAX_VALUE;
         double threshold = 0.0001;
