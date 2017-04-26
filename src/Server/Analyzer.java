@@ -127,8 +127,8 @@ public class Analyzer {
         ArrayList<Double> data = new ArrayList<>();
         data.add(metrics.cpuUsage);
         data.add((double)(metrics.storeMemoryUsage + metrics.execMemoryUsage));
-        //data.add(metrics.diskReadRate);
-        //data.add(metrics.diskWriteRate);
+        data.add(metrics.diskReadRate);
+        data.add(metrics.diskWriteRate);
         data.add(metrics.netRecRate);
         data.add(metrics.netTransRate);
         return data;
