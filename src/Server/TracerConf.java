@@ -27,9 +27,22 @@ public class TracerConf {
     }
 
     private void getConfFromFile() {
-        String path = "tracer.conf";
+        String path;
         try {
+            path = "tracer.conf";
             List<String> strings = Utils.FileReader.read(path);
+            for(String str: strings) {
+                if(str.isEmpty()) {
+                    continue;
+                }
+                if (str.trim().charAt(0) == '#') {
+                    continue;
+                }
+                String[] result = str.split("\\s+");
+                setting.put(result[0], result[1]);
+            }
+            path = "machine.conf";
+            strings = Utils.FileReader.read(path);
             for(String str: strings) {
                 if(str.isEmpty()) {
                     continue;

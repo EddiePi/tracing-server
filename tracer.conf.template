@@ -1,7 +1,6 @@
 tracer.report-interval  1000
 tracer.database.host    192.168.32.120
 tracer.database.port    2004
-tracer.docker.iface-name        enp0s25
 tracer.storage.root     /home/eddie/tracedata/data
 tracer.fetch.enabled    false
 
