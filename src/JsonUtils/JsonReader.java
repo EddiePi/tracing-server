@@ -59,19 +59,21 @@ public class JsonReader {
     }
 
     public JSONArray getData() {
-        JSONArray dataArray = null;
-        try {
-            dataArray = topJsonObject.getJSONArray("datapoints");
-            dataArray = dataTrim(dataArray);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } finally {
-            return dataArray;
-        }
+        JSONArray dataArray;
+        dataArray = dataTrim();
+        return dataArray;
     }
 
-    public JSONArray dataTrim(JSONArray array) {
-        JSONArray res = array;
+    public JSONArray dataTrim() {
+        JSONArray res = null;
+        try {
+            res = topJsonObject.getJSONArray("datapoints");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (res == null || res.length() < 1) {
+            return null;
+        }
         try {
             JSONArray tmp;
             String value;

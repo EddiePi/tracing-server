@@ -33,7 +33,7 @@ public class ContainerJsonFetcher {
         String appId = app.appId;   // app_1
         // we cannot add suffix here. we need to add it after .CPU/execMemory...
         String appStoragePath = storagePrefix + appId; // ./app_1
-        //fetchAllMetrics(appId, appStoragePath);
+        // fetchAllMetrics(appId, appStoragePath);
         for(Job job: app.getAllJobs()) {
             String completeJobId = appId + ".job_" + job.jobId.toString();  // app_1.job_1
             String jobStoragePath = appStoragePath + "/job_" + job.jobId.toString();
@@ -54,10 +54,17 @@ public class ContainerJsonFetcher {
     private void fetchAllMetrics(String identifier, String destPath) {
         for(String name: MetricNames.names) {
             String url = urlPrefix + identifier + "." + name + urlSuffix;
-            JsonCopier.copyJsonFromURL(url, destPath, identifier + "." + name + storageSuffix);
+            String fullName = identifier + "." + name + storageSuffix;
+            JsonCopier.copyJsonFromURL(url, destPath, fullName);
+            trim(destPath + "/" + fullName);
 
             //TEST
             //System.out.print("url, " + url + " destPath: " + destPath + " name: " + identifier + "." + name + storageSuffix + "\n");
         }
+    }
+
+    private void trim(String path) {
+        JsonReader reader = new JsonReader(path);
+        reader.dataTrim();
     }
 }
