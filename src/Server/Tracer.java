@@ -84,8 +84,9 @@ public class Tracer {
         sm = new SparkMonitor();
         sm.startServer();
         tThread.start();
-        analyzer.start();
-
+        if (analyzerEnabled) {
+            analyzer.start();
+        }
     }
 
 
@@ -268,9 +269,7 @@ public class Tracer {
             for(List<ContainerMetrics> cmList: containerIdToMetrics.values()) {
                 if (cmList.size() > 0) {
                     ContainerMetrics last = cmList.get(cmList.size() - 1);
-                    if (fetchEnabled) {
-                        ms.sendContainerMetrics(last);
-                    }
+                    ms.sendContainerMetrics(last);
                     if(conf.getBooleanOrDefault("tracer.ML.analyzer.enabled", false)) {
                         analyzer.addDataToAnalyze(last);
                     }
