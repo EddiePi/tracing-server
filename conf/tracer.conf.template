@@ -11,7 +11,7 @@ tracer.ML.parameter.path	/home/eddie/tracedata/GMMParameter
 tracer.ML.anomaly.possibility-threshold     0.5
 tracer.ML.classify-interval     10000
 
-tracer.simple.parameter.path    /home/eddie/trace/data/simpleParameter
+tracer.simple.parameter.path    /home/eddie/tracedata/simpleParameter
 tracer.simple.parameter.upperThreshold  0.8
 tracer.simple.parameter.lowerThreshold  0.1
 
