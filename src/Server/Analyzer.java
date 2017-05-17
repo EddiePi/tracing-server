@@ -103,12 +103,6 @@ public class Analyzer {
 
     public void simpleAnalysis() {
         ArrayList<ArrayList<Double>> currentDataSet = buildDataInAnalysis();
-        simpleParameter = (SimpleParameter)ObjPersistant.readObject(simpleParameterPath);
-        if (simpleParameter == null) {
-            simpleParameter = new SimpleParameter();
-            ObjPersistant.saveObject(simpleParameter, simpleParameterPath);
-
-        }
         if(currentDataSet == null) {
             return;
         }
