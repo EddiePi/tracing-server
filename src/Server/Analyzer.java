@@ -28,9 +28,12 @@ public class Analyzer {
     String analysisMode;
     boolean isRunning;
 
+    // parameter related to GMM
+    GMMParameter GMMparameter;
     // parameter related to simple analysis
     Double upperThreshold;
     Double lowerThreshold;
+    SimpleParameter simpleParameter;
 
     private class classifierRunnable implements Runnable {
 
@@ -74,8 +77,18 @@ public class Analyzer {
             analysisThread = new Thread(new simpleAnalysisRunnable());
             upperThreshold = conf.getDoubleOrDefault("tracer.simple.parameter.upperThreshold", 0.8);
             lowerThreshold = conf.getDoubleOrDefault("tracer.simple.parameter.upperThreshold", 0.1);
+            if (readParameter) {
+                simpleParameter = (SimpleParameter) ObjPersistant.readObject(simpleParameterPath);
+                if (simpleParameter == null) {
+                    simpleParameter = new SimpleParameter();
+                    ObjPersistant.saveObject(simpleParameter, simpleParameterPath);
+                }
+            }
         } else {
             analysisThread = new Thread(new classifierRunnable());
+            if(readParameter) {
+                GMMparameter = (GMMParameter) ObjPersistant.readObject(GMMParameterPath);
+            }
         }
     }
 
@@ -90,9 +103,11 @@ public class Analyzer {
 
     public void simpleAnalysis() {
         ArrayList<ArrayList<Double>> currentDataSet = buildDataInAnalysis();
-        SimpleParameter parameter = (SimpleParameter)ObjPersistant.readObject(simpleParameterPath);
-        if (parameter == null) {
-            parameter = new SimpleParameter();
+        simpleParameter = (SimpleParameter)ObjPersistant.readObject(simpleParameterPath);
+        if (simpleParameter == null) {
+            simpleParameter = new SimpleParameter();
+            ObjPersistant.saveObject(simpleParameter, simpleParameterPath);
+
         }
         if(currentDataSet == null) {
             return;
@@ -104,10 +119,10 @@ public class Analyzer {
             for(ArrayList<Double> data: currentDataSet) {
                 Double lowerSum = 0D;
                 for(int j = 0; j < data.size(); j++) {
-                    if(data.get(j) > parameter.maxUsage[j] * upperThreshold) {
+                    if(data.get(j) > simpleParameter.maxUsage[j] * upperThreshold) {
                         overIndex.add(i);
                     }
-                    lowerSum += data.get(j) / parameter.maxUsage[j];
+                    lowerSum += data.get(j) / simpleParameter.maxUsage[j];
                 }
                 if (lowerSum < lowerThreshold) {
                     underIndex.add(i);
@@ -117,28 +132,26 @@ public class Analyzer {
         } else {
             for(ArrayList<Double> data: currentDataSet) {
                 for(int i = 1; i < 6; i++) {
-                    if(parameter.maxUsage[i] < data.get(i)) {
-                        parameter.maxUsage[i] = data.get(i);
+                    if(simpleParameter.maxUsage[i] < data.get(i)) {
+                        simpleParameter.maxUsage[i] = data.get(i);
                     }
                 }
             }
             for(int i = 1; i < 6; i++) {
-                parameter.maxUsage[i] *= 1.1;
+                simpleParameter.maxUsage[i] *= 1.1;
             }
-            ObjPersistant.saveObject(parameter, simpleParameterPath);
+            ObjPersistant.saveObject(simpleParameter, simpleParameterPath);
         }
     }
 
     // public for test
     public void classify() {
-        GMMParameter parameter;
         ArrayList<ArrayList<Double>> currentDataSet = buildDataInAnalysis();
         if (currentDataSet == null) {
             return;
         }
         if (readParameter) {
-            parameter = (GMMParameter)ObjPersistant.readObject(GMMParameterPath);
-            classifier = new GMMAlgorithm(currentDataSet, parameter);
+            classifier = new GMMAlgorithm(currentDataSet, GMMparameter);
         } else {
             classifier = new GMMAlgorithm(currentDataSet, true);
         }
