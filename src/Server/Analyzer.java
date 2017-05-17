@@ -5,7 +5,6 @@ import ML.GMMAlgorithm;
 import ML.GMMParameter;
 import Utils.ObjPersistant;
 import info.*;
-import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,14 +17,20 @@ import java.util.List;
 //TODO use a thread to periodically classify the data.
 public class Analyzer {
     TracerConf conf;
-    String parameterPath;
+    String GMMParameterPath;
+    String simpleParameterPath;
     List<ContainerMetrics> metricsToAnalyzeBuffer = new ArrayList<>();
     List<ContainerMetrics> metricsInAnalysis = new ArrayList<>();
     boolean readParameter = false;
     GMMAlgorithm classifier;
     Long classifyInterval;
-    Thread classifyThread;
+    Thread analysisThread;
+    String analysisMode;
     boolean isRunning;
+
+    // parameter related to simple analysis
+    Double upperThreshold;
+    Double lowerThreshold;
 
     private class classifierRunnable implements Runnable {
 
@@ -42,22 +47,86 @@ public class Analyzer {
         }
     }
 
+    private class simpleAnalysisRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            while(isRunning) {
+                simpleAnalysis();
+            }
+            try {
+                Thread.sleep(classifyInterval);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     public Analyzer(boolean readParameter) {
         this.conf = TracerConf.getInstance();
-        parameterPath = conf.getStringOrDefault("tracer.ML.parameter.path", "./parameter");
+        GMMParameterPath = conf.getStringOrDefault("tracer.ML.parameter.path", "./GMMParameter");
+        simpleParameterPath = conf.getStringOrDefault("tracer.simple.parameter.path", "./simpleParameter");
+        analysisMode = conf.getStringOrDefault("tracer.analysis-mode", "simple");
         this.readParameter = readParameter;
         classifyInterval = (long)conf.getIntegerOrDefault("tracer.ML.classify-interval", 5000);
-        classifyThread = new Thread(new classifierRunnable());
+        if (analysisMode.equals("simple")) {
+            analysisThread = new Thread(new simpleAnalysisRunnable());
+            upperThreshold = conf.getDoubleOrDefault("tracer.simple.parameter.upperThreshold", 0.8);
+            lowerThreshold = conf.getDoubleOrDefault("tracer.simple.parameter.upperThreshold", 0.1);
+        } else {
+            analysisThread = new Thread(new classifierRunnable());
+        }
     }
 
     public void start() {
         isRunning = true;
-        classifyThread.run();
+        analysisThread.run();
     }
 
     public void stop() {
         isRunning = false;
+    }
+
+    public void simpleAnalysis() {
+        ArrayList<ArrayList<Double>> currentDataSet = buildDataInAnalysis();
+        SimpleParameter parameter = (SimpleParameter)ObjPersistant.readObject(simpleParameterPath);
+        if (parameter == null) {
+            parameter = new SimpleParameter();
+        }
+        if(currentDataSet == null) {
+            return;
+        }
+        if(readParameter) {
+            int i = 0;
+            List<Integer> overIndex = new ArrayList<>();
+            List<Integer> underIndex = new ArrayList<>();
+            for(ArrayList<Double> data: currentDataSet) {
+                Double lowerSum = 0D;
+                for(int j = 0; j < data.size(); j++) {
+                    if(data.get(j) > parameter.maxUsage[j] * upperThreshold) {
+                        overIndex.add(i);
+                    }
+                    lowerSum += data.get(j) / parameter.maxUsage[j];
+                }
+                if (lowerSum < lowerThreshold) {
+                    underIndex.add(i);
+                }
+                i++;
+            }
+        } else {
+            for(ArrayList<Double> data: currentDataSet) {
+                for(int i = 1; i < 6; i++) {
+                    if(parameter.maxUsage[i] < data.get(i)) {
+                        parameter.maxUsage[i] = data.get(i);
+                    }
+                }
+            }
+            for(int i = 1; i < 6; i++) {
+                parameter.maxUsage[i] *= 1.1;
+            }
+            ObjPersistant.saveObject(parameter, simpleParameterPath);
+        }
     }
 
     // public for test
@@ -68,7 +137,7 @@ public class Analyzer {
             return;
         }
         if (readParameter) {
-            parameter = (GMMParameter)ObjPersistant.readObject(parameterPath);
+            parameter = (GMMParameter)ObjPersistant.readObject(GMMParameterPath);
             classifier = new GMMAlgorithm(currentDataSet, parameter);
         } else {
             classifier = new GMMAlgorithm(currentDataSet, true);
