@@ -129,6 +129,10 @@ public class Analyzer {
                 }
                 i++;
             }
+            System.out.print("over usage anomalies: \n");
+            printAnomalyInfo(overIndex);
+            System.out.print("under usage anomalies: \n");
+            printAnomalyInfo(underIndex);
         } else {
             for(ArrayList<Double> data: currentDataSet) {
                 for(int i = 1; i < 6; i++) {
