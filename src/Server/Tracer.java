@@ -70,9 +70,7 @@ public class Tracer {
     private Tracer() {
         fetchEnabled = conf.getBooleanOrDefault("tracer.fetch.enabled", false);
         ms = new PickleMetricsSender();
-        if (analyzerEnabled) {
-            analyzer = new Analyzer(true);
-        }
+        analyzer = new Analyzer(analyzerEnabled);
     }
 
     public static Tracer getInstance() {
@@ -84,9 +82,7 @@ public class Tracer {
         sm = new SparkMonitor();
         sm.startServer();
         tThread.start();
-        if (analyzerEnabled) {
-            analyzer.start();
-        }
+        analyzer.start();
     }
 
 
