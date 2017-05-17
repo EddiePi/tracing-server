@@ -77,13 +77,12 @@ public class Analyzer {
             analysisThread = new Thread(new simpleAnalysisRunnable());
             upperThreshold = conf.getDoubleOrDefault("tracer.simple.parameter.upperThreshold", 0.8);
             lowerThreshold = conf.getDoubleOrDefault("tracer.simple.parameter.upperThreshold", 0.1);
-            if (readParameter) {
-                simpleParameter = (SimpleParameter) ObjPersistant.readObject(simpleParameterPath);
-                if (simpleParameter == null) {
-                    simpleParameter = new SimpleParameter();
-                    ObjPersistant.saveObject(simpleParameter, simpleParameterPath);
-                }
+            simpleParameter = (SimpleParameter) ObjPersistant.readObject(simpleParameterPath);
+            if (simpleParameter == null) {
+                simpleParameter = new SimpleParameter();
+                ObjPersistant.saveObject(simpleParameter, simpleParameterPath);
             }
+
         } else {
             analysisThread = new Thread(new classifierRunnable());
             if(readParameter) {
