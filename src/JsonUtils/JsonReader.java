@@ -70,6 +70,7 @@ public class JsonReader {
             res = topJsonObject.getJSONArray("datapoints");
         } catch (JSONException e) {
             e.printStackTrace();
+            return null;
         }
         if (res == null || res.length() < 1) {
             return null;
