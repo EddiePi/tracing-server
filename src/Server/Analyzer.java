@@ -146,6 +146,7 @@ public class Analyzer {
 
             ObjPersistant.saveObject(simpleParameter, simpleParameterPath);
         }
+        metricsInAnalysis.clear();
     }
 
     // public for test

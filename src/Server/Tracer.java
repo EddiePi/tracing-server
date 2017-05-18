@@ -266,9 +266,7 @@ public class Tracer {
                 if (cmList.size() > 0) {
                     ContainerMetrics last = cmList.get(cmList.size() - 1);
                     ms.sendContainerMetrics(last);
-                    if(conf.getBooleanOrDefault("tracer.ML.analyzer.enabled", false)) {
-                        analyzer.addDataToAnalyze(last);
-                    }
+                    analyzer.addDataToAnalyze(last);
                 }
             }
 //            List<StageMetrics> sml = app.getAndClearReportingStageMetrics();
