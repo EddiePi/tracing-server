@@ -1,6 +1,7 @@
 package Server;
 
 import JsonUtils.ContainerJsonFetcher;
+import JsonUtils.ContainerJsonWriter;
 import MetricsSender.PickleMetricsSender;
 import RPCService.SparkMonitor;
 import docker.DockerMonitor;
@@ -344,11 +345,14 @@ public class Tracer {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            ContainerJsonFetcher containerJsonFetcher;
+            //ContainerJsonFetcher containerJsonFetcher;
+            ContainerJsonWriter containerJsonWriter;
             for (App app: applications.values()) {
                 if (!app.fetched) {
-                    containerJsonFetcher = new ContainerJsonFetcher(conf, app, containerToReport);
-                    containerJsonFetcher.fetch();
+//                    containerJsonFetcher = new ContainerJsonFetcher(conf, app, containerToReport);
+//                    containerJsonFetcher.fetch();
+                    containerJsonWriter = new ContainerJsonWriter(conf, app);
+                    containerJsonWriter.write();
                     app.fetched = true;
                 }
             }

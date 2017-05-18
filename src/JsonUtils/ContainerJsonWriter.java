@@ -15,13 +15,11 @@ import java.util.Map;
  */
 public class ContainerJsonWriter {
     App app;
-    List<String> containerIdList;
     TracerConf conf;
     String storagePrefix;
     String storageSuffix;
 
-    public ContainerJsonWriter(TracerConf conf, App app, List<String> containerIdList) {
-        this.containerIdList = containerIdList;
+    public ContainerJsonWriter(TracerConf conf, App app) {
         this.app = app;
         this.conf = conf;
         storagePrefix = conf.getStringOrDefault("tracer.storage.root", "./").trim() + "/";
