@@ -71,7 +71,7 @@ public class TracerConf {
             return defaultValue;
         }
         return value;
-    }
+}
 
     public String getStringOrDefault(String key, String defaultValue) {
         String valueStr = setting.get(key);

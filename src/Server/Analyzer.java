@@ -81,11 +81,6 @@ public class Analyzer {
             if (simpleParameter == null) {
                 simpleParameter = new SimpleParameter();
                 ObjPersistant.saveObject(simpleParameter, simpleParameterPath);
-            } else {
-                for(int i = 0; i < 6; i++) {
-                    System.out.print(simpleParameter.maxUsage[i] + " ");
-                }
-                System.out.print("\n");
             }
 
         } else {
@@ -122,15 +117,19 @@ public class Analyzer {
                     }
                     lowerSum += data.get(j) / simpleParameter.maxUsage[j];
                 }
-                if (lowerSum < lowerThreshold) {
+                if (lowerSum > 0.001D && lowerSum < lowerThreshold) {
                     underIndex.add(i);
                 }
                 i++;
             }
-            System.out.print("over usage anomalies: \n");
-            printAnomalyInfo(overIndex);
-            System.out.print("under usage anomalies: \n");
-            printAnomalyInfo(underIndex);
+            if(overIndex.size() > 0) {
+                System.out.print("over usage anomalies: \n");
+                printAnomalyInfo(overIndex);
+            }
+            if(underIndex.size() > 0) {
+                System.out.print("under usage anomalies: \n");
+                printAnomalyInfo(underIndex);
+            }
         } else {
             for(ArrayList<Double> data: currentDataSet) {
                 for(int i = 1; i < 6; i++) {
@@ -139,11 +138,6 @@ public class Analyzer {
                     }
                 }
             }
-            for(int i = 1; i < 6; i++) {
-                simpleParameter.maxUsage[i] *= 1.1;
-                System.out.print(simpleParameter.maxUsage[i] + "\n");
-            }
-
             ObjPersistant.saveObject(simpleParameter, simpleParameterPath);
         }
         metricsInAnalysis.clear();
