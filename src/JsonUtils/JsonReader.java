@@ -29,7 +29,7 @@ public class JsonReader {
         }
     }
 
-    public JsonReader(){}
+    public JsonReader() {}
 
     public JsonReader(String path) {
         this.path = path;
