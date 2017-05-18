@@ -4,23 +4,29 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Files;
 import java.util.List;
 
 /**
  * Created by Eddie on 2017/5/18.
  */
 public class JsonWriter {
-    String path;
+    String filePath;
+    String fileName;
     String metricName;
     JSONArray topJsonArray;
     JSONObject topJsonObject;
     JSONArray dataArray;
 
-    public void setNewMetric(String newPath, String metricName) {
-        this.path = newPath;
+    public void setNewMetric(String newPath, String fileName, String metricName) {
+        this.filePath = newPath;
+        this.fileName = fileName;
         this.metricName = metricName;
         topJsonObject = new JSONObject();
         topJsonArray = new JSONArray();
@@ -36,10 +42,6 @@ public class JsonWriter {
     }
 
     public JsonWriter() {}
-
-    public JsonWriter(String path, String metricName) {
-        setNewMetric(path, metricName);
-    }
 
     public JSONObject getTopJsonObject() {
         return topJsonObject;
@@ -73,11 +75,13 @@ public class JsonWriter {
 
     //把json格式的字符串写到文件
     private void writeFile() throws IOException {
-        FileWriter fw = new FileWriter(path);
-        PrintWriter out = new PrintWriter(fw);
+        File dest = new File(filePath, fileName);
+        if (!dest.getParentFile().exists()) {
+            dest.getParentFile().mkdirs();
+        }
+        PrintWriter out = new PrintWriter(dest);
         out.write(topJsonArray.toString());
         out.println();
-        fw.close();
         out.close();
     }
 }

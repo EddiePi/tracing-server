@@ -68,8 +68,7 @@ public class ContainerJsonWriter {
         int index = 0;
         for(String name: MetricNames.names) {
             String fullName = identifier + "." + name;
-            String fullPath = destPath + "/" + fullName + storageSuffix;
-            jsonWriter.setNewMetric(fullPath, fullName);
+            jsonWriter.setNewMetric(destPath, fullName + storageSuffix, fullName);
             jsonWriter.writeDataPoints(allMetrics.get(index), timestampList);
             index++;
 
