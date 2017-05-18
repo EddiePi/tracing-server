@@ -81,6 +81,11 @@ public class Analyzer {
             if (simpleParameter == null) {
                 simpleParameter = new SimpleParameter();
                 ObjPersistant.saveObject(simpleParameter, simpleParameterPath);
+            } else {
+                for(int i = 0; i < 6; i++) {
+                    System.out.print(simpleParameter.maxUsage[i] + " ");
+                }
+                System.out.print("\n");
             }
 
         } else {
@@ -136,7 +141,9 @@ public class Analyzer {
             }
             for(int i = 1; i < 6; i++) {
                 simpleParameter.maxUsage[i] *= 1.1;
+                System.out.print(simpleParameter.maxUsage[i] + "\n");
             }
+
             ObjPersistant.saveObject(simpleParameter, simpleParameterPath);
         }
     }
