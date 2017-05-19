@@ -4,3 +4,4 @@ application*/
 *.iml
 data/
 out/
+*.sh
