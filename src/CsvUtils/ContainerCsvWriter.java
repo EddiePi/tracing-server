@@ -45,6 +45,7 @@ public class ContainerCsvWriter {
                         curMetricList = new ArrayList<>();
                     }
                     curMetricList.addAll(entry.getValue());
+                    containerMetricsMap.put(entry.getKey(), curMetricList);
                 }
             }
         }
