@@ -2,9 +2,9 @@
 export TRACINGSERVER_HOME=/home/eddie/tracing-server
 
 $TRACINGSERVER_HOME/run.sh
-for i in disco-00{12..19}
+while read LINE
 do
-	ssh $i "/home/eddie/tracing-server/run.sh > $TRACINGSERVER_HOME/anomalies.log 2>&1 &"
-done
+	ssh $LINE "/home/eddie/tracing-server/run.sh > $TRACINGSERVER_HOME/anomalies.log 2>&1 &"
+done < slaves
 wait
 exit 0

@@ -1,10 +1,6 @@
 #!/bin/bash
-export TRACINGSERVER_HOME=/home/eddie/tracing-server
-
-for i in disco-00{12..19}
+export TRACINGSERVER_HOME=/home/cwei/tracing-server
+while read LINE
 do
-	scp -r ./out/ eddie@$i:$TRACINGSERVER_HOME/
-done
-wait
-exit 0
-
+	scp -r ./out/ eddie@$LINE:$TRACINGSERVER_HOME/
+done < slaves
