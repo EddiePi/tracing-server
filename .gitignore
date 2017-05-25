@@ -1,5 +1,5 @@
-.idea/
-tracer.conf
+.idea
+*.conf
 application*/
 *.iml
 data/

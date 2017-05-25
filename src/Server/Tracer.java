@@ -347,14 +347,14 @@ public class Tracer {
                 e.printStackTrace();
             }
             //ContainerJsonFetcher containerJsonFetcher;
-            //ContainerJsonWriter containerJsonWriter;
+            ContainerJsonWriter containerJsonWriter;
             ContainerCsvWriter containerCsvWriter;
             for (App app: applications.values()) {
                 if (!app.fetched) {
 //                    containerJsonFetcher = new ContainerJsonFetcher(conf, app, containerToReport);
 //                    containerJsonFetcher.fetch();
-//                    containerJsonWriter = new ContainerJsonWriter(conf, app);
-//                    containerJsonWriter.write();
+                    containerJsonWriter = new ContainerJsonWriter(conf, app);
+                    containerJsonWriter.write();
                     containerCsvWriter = new ContainerCsvWriter(conf, app);
                     containerCsvWriter.write();
                     app.fetched = true;
