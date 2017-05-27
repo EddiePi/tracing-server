@@ -346,7 +346,7 @@ public class Tracer {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            //ContaineJsonFetcher containerJsonFetcher;
+            //ContainerJsonFetcher containerJsonFetcher;
             ContainerJsonWriter containerJsonWriter;
             ContainerCsvWriter containerCsvWriter;
             for (App app: applications.values()) {
